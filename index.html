@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <title>The Tower Hotel</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+    
+    <style>
+        :root {
+            --bg-body: #0b0f17;
+            --card-bg: rgba(23, 29, 43, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --btn-gray: rgba(255, 255, 255, 0.06);
+            --btn-gray-hover: rgba(255, 255, 255, 0.12);
+            --accent-gold: #fbbf24;
+            --accent-gold-dark: #d97706;
+            --accent-gold-glow: rgba(251, 191, 36, 0.25);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-blur: blur(24px);
+            --radius-main: 32px;
+            --radius-card: 22px;
+        }
+
+        [data-theme="light"] {
+            --bg-body: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(0, 0, 0, 0.05);
+            --btn-gray: rgba(0, 0, 0, 0.04);
+            --btn-gray-hover: rgba(0, 0, 0, 0.08);
+            --accent-gold: #d97706;
+            --accent-gold-dark: #b45309;
+            --accent-gold-glow: rgba(217, 119, 6, 0.15);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            transition: background-color 0.25s ease, border-color 0.25s ease, transform 0.15s ease;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0 0 110px 0;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .hero-header {
+            position: relative;
+            height: 230px;
+            background: linear-gradient(180deg, rgba(11, 15, 23, 0.3) 0%, var(--bg-body) 100%), 
+                        url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=80') center/cover no-repeat;
+            padding: calc(env(safe-area-inset-top) + 16px) 20px 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .top-controls {
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .control-btn {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 30px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            outline: none;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-btn option { background: #0f172a; color: #fff; }
+
+        .room-badge {
+            background: rgba(255, 255, 255, 0.95);
+            color: #0f172a;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 800;
+            z-index: 10;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            letter-spacing: 0.3px;
+        }
+
+        .main-container {
+            position: relative;
+            background-color: var(--bg-body);
+            border-top-left-radius: var(--radius-main);
+            border-top-right-radius: var(--radius-main);
+            margin-top: -36px;
+            padding: 24px 20px;
+            z-index: 2;
+        }
+
+        .hotel-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .hotel-logo {
+            width: 50px;
+            height: 50px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+            color: #fff;
+            box-shadow: 0 8px 24px var(--accent-gold-glow);
+        }
+
+        .hotel-name {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .grid-card {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-card);
+            padding: 24px 16px;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+        }
+
+        .grid-card:active { transform: scale(0.96); }
+
+        .grid-card.featured {
+            grid-row: span 2;
+            background: linear-gradient(160deg, rgba(251, 191, 36, 0.18), var(--card-bg));
+            border: 1px solid rgba(251, 191, 36, 0.35);
+            box-shadow: 0 12px 35px var(--accent-gold-glow);
+        }
+
+        .svg-icon {
+            width: 36px;
+            height: 36px;
+            fill: none;
+            stroke: var(--accent-gold);
+            stroke-width: 2.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            margin-bottom: 12px;
+        }
+
+        .featured .svg-icon { width: 56px; height: 56px; }
+        .card-title { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; }
+
+        .sub-screen {
+            display: none;
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: var(--btn-gray);
+            color: var(--text-main);
+            border: 1px solid var(--card-border);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:active { transform: scale(0.95); }
+
+        .category-tags {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            scrollbar-width: none;
+        }
+
+        .category-tags::-webkit-scrollbar { display: none; }
+
+        .tag-btn {
+            background: var(--btn-gray);
+            color: var(--text-muted);
+            border: 1px solid var(--card-border);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .tag-btn.active {
+            background: var(--accent-gold);
+            color: #000;
+            border-color: var(--accent-gold);
+            box-shadow: 0 4px 18px var(--accent-gold-glow);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 125px;
+            border-radius: 18px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .product-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+            line-height: 1.3;
+            padding: 0 4px;
+        }
+
+        .product-price-btn {
+            background: var(--btn-gray);
+            color: var(--accent-gold);
+            border: 1px solid var(--card-border);
+            width: 100%;
+            padding: 10px 6px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .product-price-btn:active {
+            transform: scale(0.95);
+            background: var(--accent-gold);
+            color: #000;
+        }
+
+        .comment-box {
+            margin-top: 24px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-card);
+            padding: 14px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 65px;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+            resize: none;
+            font-family: inherit;
+        }
+
+        .cart-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(11, 15, 23, 0.85);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            padding: 14px 20px calc(env(safe-area-inset-bottom) + 14px) 20px;
+            border-top: 1px solid var(--card-border);
+            z-index: 100;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #ffffff, #e2e8f0);
+            color: #0f172a;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.12);
+        }
+
+        .btn-submit:active { transform: scale(0.98); }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 999;
+            display: none;
+            align-items: flex-end;
+        }
+
+        .modal-content {
+            background: var(--bg-body);
+            border-top-left-radius: 36px;
+            border-top-right-radius: 36px;
+            width: 100%;
+            max-height: 85vh;
+            padding: 12px 24px calc(env(safe-area-inset-bottom) + 24px) 24px;
+            overflow-y: auto;
+            border-top: 1px solid var(--card-border);
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-drag-indicator {
+            width: 40px;
+            height: 5px;
+            background: var(--text-muted);
+            opacity: 0.3;
+            border-radius: 3px;
+            margin: 0 auto 18px auto;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+        
+        .close-btn { 
+            background: var(--btn-gray); 
+            border: none; 
+            color: var(--text-main); 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 50%; 
+            font-size: 16px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .cart-item-info { display: flex; flex-direction: column; gap: 4px; }
+        .cart-item-name { font-size: 15px; font-weight: 700; }
+        .cart-item-price { font-size: 13px; color: var(--accent-gold); font-weight: 700; }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qty-btn {
+            background: var(--btn-gray);
+            color: var(--text-main);
+            border: 1px solid var(--card-border);
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.12);
+            color: #ef4444;
+            border: none;
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <div class="hero-header">
+        <div class="top-controls">
+            <button class="control-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+            <select class="control-btn" id="langSelect" onchange="changeLanguage(this.value)">
+                <option value="en">EN</option>
+                <option value="ru">RU</option>
+                <option value="uz">UZ</option>
+                <option value="kk">KZ</option>
+            </select>
+        </div>
+        <div class="room-badge" id="roomDisplay">Room: --</div>
+    </div>
+
+    <div class="main-container">
+        <div class="hotel-brand">
+            <div class="hotel-logo">T</div>
+            <div class="hotel-name">The Tower</div>
+        </div>
+
+        <div id="screen-main" class="services-grid">
+            <div class="grid-card" onclick="showToast('Services coming soon', 'ℹ️')">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                <div class="card-title" data-i18n="services">Services</div>
+            </div>
+
+            <div class="grid-card featured" onclick="openMenuScreen()">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <div class="card-title" data-i18n="menu">Menu</div>
+            </div>
+
+            <div class="grid-card" onclick="sendServiceNotification('Reception call requested')">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <div class="card-title" data-i18n="reception">Reception</div>
+            </div>
+
+            <div class="grid-card" onclick="sendServiceNotification('Taxi requested')">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 12 10s-6.7.6-8.5 1.1C2.7 11.3 2 12.1 2 13v3c0 .6.4 1 1 1h2m2 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0m8 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0M5 10l2-5h10l2 5"/></svg>
+                <div class="card-title" data-i18n="taxi">Call a Taxi</div>
+            </div>
+
+            <div class="grid-card" onclick="sendServiceNotification('Problem reported from room')">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4m0 4h.01"/></svg>
+                <div class="card-title" data-i18n="report">Report Problem</div>
+            </div>
+        </div>
+
+        <div id="screen-menu" class="sub-screen">
+            <button class="back-btn" onclick="openMainScreen()">← <span data-i18n="back">Back</span></button>
+
+            <div class="category-tags">
+                <button class="tag-btn active" onclick="switchCategory('Soup', this)" data-cat="Soup">Soup</button>
+                <button class="tag-btn" onclick="switchCategory('Salad', this)" data-cat="Salad">Salad</button>
+                <button class="tag-btn" onclick="switchCategory('Pastas', this)" data-cat="Pastas">Pastas</button>
+                <button class="tag-btn" onclick="switchCategory('Main', this)" data-cat="Main">Main course</button>
+            </div>
+
+            <div class="products-grid" id="productsGrid"></div>
+
+            <div class="comment-box">
+                <textarea id="commentInput" placeholder="Add comment or special request..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="cart-bar">
+        <button class="btn-submit" id="orderBtn" onclick="handleCartClick()" data-i18n="cart_empty">View Cart</button>
+    </div>
+
+    <div class="modal-overlay" id="cartModal">
+        <div class="modal-content">
+            <div class="modal-drag-indicator"></div>
+            <div class="modal-header">
+                <div class="modal-title" data-i18n="your_cart">Your Cart</div>
+                <button class="close-btn" onclick="closeCartModal()">✕</button>
+            </div>
+            <div id="cartItemsList"></div>
+            <div style="margin-top: 24px;">
+                <button class="btn-submit" id="sendBtn" onclick="sendOrder()" data-i18n="send_order">Send Order</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Ссылка на Netlify функцию / Cloudflare бэкенд
+        const WORKER_URL = "https://hotel-order-bot.netlify.app/.netlify/functions/bot";
+
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+        }
+
+        const menuData = {
+            Soup: [
+                { id: 1, name: "Chicken soup", price: 48000, img: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=600&q=80" },
+                { id: 2, name: "Pumpkin Soup", price: 50000, img: "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?auto=format&fit=crop&w=600&q=80" },
+                { id: 3, name: "Mushroom Soup", price: 52000, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80" },
+                { id: 4, name: "Ramen Soup", price: 65000, img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80" }
+            ],
+            Salad: [
+                { id: 5, name: "Caesar Salad", price: 55000, img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80" },
+                { id: 6, name: "Greek Salad", price: 45000, img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80" }
+            ],
+            Pastas: [
+                { id: 7, name: "Carbonara", price: 68000, img: "https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=600&q=80" },
+                { id: 8, name: "Bolognese", price: 62000, img: "https://images.unsplash.com/photo-1621996346565-e3d5d6281288?auto=format&fit=crop&w=600&q=80" }
+            ],
+            Main: [
+                { id: 9, name: "Beef Steak", price: 120000, img: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80" },
+                { id: 10, name: "Grilled Salmon", price: 110000, img: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=600&q=80" }
+            ]
+        };
+
+        let cart = [];
+        let roomNum = "101";
+        let currentLang = "en";
+
+        const i18n = {
+            en: { services: "Services", menu: "Menu", reception: "Reception", taxi: "Call a Taxi", report: "Report Problem", back: "Back", cart_empty: "View Cart", placeholder: "Add comment or special request...", your_cart: "Your Cart", send_order: "Send Order", cat_Soup: "Soup", cat_Salad: "Salad", cat_Pastas: "Pastas", cat_Main: "Main course" },
+            ru: { services: "Услуги", menu: "Меню", reception: "Ресепшн", taxi: "Заказать такси", report: "Проблема", back: "Назад", cart_empty: "Корзина", placeholder: "Добавьте комментарий к заказу...", your_cart: "Ваша Корзина", send_order: "Отправить заказ", cat_Soup: "Супы", cat_Salad: "Салаты", cat_Pastas: "Паста", cat_Main: "Горячие блюда" },
+            uz: { services: "Xizmatlar", menu: "Menu", reception: "Qabulxona", taxi: "Taksi chaqirish", report: "Muammo", back: "Orqaga", cart_empty: "Savat", placeholder: "Izoh yoki maxsus so'rov qoldiring...", your_cart: "Sizning Savatingiz", send_order: "Buyurtmani yuborish", cat_Soup: "Shorvalar", cat_Salad: "Salatlar", cat_Pastas: "Pastalar", cat_Main: "Asosiy taomlar" },
+            kk: { services: "Қызметтер", menu: "Мәзір", reception: "Ресепшн", taxi: "Такси шақыру", report: "Проблема", back: "Артқа", cart_empty: "Себет", placeholder: "Тапсырысқа пікір қосыңыз...", your_cart: "Сіздің себетіңіз", send_order: "Тапсырысты жіберу", cat_Soup: "Сорпалар", cat_Salad: "Салаттар", cat_Pastas: "Паста", cat_Main: "Негізгі тағамдар" }
+        };
+
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('room')) {
+                roomNum = urlParams.get('room');
+            }
+            document.getElementById('roomDisplay').innerText = `Room: ${roomNum}`;
+            renderProducts('Soup');
+        };
+
+        function showToast(message, icon = "✅") {
+            let toast = document.getElementById('customToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'customToast';
+                toast.style.cssText = `
+                    position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-100px);
+                    background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+                    color: #fff; padding: 12px 22px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.15);
+                    box-shadow: 0 12px 35px rgba(0,0,0,0.4); font-size: 14px; font-weight: 700; display: flex;
+                    align-items: center; gap: 10px; z-index: 9999; transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); pointer-events: none;
+                `;
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
+            toast.style.transform = 'translateX(-50%) translateY(0)';
+            setTimeout(() => { toast.style.transform = 'translateX(-50%) translateY(-100px)'; }, 2500);
+        }
+
+        function switchCategory(catName, btnEl) {
+            document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+            btnEl.classList.add('active');
+            renderProducts(catName);
+        }
+
+        function renderProducts(catName) {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            const items = menuData[catName] || [];
+
+            items.forEach(item => {
+                grid.innerHTML += `
+                    <div class="product-card">
+                        <div>
+                            <img class="product-img" src="${item.img}" alt="${item.name}">
+                            <div class="product-title">${item.name}</div>
+                        </div>
+                        <button class="product-price-btn" onclick="addToCart('${item.name}', ${item.price})">
+                            ${item.price.toLocaleString()} UZS
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        function addToCart(name, price) {
+            const existing = cart.find(i => i.name === name);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ name, price, qty: 1 });
+            }
+            updateCartBar();
+            showToast(`${name}`, "🛒");
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartBar();
+            renderCartModal();
+            if (cart.length === 0) closeCartModal();
+        }
+
+        function updateQty(index, delta) {
+            cart[index].qty += delta;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartBar();
+            renderCartModal();
+            if (cart.length === 0) closeCartModal();
+        }
+
+        function updateCartBar() {
+            const btn = document.getElementById('orderBtn');
+            const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            if (totalCount === 0) {
+                btn.innerText = i18n[currentLang].cart_empty;
+            } else {
+                btn.innerText = `${i18n[currentLang].your_cart} (${totalCount}) — ${totalPrice.toLocaleString()} UZS`;
+            }
+        }
+
+        function handleCartClick() {
+            if (cart.length === 0) {
+                showToast("Cart is empty", "⚠️");
+                return;
+            }
+            renderCartModal();
+            document.getElementById('cartModal').style.display = 'flex';
+        }
+
+        function closeCartModal() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+
+        function renderCartModal() {
+            const list = document.getElementById('cartItemsList');
+            list.innerHTML = '';
+
+            cart.forEach((item, idx) => {
+                list.innerHTML += `
+                    <div class="cart-item">
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">${(item.price * item.qty).toLocaleString()} UZS</div>
+                        </div>
+                        <div class="cart-item-controls">
+                            <button class="qty-btn" onclick="updateQty(${idx}, -1)">-</button>
+                            <span style="font-weight: 700; font-size: 14px; min-width: 18px; text-align: center;">${item.qty}</span>
+                            <button class="qty-btn" onclick="updateQty(${idx}, 1)">+</button>
+                            <button class="delete-btn" onclick="removeFromCart(${idx})">✕</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang] && i18n[lang][key]) el.innerText = i18n[lang][key];
+            });
+
+            document.querySelectorAll('.tag-btn').forEach(btn => {
+                const cat = btn.getAttribute('data-cat');
+                if (cat && i18n[lang] && i18n[lang]['cat_' + cat]) {
+                    btn.innerText = i18n[lang]['cat_' + cat];
+                }
+            });
+
+            document.getElementById('commentInput').placeholder = i18n[lang].placeholder;
+            updateCartBar();
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeBtn');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                btn.innerText = '☀️';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerText = '🌙';
+            }
+        }
+
+        function openMenuScreen() {
+            document.getElementById('screen-main').style.display = 'none';
+            document.getElementById('screen-menu').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        function openMainScreen() {
+            document.getElementById('screen-menu').style.display = 'none';
+            document.getElementById('screen-main').style.display = 'grid';
+            window.scrollTo(0, 0);
+        }
+
+        async function translateToRussian(text) {
+            if (!text) return "";
+            try {
+                const res = await fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=ru&dt=t&q=${encodeURIComponent(text)}`);
+                const data = await res.json();
+                return data[0].map(i => i[0]).join('');
+            } catch { return text; }
+        }
+
+        async function sendServiceNotification(serviceName) {
+            const msg = `🔔 <b>ЗАПРОС УСЛУГИ</b>\n🏨 <b>Номер:</b> ${roomNum}\n📌 <b>Услуга:</b> ${serviceName}`;
+            try {
+                await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: "send_order", text: msg })
+                });
+                showToast("Запрос отправлен!", "📞");
+            } catch {
+                showToast("Ошибка отправки", "❌");
+            }
+        }
+
+        async function sendOrder() {
+            if (cart.length === 0) return;
+
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.disabled = true;
+            sendBtn.innerText = "Отправка...";
+
+            const comment = document.getElementById('commentInput').value.trim();
+            let msg = `🍽 <b>НОВЫЙ ЗАКАЗ В НОМЕР</b>\n🏨 <b>Номер:</b> ${roomNum}\n\n📋 <b>Состав заказа:</b>\n`;
+
+            let total = 0;
+            cart.forEach((item, idx) => {
+                const itemTotal = item.price * item.qty;
+                msg += `${idx + 1}. ${item.name} x${item.qty} — ${itemTotal.toLocaleString()} UZS\n`;
+                total += itemTotal;
+            });
+
+            msg += `\n💰 <b>Итого:</b> ${total.toLocaleString()} UZS\n`;
+
+            if (comment) {
+                const tr = await translateToRussian(comment);
+                msg += `💬 <b>Комментарий:</b> ${comment}\n🇷🇺 <b>Перевод:</b> <i>${tr}</i>\n`;
+            }
+
+            msg += `\n⏳ <b>Статус:</b> Ожидает доставки`;
+
+            try {
+                const response = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: "send_order", text: msg })
+                });
+
+                if (response.ok) {
+                    showToast("Заказ отправлен!", "🎉");
+                    cart = [];
+                    document.getElementById('commentInput').value = '';
+                    closeCartModal();
+                    updateCartBar();
+                    if (tg) tg.close();
+                } else {
+                    showToast("Ошибка отправки", "❌");
+                }
+            } catch (err) {
+                showToast("Ошибка соединения", "❌");
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerText = i18n[currentLang].send_order;
+            }
+        }
+    </script>
+</body>
+</html>
