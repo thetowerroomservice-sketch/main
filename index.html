@@ -537,9 +537,8 @@
     </div>
 
     <script>
-        // Прямая настройка Telegram Bot API
-        const BOT_TOKEN = "8664392787:AAH4oKtQfPPEcV3aIiGfYYV2YLBo0_iN0BU";
-        const CHAT_ID = "-1004343673170";
+        // Вставьте сюда URL вашего Cloudflare Worker или прокси-сервера
+        const WORKER_URL = "YOUR_WORKER_URL_HERE";
 
         const tg = window.Telegram?.WebApp;
         if (tg) {
@@ -759,34 +758,26 @@
             } catch { return text; }
         }
 
-        // Функция отправки прямых сообщений в Telegram
-        async function sendToTelegram(text) {
-            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
-            const payload = {
-                chat_id: CHAT_ID,
-                text: text,
-                parse_mode: 'HTML',
-                reply_markup: {
-                    inline_keyboard: [
-                        [{ text: "✅ Принять заказ", callback_data: "accept_order" }]
-                    ]
-                }
-            };
-
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            return response.ok;
+        async function sendToWorker(text) {
+            try {
+                const response = await fetch(WORKER_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text })
+                });
+                const resData = await response.json();
+                return resData.success;
+            } catch (err) {
+                console.error("Worker Error:", err);
+                return false;
+            }
         }
 
         async function sendServiceNotification(serviceName) {
             const msg = `🔔 <b>ЗАПРОС УСЛУГИ С САЙТА</b>\n🏨 <b>Номер комнаты:</b> ${roomNum}\n📌 <b>Услуга:</b> ${serviceName}\n\n⏳ <b>Статус:</b> Ожидает обработки`;
             
             showToast("Отправка...", "⏳");
-            const success = await sendToTelegram(msg);
+            const success = await sendToWorker(msg);
 
             if (success) {
                 showToast("Запрос отправлен в отель!", "📞");
@@ -822,7 +813,7 @@
             msg += `\n⏳ <b>Статус:</b> Ожидает доставки`;
 
             try {
-                const success = await sendToTelegram(msg);
+                const success = await sendToWorker(msg);
 
                 if (success) {
                     showToast("Заказ отправлен!", "🎉");
