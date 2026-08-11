@@ -3,24 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tower Room Service</title>
+  <title>The Tower Room Service</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     :root {
-      --bg-body: #121212;
-      --card-bg: #1e1e1e;
+      --bg-body: #0d0d0d;
+      --card-bg: #1a1a1a;
       --text-main: #ffffff;
       --accent: #ff9800;
-      --accent-hover: #e68a00;
-      --border-color: #333;
+      --border-color: #2a2a2a;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      user-select: none;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     body {
@@ -29,77 +27,79 @@
       padding: 20px 20px 100px 20px;
     }
 
-    .hero-header {
+    .header {
       text-align: center;
       margin-bottom: 20px;
     }
 
-    .hero-header h1 {
-      font-size: 24px;
+    .header h1 {
+      font-size: 22px;
       color: var(--accent);
     }
 
-    .room-input-container {
-      margin-bottom: 20px;
+    .room-block {
       background: var(--card-bg);
       padding: 15px;
-      border-radius: 12px;
+      border-radius: 10px;
+      margin-bottom: 20px;
       border: 1px solid var(--border-color);
     }
 
-    .room-input-container label {
+    .room-block label {
       display: block;
-      margin-bottom: 8px;
       font-size: 14px;
+      margin-bottom: 8px;
+      color: #aaa;
     }
 
-    .room-input-container input {
+    .room-block input {
       width: 100%;
       padding: 10px;
-      border-radius: 8px;
+      border-radius: 6px;
       border: 1px solid var(--border-color);
-      background: #2a2a2a;
+      background: #111;
       color: #fff;
       font-size: 16px;
     }
 
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 15px;
-    }
-
-    .menu-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 15px;
+    .menu-list {
       display: flex;
       flex-direction: column;
+      gap: 12px;
+    }
+
+    .item-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
       justify-content: space-between;
+      align-items: center;
     }
 
-    .menu-card h3 {
+    .item-info h3 {
       font-size: 16px;
-      margin-bottom: 8px;
+      margin-bottom: 4px;
     }
 
-    .menu-card .price {
+    .item-price {
       color: var(--accent);
       font-weight: bold;
-      margin-bottom: 12px;
+      font-size: 14px;
     }
 
     .add-btn {
       background: var(--accent);
       border: none;
       color: #000;
-      padding: 8px;
+      padding: 8px 16px;
       border-radius: 6px;
       font-weight: bold;
       cursor: pointer;
     }
 
+    /* Cart Bar */
     .cart-bar {
       position: fixed;
       bottom: 20px;
@@ -108,56 +108,56 @@
       background: var(--accent);
       color: #000;
       padding: 15px 20px;
-      border-radius: 12px;
+      border-radius: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     }
 
     /* Modal */
-    .modal-overlay {
+    .modal {
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.85);
       justify-content: center;
       align-items: center;
-      z-index: 1000;
+      z-index: 999;
       padding: 20px;
     }
 
-    .modal-content {
+    .modal-body {
       background: var(--card-bg);
       padding: 20px;
       border-radius: 12px;
       width: 100%;
       max-width: 400px;
-      max-height: 80vh;
-      overflow-y: auto;
+      border: 1px solid var(--border-color);
     }
 
-    .cart-item {
+    .cart-line {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
-      padding-bottom: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
       border-bottom: 1px solid var(--border-color);
     }
 
-    .qty-btn {
+    .qty-controls button {
       background: #333;
       color: #fff;
       border: none;
-      width: 25px;
-      height: 25px;
+      width: 28px;
+      height: 28px;
       border-radius: 4px;
+      font-weight: bold;
     }
 
-    .confirm-btn {
+    .submit-btn {
       width: 100%;
       background: var(--accent);
       color: #000;
@@ -167,70 +167,73 @@
       font-weight: bold;
       margin-top: 15px;
       cursor: pointer;
+      font-size: 16px;
     }
 
     .close-btn {
       width: 100%;
-      background: #444;
-      color: #fff;
+      background: transparent;
+      color: #888;
       padding: 8px;
       border: none;
-      border-radius: 8px;
       margin-top: 8px;
       cursor: pointer;
     }
   </style>
 </head>
-<body data-theme="dark">
+<body>
 
-  <div class="hero-header">
+  <div class="header">
     <h1>The Tower Room Service</h1>
   </div>
 
-  <div class="room-input-container">
-    <label for="roomNumber">Номер комнаты:</label>
-    <input type="text" id="roomNumber" placeholder="Например: 101" value="101">
+  <div class="room-block">
+    <label for="roomInput">Номер комнаты:</label>
+    <input type="text" id="roomInput" value="101" placeholder="Введите номер комнаты">
   </div>
 
-  <div class="menu-grid">
-    <div class="menu-card">
-      <div>
+  <div class="menu-list">
+    <div class="item-card">
+      <div class="item-info">
         <h3>Pumpkin Soup</h3>
-        <div class="price">50 000 UZS</div>
+        <div class="item-price">50 000 UZS</div>
       </div>
-      <button class="add-btn" onclick="addToCart('Pumpkin Soup', 50000)">Добавить</button>
+      <button class="add-btn" onclick="addToCart('Pumpkin Soup', 50000)">+</button>
     </div>
-    <div class="menu-card">
-      <div>
+
+    <div class="item-card">
+      <div class="item-info">
         <h3>Club Sandwich</h3>
-        <div class="price">75 000 UZS</div>
+        <div class="item-price">75 000 UZS</div>
       </div>
-      <button class="add-btn" onclick="addToCart('Club Sandwich', 75000)">Добавить</button>
+      <button class="add-btn" onclick="addToCart('Club Sandwich', 75000)">+</button>
     </div>
-    <div class="menu-card">
-      <div>
+
+    <div class="item-card">
+      <div class="item-info">
         <h3>Fresh Orange Juice</h3>
-        <div class="price">35 000 UZS</div>
+        <div class="item-price">35 000 UZS</div>
       </div>
-      <button class="add-btn" onclick="addToCart('Fresh Orange Juice', 35000)">Добавить</button>
+      <button class="add-btn" onclick="addToCart('Fresh Orange Juice', 35000)">+</button>
     </div>
   </div>
 
-  <div class="cart-bar" id="cartBar" onclick="openCart()" style="display: none;">
-    <span>Корзина (<span id="cartCount">0</span>)</span>
+  <!-- Bottom Bar -->
+  <div class="cart-bar" id="cartBar" style="display: none;" onclick="openModal()">
+    <span>Заказ (<span id="cartCount">0</span>)</span>
     <span id="cartTotal">0 UZS</span>
   </div>
 
-  <!-- Cart Modal -->
-  <div class="modal-overlay" id="cartModal">
-    <div class="modal-content">
-      <h2>Ваш заказ</h2>
-      <div id="cartList" style="margin-top: 15px;"></div>
-      <div style="margin-top: 15px; font-weight: bold; font-size: 18px;">
-        Итого: <span id="modalTotal">0 UZS</span>
+  <!-- Modal -->
+  <div class="modal" id="orderModal">
+    <div class="modal-body">
+      <h2 style="margin-bottom: 15px; font-size: 18px;">Детали заказа</h2>
+      <div id="modalItems"></div>
+      <div style="margin-top: 15px; font-size: 18px; font-weight: bold;">
+        Итого: <span id="modalTotalSum">0 UZS</span>
       </div>
-      <button class="confirm-btn" id="sendBtn" onclick="sendOrder()">Подтвердить заказ</button>
-      <button class="close-btn" onclick="closeCart()">Закрыть</button>
+      <button class="submit-btn" id="sendBtn" onclick="sendOrder()">Подтвердить заказ</button>
+      <button class="close-btn" onclick="closeModal()">Закрыть</button>
     </div>
   </div>
 
@@ -242,30 +245,30 @@
   let cart = [];
 
   function addToCart(name, price) {
-    const existing = cart.find(item => item.name === name);
-    if (existing) {
-      existing.quantity++;
+    const item = cart.find(i => i.name === name);
+    if (item) {
+      item.qty++;
     } else {
-      cart.push({ name, price, quantity: 1 });
+      cart.push({ name, price, qty: 1 });
     }
     updateUI();
   }
 
   function changeQty(name, delta) {
-    const item = cart.find(item => item.name === name);
+    const item = cart.find(i => i.name === name);
     if (item) {
-      item.quantity += delta;
-      if (item.quantity <= 0) {
+      item.qty += delta;
+      if (item.qty <= 0) {
         cart = cart.filter(i => i.name !== name);
       }
     }
     updateUI();
-    renderCartList();
+    renderModalItems();
   }
 
   function updateUI() {
-    const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
-    const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+    const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
 
     const cartBar = document.getElementById('cartBar');
     document.getElementById('cartCount').innerText = totalCount;
@@ -275,54 +278,51 @@
       cartBar.style.display = 'flex';
     } else {
       cartBar.style.display = 'none';
-      closeCart();
+      closeModal();
     }
   }
 
-  function openCart() {
+  function openModal() {
     if (cart.length === 0) return;
-    renderCartList();
-    document.getElementById('cartModal').style.display = 'flex';
+    renderModalItems();
+    document.getElementById('orderModal').style.display = 'flex';
   }
 
-  function closeCart() {
-    document.getElementById('cartModal').style.display = 'none';
+  function closeModal() {
+    document.getElementById('orderModal').style.display = 'none';
   }
 
-  function renderCartList() {
-    const list = document.getElementById('cartList');
-    list.innerHTML = '';
+  function renderModalItems() {
+    const container = document.getElementById('modalItems');
+    container.innerHTML = '';
     let total = 0;
 
     cart.forEach(item => {
-      const itemTotal = item.price * item.quantity;
-      total += itemTotal;
-      list.innerHTML += `
-        <div class="cart-item">
+      const sum = item.price * item.qty;
+      total += sum;
+      container.innerHTML += `
+        <div class="cart-line">
           <div>
             <div><b>${item.name}</b></div>
-            <div style="font-size: 12px; color: #888;">${item.price.toLocaleString()} UZS</div>
+            <div style="font-size: 12px; color: #aaa;">${item.price.toLocaleString()} UZS</div>
           </div>
-          <div>
-            <button class="qty-btn" onclick="changeQty('${item.name}', -1)">-</button>
-            <span style="margin: 0 8px;">${item.quantity}</span>
-            <button class="qty-btn" onclick="changeQty('${item.name}', 1)">+</button>
+          <div class="qty-controls">
+            <button onclick="changeQty('${item.name}', -1)">-</button>
+            <span style="margin: 0 8px;">${item.qty}</span>
+            <button onclick="changeQty('${item.name}', 1)">+</button>
           </div>
         </div>
       `;
     });
 
-    document.getElementById('modalTotal').innerText = total.toLocaleString() + " UZS";
+    document.getElementById('modalTotalSum').innerText = total.toLocaleString() + " UZS";
   }
 
   async function sendOrder() {
-    const roomNumber = document.getElementById('roomNumber').value.trim() || 'Не указан';
+    const roomNumber = document.getElementById('roomInput').value.trim() || 'Не указан';
     const sendBtn = document.getElementById('sendBtn');
     
-    if (cart.length === 0) {
-      alert("Корзина пуста!");
-      return;
-    }
+    if (cart.length === 0) return;
 
     sendBtn.disabled = true;
     sendBtn.innerText = "Отправка...";
@@ -331,9 +331,9 @@
     let total = 0;
 
     cart.forEach((item, index) => {
-      const itemTotal = item.price * item.quantity;
-      total += itemTotal;
-      itemsText += `${index + 1}. ${item.name} x${item.quantity} — ${itemTotal.toLocaleString()} UZS\n`;
+      const sum = item.price * item.qty;
+      total += sum;
+      itemsText += `${index + 1}. ${item.name} x${item.qty} — ${sum.toLocaleString()} UZS\n`;
     });
 
     const orderText = `🍽 <b>НОВЫЙ ЗАКАЗ ИЗ МЕНЮ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n\n📋 <b>Состав заказа:</b>\n${itemsText}\n💰 <b>Итого:</b> ${total.toLocaleString()} UZS\n⏳ <b>Статус:</b> Ожидает доставки`;
@@ -358,13 +358,13 @@
         alert("Заказ успешно отправлен!");
         cart = [];
         updateUI();
-        closeCart();
+        closeModal();
       } else {
-        alert("Ошибка при отправке заказа: " + (result.error || "Неизвестная ошибка"));
+        alert("Ошибка отправки: " + (result.error || "Попробуйте позже"));
       }
     } catch (err) {
       console.error(err);
-      alert("Ошибка сети при отправке заказа.");
+      alert("Ошибка подключения к серверу.");
     } finally {
       sendBtn.disabled = false;
       sendBtn.innerText = "Подтвердить заказ";
