@@ -484,17 +484,17 @@
                 <div class="card-title" data-i18n="menu">Menu</div>
             </div>
 
-            <div class="grid-card" onclick="sendServiceNotification('Reception call requested')">
+            <div class="grid-card" onclick="sendServiceNotification('Вызов ресепшн')">
                 <svg class="svg-icon" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                 <div class="card-title" data-i18n="reception">Reception</div>
             </div>
 
-            <div class="grid-card" onclick="sendServiceNotification('Taxi requested')">
+            <div class="grid-card" onclick="sendServiceNotification('Заказ такси / Трансфер')">
                 <svg class="svg-icon" viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 12 10s-6.7.6-8.5 1.1C2.7 11.3 2 12.1 2 13v3c0 .6.4 1 1 1h2m2 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0m8 0a2 2 0 1 0 4 0 2 2 0 0 0-4 0M5 10l2-5h10l2 5"/></svg>
                 <div class="card-title" data-i18n="taxi">Call a Taxi</div>
             </div>
 
-            <div class="grid-card" onclick="sendServiceNotification('Problem reported from room')">
+            <div class="grid-card" onclick="sendServiceNotification('Сообщение о технической проблеме в номер')">
                 <svg class="svg-icon" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4m0 4h.01"/></svg>
                 <div class="card-title" data-i18n="report">Report Problem</div>
             </div>
@@ -537,8 +537,9 @@
     </div>
 
     <script>
-        // Ссылка на Netlify функцию / Cloudflare бэкенд
-        const WORKER_URL = "https://hotel-order-bot.netlify.app/.netlify/functions/bot";
+        // Прямая настройка Telegram Bot API
+        const BOT_TOKEN = "8664392787:AAH4oKtQfPPEcV3aIiGfYYV2YLBo0_iN0BU";
+        const CHAT_ID = "-1004343673170";
 
         const tg = window.Telegram?.WebApp;
         if (tg) {
@@ -758,16 +759,38 @@
             } catch { return text; }
         }
 
+        // Функция отправки прямых сообщений в Telegram
+        async function sendToTelegram(text) {
+            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+            const payload = {
+                chat_id: CHAT_ID,
+                text: text,
+                parse_mode: 'HTML',
+                reply_markup: {
+                    inline_keyboard: [
+                        [{ text: "✅ Принять заказ", callback_data: "accept_order" }]
+                    ]
+                }
+            };
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            return response.ok;
+        }
+
         async function sendServiceNotification(serviceName) {
-            const msg = `🔔 <b>ЗАПРОС УСЛУГИ</b>\n🏨 <b>Номер:</b> ${roomNum}\n📌 <b>Услуга:</b> ${serviceName}`;
-            try {
-                await fetch(WORKER_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: "send_order", text: msg })
-                });
-                showToast("Запрос отправлен!", "📞");
-            } catch {
+            const msg = `🔔 <b>ЗАПРОС УСЛУГИ С САЙТА</b>\n🏨 <b>Номер комнаты:</b> ${roomNum}\n📌 <b>Услуга:</b> ${serviceName}\n\n⏳ <b>Статус:</b> Ожидает обработки`;
+            
+            showToast("Отправка...", "⏳");
+            const success = await sendToTelegram(msg);
+
+            if (success) {
+                showToast("Запрос отправлен в отель!", "📞");
+            } else {
                 showToast("Ошибка отправки", "❌");
             }
         }
@@ -780,7 +803,7 @@
             sendBtn.innerText = "Отправка...";
 
             const comment = document.getElementById('commentInput').value.trim();
-            let msg = `🍽 <b>НОВЫЙ ЗАКАЗ В НОМЕР</b>\n🏨 <b>Номер:</b> ${roomNum}\n\n📋 <b>Состав заказа:</b>\n`;
+            let msg = `🍽 <b>НОВЫЙ ЗАКАЗ ИЗ МЕНЮ</b>\n🏨 <b>Номер комнаты:</b> ${roomNum}\n\n📋 <b>Состав заказа:</b>\n`;
 
             let total = 0;
             cart.forEach((item, idx) => {
@@ -799,13 +822,9 @@
             msg += `\n⏳ <b>Статус:</b> Ожидает доставки`;
 
             try {
-                const response = await fetch(WORKER_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: "send_order", text: msg })
-                });
+                const success = await sendToTelegram(msg);
 
-                if (response.ok) {
+                if (success) {
                     showToast("Заказ отправлен!", "🎉");
                     cart = [];
                     document.getElementById('commentInput').value = '';
