@@ -1,24 +1,336 @@
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tower Room Service</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg-body: #121212;
+      --card-bg: #1e1e1e;
+      --text-main: #ffffff;
+      --accent: #ff9800;
+      --accent-hover: #e68a00;
+      --border-color: #333;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      padding: 20px 20px 100px 20px;
+    }
+
+    .hero-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .hero-header h1 {
+      font-size: 24px;
+      color: var(--accent);
+    }
+
+    .room-input-container {
+      margin-bottom: 20px;
+      background: var(--card-bg);
+      padding: 15px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .room-input-container label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .room-input-container input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: #2a2a2a;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    .menu-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .menu-card h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .menu-card .price {
+      color: var(--accent);
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .add-btn {
+      background: var(--accent);
+      border: none;
+      color: #000;
+      padding: 8px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .cart-bar {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: var(--accent);
+      color: #000;
+      padding: 15px 20px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .qty-btn {
+      background: #333;
+      color: #fff;
+      border: none;
+      width: 25px;
+      height: 25px;
+      border-radius: 4px;
+    }
+
+    .confirm-btn {
+      width: 100%;
+      background: var(--accent);
+      color: #000;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+
+    .close-btn {
+      width: 100%;
+      background: #444;
+      color: #fff;
+      padding: 8px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <div class="hero-header">
+    <h1>The Tower Room Service</h1>
+  </div>
+
+  <div class="room-input-container">
+    <label for="roomNumber">Номер комнаты:</label>
+    <input type="text" id="roomNumber" placeholder="Например: 101" value="101">
+  </div>
+
+  <div class="menu-grid">
+    <div class="menu-card">
+      <div>
+        <h3>Pumpkin Soup</h3>
+        <div class="price">50 000 UZS</div>
+      </div>
+      <button class="add-btn" onclick="addToCart('Pumpkin Soup', 50000)">Добавить</button>
+    </div>
+    <div class="menu-card">
+      <div>
+        <h3>Club Sandwich</h3>
+        <div class="price">75 000 UZS</div>
+      </div>
+      <button class="add-btn" onclick="addToCart('Club Sandwich', 75000)">Добавить</button>
+    </div>
+    <div class="menu-card">
+      <div>
+        <h3>Fresh Orange Juice</h3>
+        <div class="price">35 000 UZS</div>
+      </div>
+      <button class="add-btn" onclick="addToCart('Fresh Orange Juice', 35000)">Добавить</button>
+    </div>
+  </div>
+
+  <div class="cart-bar" id="cartBar" onclick="openCart()" style="display: none;">
+    <span>Корзина (<span id="cartCount">0</span>)</span>
+    <span id="cartTotal">0 UZS</span>
+  </div>
+
+  <!-- Cart Modal -->
+  <div class="modal-overlay" id="cartModal">
+    <div class="modal-content">
+      <h2>Ваш заказ</h2>
+      <div id="cartList" style="margin-top: 15px;"></div>
+      <div style="margin-top: 15px; font-weight: bold; font-size: 18px;">
+        Итого: <span id="modalTotal">0 UZS</span>
+      </div>
+      <button class="confirm-btn" id="sendBtn" onclick="sendOrder()">Подтвердить заказ</button>
+      <button class="close-btn" onclick="closeCart()">Закрыть</button>
+    </div>
+  </div>
+
 <script>
-  // Инициализация Telegram WebApp
+  const WORKER_URL = "https://solitary-frog-ffbc.thetowerroomservice.workers.dev";
   const tg = window.Telegram?.WebApp;
   if (tg) tg.ready();
 
-  const WORKER_URL = "https://solitary-frog-ffbc.thetowerroomservice.workers.dev";
+  let cart = [];
+
+  function addToCart(name, price) {
+    const existing = cart.find(item => item.name === name);
+    if (existing) {
+      existing.quantity++;
+    } else {
+      cart.push({ name, price, quantity: 1 });
+    }
+    updateUI();
+  }
+
+  function changeQty(name, delta) {
+    const item = cart.find(item => item.name === name);
+    if (item) {
+      item.quantity += delta;
+      if (item.quantity <= 0) {
+        cart = cart.filter(i => i.name !== name);
+      }
+    }
+    updateUI();
+    renderCartList();
+  }
+
+  function updateUI() {
+    const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+    const cartBar = document.getElementById('cartBar');
+    document.getElementById('cartCount').innerText = totalCount;
+    document.getElementById('cartTotal').innerText = totalPrice.toLocaleString() + " UZS";
+
+    if (totalCount > 0) {
+      cartBar.style.display = 'flex';
+    } else {
+      cartBar.style.display = 'none';
+      closeCart();
+    }
+  }
+
+  function openCart() {
+    if (cart.length === 0) return;
+    renderCartList();
+    document.getElementById('cartModal').style.display = 'flex';
+  }
+
+  function closeCart() {
+    document.getElementById('cartModal').style.display = 'none';
+  }
+
+  function renderCartList() {
+    const list = document.getElementById('cartList');
+    list.innerHTML = '';
+    let total = 0;
+
+    cart.forEach(item => {
+      const itemTotal = item.price * item.quantity;
+      total += itemTotal;
+      list.innerHTML += `
+        <div class="cart-item">
+          <div>
+            <div><b>${item.name}</b></div>
+            <div style="font-size: 12px; color: #888;">${item.price.toLocaleString()} UZS</div>
+          </div>
+          <div>
+            <button class="qty-btn" onclick="changeQty('${item.name}', -1)">-</button>
+            <span style="margin: 0 8px;">${item.quantity}</span>
+            <button class="qty-btn" onclick="changeQty('${item.name}', 1)">+</button>
+          </div>
+        </div>
+      `;
+    });
+
+    document.getElementById('modalTotal').innerText = total.toLocaleString() + " UZS";
+  }
 
   async function sendOrder() {
-    const roomNumber = document.getElementById('roomNumber')?.value || 'Не указан';
+    const roomNumber = document.getElementById('roomNumber').value.trim() || 'Не указан';
+    const sendBtn = document.getElementById('sendBtn');
     
-    // Сбор товаров из корзины (замени cartItems на свою переменную корзины, если называется иначе)
-    if (!window.cartItems || window.cartItems.length === 0) {
+    if (cart.length === 0) {
       alert("Корзина пуста!");
       return;
     }
 
+    sendBtn.disabled = true;
+    sendBtn.innerText = "Отправка...";
+
     let itemsText = "";
     let total = 0;
 
-    window.cartItems.forEach((item, index) => {
+    cart.forEach((item, index) => {
       const itemTotal = item.price * item.quantity;
       total += itemTotal;
       itemsText += `${index + 1}. ${item.name} x${item.quantity} — ${itemTotal.toLocaleString()} UZS\n`;
@@ -26,7 +338,6 @@
 
     const orderText = `🍽 <b>НОВЫЙ ЗАКАЗ ИЗ МЕНЮ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n\n📋 <b>Состав заказа:</b>\n${itemsText}\n💰 <b>Итого:</b> ${total.toLocaleString()} UZS\n⏳ <b>Статус:</b> Ожидает доставки`;
 
-    // Данные о пользователе из Telegram
     const username = tg?.initDataUnsafe?.user?.username 
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
@@ -45,15 +356,20 @@
 
       if (result.success || result.ok) {
         alert("Заказ успешно отправлен!");
-        if (window.cartItems) window.cartItems = []; // Очистка корзины
-        if (typeof updateCartUI === "function") updateCartUI(); // Обновление интерфейса корзины
-        if (typeof closeModal === "function") closeModal(); // Закрытие модалки
+        cart = [];
+        updateUI();
+        closeCart();
       } else {
-        alert("Ошибка при отправке заказа. Попробуйте еще раз.");
+        alert("Ошибка при отправке заказа: " + (result.error || "Неизвестная ошибка"));
       }
     } catch (err) {
-      console.error("Fetch Error:", err);
-      alert("Ошибка соединения с сервером.");
+      console.error(err);
+      alert("Ошибка сети при отправке заказа.");
+    } finally {
+      sendBtn.disabled = false;
+      sendBtn.innerText = "Подтвердить заказ";
     }
   }
 </script>
+</body>
+</html>
