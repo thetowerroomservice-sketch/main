@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>The Tower Hotel — Room Service</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
@@ -45,12 +45,25 @@
       transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
     }
 
+    html, body {
+      overscroll-behavior: none;
+    }
+
     body {
       background-color: var(--bg-color);
       color: var(--text-main);
       padding-bottom: 120px;
       overflow-x: hidden;
       width: 100%;
+      position: relative;
+    }
+
+    /* ФИКС ДЕРГАНИЯ ФОНА ПРИ МОДАЛКАХ */
+    body.modal-open {
+      overflow: hidden !important;
+      position: fixed;
+      width: 100%;
+      height: 100%;
     }
 
     body[dir="rtl"] {
@@ -63,6 +76,7 @@
       top: 0; left: 0; right: 0;
       background: var(--panel-bg);
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       z-index: 1000;
       display: flex;
       justify-content: space-between;
@@ -582,18 +596,20 @@
     .cart-count { font-size: 12px; opacity: 0.9; }
     .cart-total { font-size: 16px; font-weight: 800; }
 
-    /* --- ИСПРАВЛЕНИЯ МОДАЛЬНОГО ОКНА И ГРАНИЦ --- */
+    /* --- МОДАЛЬНОЕ ОКНО --- */
     .modal {
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.75);
       backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       z-index: 2000;
       align-items: flex-end;
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.25s ease-in-out;
       overflow: hidden;
+      touch-action: none;
     }
 
     .modal.show {
@@ -612,8 +628,10 @@
       overflow-x: hidden;
       padding: 24px 20px;
       transform: translateY(100%);
-      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       box-sizing: border-box;
+      will-change: transform;
+      touch-action: pan-y;
     }
 
     .modal.show .modal-body {
@@ -1527,6 +1545,7 @@
   let cart = [];
   let currentCategory = 'all';
   let selectedRating = 0;
+  let scrollPosition = 0;
 
   const dbMenu = [
     { id: 1, cat: "soups", price: 48000, img: "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=300" },
@@ -1621,11 +1640,17 @@
   }
 
   function openModal(modalId) {
+    scrollPosition = window.pageYOffset;
+    document.body.style.top = `-${scrollPosition}px`;
+    document.body.classList.add('modal-open');
     document.getElementById(modalId).classList.add('show');
   }
 
   function closeModal(modalId) {
     document.getElementById(modalId).classList.remove('show');
+    document.body.classList.remove('modal-open');
+    document.body.style.top = '';
+    window.scrollTo(0, scrollPosition);
   }
 
   /* БУДИЛЬНИК */
