@@ -392,10 +392,10 @@
     }
 
     .back-btn-wrapper {
-      padding: 0 14px 12px 14px;
+      padding: 0 14px 14px 14px;
     }
 
-    /* УВЕЛИЧЕННЫЕ КНОПКИ НАЗАД И ЗАКРЫТЬ */
+    /* УВЕЛИЧЕННЫЕ КНОПКИ НАЗАД */
     .back-btn {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -407,19 +407,14 @@
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
-    .back-btn span:first-child {
-      font-size: 20px;
-      line-height: 1;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
     .back-btn:hover {
       border-color: var(--accent-gold);
       color: var(--accent-gold);
-      transform: translateX(-3px);
+      transform: translateX(-4px);
     }
 
     .back-btn:active {
@@ -494,7 +489,7 @@
 
     .item-img {
       width: 100%;
-      height: 110px;
+      height: 120px;
       object-fit: cover;
       background: #1f1f24;
       transition: transform 0.3s ease;
@@ -760,22 +755,23 @@
       transform: scale(0.97);
     }
 
+    /* УВЕЛИЧЕННЫЕ КНОПКИ ЗАКРЫТИЯ В МОДАЛКАХ */
     .close-modal {
       width: 100%;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      color: var(--text-main);
-      padding: 12px;
+      color: var(--text-muted);
+      padding: 14px;
       border-radius: 14px;
       margin-top: 10px;
       cursor: pointer;
-      font-size: 15px;
       font-weight: 700;
+      font-size: 15px;
     }
 
     .close-modal:hover {
+      color: var(--text-main);
       border-color: var(--accent-gold);
-      color: var(--accent-gold);
     }
 
     .toast {
@@ -1177,14 +1173,14 @@
         2: "Тыквенный суп",
         3: "Грибной суп",
         4: "Рамен суп",
-        5: "Узбекский Плов",
-        6: "Стейк Рибай",
-        7: "Паста Карбонара",
-        8: "Классический Бургер",
-        9: "Зеленый Чай",
-        10: "Апельсиновый Сок",
-        11: "Эспрессо Кофе",
-        12: "Минеральная Вода"
+        5: "Стейк Рибай",
+        6: "Паста Карбонара",
+        7: "Классический бургер",
+        8: "Пицца Маргарита",
+        9: "Свежевыжатый сок",
+        10: "Кофе Капучино",
+        11: "Зеленый чай",
+        12: "Кока-Кола"
       }
     },
     uz: {
@@ -1235,14 +1231,14 @@
         2: "Oshqovoq sho'rva",
         3: "Qo'ziqorinli sho'rva",
         4: "Ramen sho'rva",
-        5: "O'zbek Palovi",
-        6: "Ribay Steyk",
-        7: "Karbonara Pasta",
-        8: "Klassik Burger",
-        9: "Kók Choy",
-        10: "Aпельсин Sharbati",
-        11: "Espresso Qahva",
-        12: "Mineral Suv"
+        5: "Ribay steyk",
+        6: "Karbonara pastasi",
+        7: "Klassik burger",
+        8: "Margarita pitsa",
+        9: "Yangi siqilgan sharbat",
+        10: "Kapuchino qahvasi",
+        11: "Yashil choy",
+        12: "Koka-Kola"
       }
     },
     en: {
@@ -1293,14 +1289,14 @@
         2: "Pumpkin Soup",
         3: "Mushroom Soup",
         4: "Ramen Soup",
-        5: "Uzbek Plov",
-        6: "Ribeye Steak",
-        7: "Carbonara Pasta",
-        8: "Classic Burger",
-        9: "Green Tea",
-        10: "Orange Juice",
-        11: "Espresso Coffee",
-        12: "Mineral Water"
+        5: "Ribeye Steak",
+        6: "Pasta Carbonara",
+        7: "Classic Burger",
+        8: "Margherita Pizza",
+        9: "Fresh Juice",
+        10: "Cappuccino Coffee",
+        11: "Green Tea",
+        12: "Coca-Cola"
       }
     },
     zh: {
@@ -1346,7 +1342,7 @@
       taxi_time_label: "用车时间:",
       taxi_passengers_label: "乘客人数:",
       taxi_send: "叫车",
-      items: { 1: "鸡汤", 2: "南瓜汤", 3: "蘑菇汤", 4: "拉面", 5: "乌兹别克抓饭", 6: "肋眼牛排", 7: "奶油培根面", 8: "经典汉堡", 9: "绿茶", 10: "鲜橙汁", 11: "浓缩咖啡", 12: "矿泉水" }
+      items: { 1: "鸡汤", 2: "南瓜汤", 3: "蘑菇汤", 4: "拉面", 5: "肋眼牛排", 6: "奶油培根面", 7: "经典汉堡", 8: "玛格丽特披萨", 9: "鲜榨果汁", 10: "卡布奇诺", 11: "绿茶", 12: "可口可乐" }
     },
     ar: {
       room_key: "غرفة:",
@@ -1391,7 +1387,7 @@
       taxi_time_label: "وقت الوصول:",
       taxi_passengers_label: "عدد الركاب:",
       taxi_send: "طلب تاكسي",
-      items: { 1: "حساء الدجاج", 2: "حساء القرع", 3: "حساء الفطر", 4: "حساء Рамен", 5: "بلاف أوزبكي", 6: "ستيك ريب آي", 7: "باستا كاربونارا", 8: "برجر كلاسيك", 9: "شاي أخضر", 10: "عصير برتقال", 11: "قهوة اسبريسو", 12: "مياه معدنية" }
+      items: { 1: "حساء الدجاج", 2: "حساء القرع", 3: "حساء الفطر", 4: "حساء Рамен", 5: "ستيك ريباي", 6: "باستا كربونات", 7: "برجر كلاسيك", 8: "بيتزا مارجريتا", 9: "عصير طازج", 10: "كابوتشينو", 11: "شاي أخضر", 12: "كوكاكولا" }
     },
     fr: {
       room_key: "Chambre:",
@@ -1436,7 +1432,7 @@
       taxi_time_label: "Heure de prise en charge:",
       taxi_passengers_label: "Passagers:",
       taxi_send: "Commander",
-      items: { 1: "Soupe au poulet", 2: "Soupe au potiron", 3: "Soupe aux champignons", 4: "Ramen", 5: "Plov Ouzbek", 6: "Steak Entrecôte", 7: "Pâtes Carbonara", 8: "Burger Classique", 9: "Thé Vert", 10: "Jus d'Orange", 11: "Café Espresso", 12: "Eau Minérale" }
+      items: { 1: "Soupe au poulet", 2: "Soupe au potiron", 3: "Soupe aux champignons", 4: "Ramen", 5: "Entrecôte Ribeye", 6: "Pâtes Carbonara", 7: "Burger Classique", 8: "Pizza Margherita", 9: "Jus frais", 10: "Café Cappuccino", 11: "Thé vert", 12: "Coca-Cola" }
     },
     es: {
       room_key: "Habitación:",
@@ -1447,7 +1443,7 @@
       service_reception: "Recepción",
       service_menu: "Menú",
       service_review: "Dejar una opinión",
-      service_problem: "Reportar un проблема",
+      service_problem: "Reportar un problema",
       hk_title: "Housekeeping",
       hk_call_maids: "Llamar a las camareras",
       hk_clean_room: "Limpiar mi habitación",
@@ -1467,8 +1463,8 @@
       review_rating_label: "Califique nuestro servicio:",
       review_comment_label: "Su comentario:",
       review_send: "Enviar opinión",
-      problem_title: "Reportar un проблема",
-      problem_comment_label: "Describa el проблема:",
+      problem_title: "Reportar un problema",
+      problem_comment_label: "Describa el problema:",
       problem_send: "Enviar reporte",
       select_stars_warn: "¡Por favor seleccione una calificación!",
       alarm_title: "Configurar despertador",
@@ -1481,7 +1477,7 @@
       taxi_time_label: "Hora de recogida:",
       taxi_passengers_label: "Pasajeros:",
       taxi_send: "Pedir taxi",
-      items: { 1: "Sopa de pollo", 2: "Sopa de calabaza", 3: "Sopa de champiñones", 4: "Ramen", 5: "Plov Uzbeko", 6: "Ojo de Bife", 7: "Pasta Carbonara", 8: "Hamburguesa Clásica", 9: "Té Verde", 10: "Jugo de Naranja", 11: "Café Expreso", 12: "Agua Mineral" }
+      items: { 1: "Sopa de pollo", 2: "Sopa de calabaza", 3: "Sopa de champiñones", 4: "Ramen", 5: "Bife de chorizo Ribeye", 6: "Pasta Carbonara", 7: "Hamburguesa clásica", 8: "Pizza Margherita", 9: "Jugo fresco", 10: "Café Capuchino", 11: "Té verde", 12: "Coca-Cola" }
     },
     de: {
       room_key: "Zimmer:",
@@ -1526,7 +1522,7 @@
       taxi_time_label: "Abholzeit:",
       taxi_passengers_label: "Fahrgäste:",
       taxi_send: "Taxi bestellen",
-      items: { 1: "Hühnersuppe", 2: "Kürbissuppe", 3: "Pilzsuppe", 4: "Ramen-Suppe", 5: "Usbekischer Plov", 6: "Ribeye Steak", 7: "Pasta Carbonara", 8: "Klassischer Burger", 9: "Grüner Tee", 10: "Orangensaft", 11: "Espresso Kaffee", 12: "Mineralwasser" }
+      items: { 1: "Hühnersuppe", 2: "Kürbissuppe", 3: "Pilzsuppe", 4: "Ramen-Suppe", 5: "Ribeye-Steak", 6: "Pasta Carbonara", 7: "Klassischer Burger", 8: "Pizza Margherita", 9: "Frischer Saft", 10: "Cappuccino-Kaffee", 11: "Grüner Tee", 12: "Coca-Cola" }
     },
     kk: {
       room_key: "Бөлме:",
@@ -1571,7 +1567,7 @@
       taxi_time_label: "Келу уақыты:",
       taxi_passengers_label: "Жолаушылар саны:",
       taxi_send: "Шақыру",
-      items: { 1: "Тауық сорпасы", 2: "Асқабақ сорпасы", 3: "Саңырауқұлақ сорпасы", 4: "Рамен", 5: "Өзбек Палауы", 6: "Рибай Стейк", 7: "Карбонара Пастасы", 8: "Классикалық Бургер", 9: "Жасыл Шай", 10: "Апельсин Шырыны", 11: "Эспрессо Кофе", 12: "Минералды Су" }
+      items: { 1: "Тауық сорпасы", 2: "Асқабақ сорпасы", 3: "Саңырауқұлақ сорпасы", 4: "Рамен", 5: "Рибай стейгі", 6: "Карбонара пастасы", 7: "Классикалық бургер", 8: "Маргарита пиццасы", 9: "Жаңа сығылған шырын", 10: "Капучино кофесі", 11: "Жасыл шай", 12: "Кока-Кола" }
     },
     tr: {
       room_key: "Oda:",
@@ -1616,7 +1612,7 @@
       taxi_time_label: "Alınış Saati:",
       taxi_passengers_label: "Yolcu Sayısı:",
       taxi_send: "Taksi İste",
-      items: { 1: "Tavuk Çorbası", 2: "Balkabağı Çorbası", 3: "Mantar Çorbası", 4: "Ramen", 5: "Özbek Pilavı", 6: "Ribeye Biftek", 7: "Makarna Carbonara", 8: "Klasik Burger", 9: "Yeşil Çay", 10: "Portakal Suyu", 11: "Espresso Kahve", 12: "Madensuyu" }
+      items: { 1: "Tavuk Çorbası", 2: "Balkabağı Çorbası", 3: "Mantar Çorbası", 4: "Ramen", 5: "Ribeye Biftek", 6: "Makarna Carbonara", 7: "Klasik Burger", 8: "Margarita Pizza", 9: "Taze Sıkılmış Meyve Suyu", 10: "Kappuçino", 11: "Yeşil Çay", 12: "Koka-Kola" }
     }
   };
 
@@ -1631,22 +1627,25 @@
   let scrollPosition = 0;
   let lastScrollY = window.scrollY;
 
+  // ОБНОВЛЕННОЕ И РАСШИРЕННОЕ МЕНЮ С ФОТОГРАФИЯМИ
   const dbMenu = [
-    /* СУПЫ */
-    { id: 1, cat: "soups", price: 48000, img: "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=300" },
-    { id: 2, cat: "soups", price: 50000, img: "https://images.unsplash.com/photo-1540420773420-3366772f4497?w=300" },
-    { id: 3, cat: "soups", price: 52000, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=300" },
-    { id: 4, cat: "soups", price: 65000, img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300" },
-    /* ГЛАВНЫЕ БЛЮДА */
-    { id: 5, cat: "mains", price: 85000, img: "https://images.unsplash.com/photo-1633964913295-ceb43826e7c9?w=300" },
-    { id: 6, cat: "mains", price: 180000, img: "https://images.unsplash.com/photo-1558030006-450675393462?w=300" },
-    { id: 7, cat: "mains", price: 75000, img: "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=300" },
-    { id: 8, cat: "mains", price: 68000, img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300" },
-    /* НАПИТКИ */
-    { id: 9, cat: "drinks", price: 25000, img: "https://images.unsplash.com/photo-1627435601361-ec25f5b1d0e5?w=300" },
-    { id: 10, cat: "drinks", price: 30000, img: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300" },
-    { id: 11, cat: "drinks", price: 28000, img: "https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=300" },
-    { id: 12, cat: "drinks", price: 15000, img: "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?w=300" }
+    // Супы
+    { id: 1, cat: "soups", price: 48000, img: "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=400&auto=format&fit=crop" },
+    { id: 2, cat: "soups", price: 50000, img: "https://images.unsplash.com/photo-1540420773420-3366772f4497?w=400&auto=format&fit=crop" },
+    { id: 3, cat: "soups", price: 52000, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&auto=format&fit=crop" },
+    { id: 4, cat: "soups", price: 65000, img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&auto=format&fit=crop" },
+    
+    // Главные блюда
+    { id: 5, cat: "mains", price: 140000, img: "https://images.unsplash.com/photo-1558030006-450675393462?w=400&auto=format&fit=crop" },
+    { id: 6, cat: "mains", price: 85000, img: "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=400&auto=format&fit=crop" },
+    { id: 7, cat: "mains", price: 75000, img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&auto=format&fit=crop" },
+    { id: 8, cat: "mains", price: 90000, img: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=400&auto=format&fit=crop" },
+
+    // Напитки
+    { id: 9, cat: "drinks", price: 30000, img: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400&auto=format&fit=crop" },
+    { id: 10, cat: "drinks", price: 35000, img: "https://images.unsplash.com/photo-1534778101976-62847782c213?w=400&auto=format&fit=crop" },
+    { id: 11, cat: "drinks", price: 20000, img: "https://images.unsplash.com/photo-1627435601361-ec25f5b1d0e5?w=400&auto=format&fit=crop" },
+    { id: 12, cat: "drinks", price: 18000, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&auto=format&fit=crop" }
   ];
 
   document.addEventListener('DOMContentLoaded', () => {
