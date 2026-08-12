@@ -391,8 +391,9 @@
       line-height: 1.2;
     }
 
+    /* ОБНОВЛЕННЫЕ КНОПКИ "НАЗАД" */
     .back-btn-wrapper {
-      padding: 0 14px 12px 14px;
+      padding: 0 14px 14px 14px;
     }
 
     .back-btn {
@@ -400,30 +401,50 @@
       border: 1px solid var(--card-border);
       color: var(--text-main);
       padding: 8px 16px;
-      border-radius: 12px;
+      border-radius: 20px;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .back-btn-icon {
+      font-size: 16px;
+      line-height: 1;
+      display: inline-block;
+      transition: transform 0.2s ease;
+      color: var(--accent-gold);
+    }
+
+    body[dir="rtl"] .back-btn-icon {
+      transform: rotate(180deg);
     }
 
     .back-btn:hover {
       border-color: var(--accent-gold);
       color: var(--accent-gold);
       transform: translateX(-3px);
+      box-shadow: 0 6px 16px rgba(212, 175, 55, 0.2);
+    }
+
+    body[dir="rtl"] .back-btn:hover {
+      transform: translateX(3px);
     }
 
     .back-btn:active {
-      transform: scale(0.95);
+      transform: scale(0.94);
     }
 
     .categories {
       display: flex;
       gap: 8px;
       overflow-x: auto;
-      padding: 0 14px 12px 14px;
+      padding: 0 14px 14px 14px;
       scrollbar-width: none;
     }
 
@@ -477,8 +498,8 @@
 
     .item-card:hover {
       transform: translateY(-4px);
-      border-color: var(--card-border);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+      border-color: var(--accent-gold);
+      box-shadow: 0 8px 20px rgba(212, 175, 55, 0.15);
     }
 
     .item-card:hover .item-img {
@@ -487,7 +508,7 @@
 
     .item-img {
       width: 100%;
-      height: 110px;
+      height: 120px;
       object-fit: cover;
       background: #1f1f24;
       transition: transform 0.3s ease;
@@ -963,7 +984,7 @@
   <div id="foodMenuSection" style="display: none;">
     <div class="back-btn-wrapper">
       <button class="back-btn" onclick="hideMenu()">
-        <span>←</span> <span data-i18n="btn_back">Назад</span>
+        <span class="back-btn-icon">‹</span> <span data-i18n="btn_back">Назад</span>
       </button>
     </div>
 
@@ -972,6 +993,7 @@
       <button class="cat-btn" onclick="filterCat('soups', this)" data-i18n="cat_soups">Супы</button>
       <button class="cat-btn" onclick="filterCat('mains', this)" data-i18n="cat_mains">Главные блюда</button>
       <button class="cat-btn" onclick="filterCat('drinks', this)" data-i18n="cat_drinks">Напитки</button>
+      <button class="cat-btn" onclick="filterCat('desserts', this)" data-i18n="cat_desserts">Десерты</button>
     </div>
 
     <div class="menu-grid" id="menuList"></div>
@@ -1136,6 +1158,7 @@
       cat_soups: "Супы",
       cat_mains: "Главные блюда",
       cat_drinks: "Напитки",
+      cat_desserts: "Десерты",
       cart_items: "позиции",
       cart_view: "Заказ",
       modal_title: "Ваш заказ",
@@ -1165,8 +1188,16 @@
       items: {
         1: "Куриный суп",
         2: "Тыквенный суп",
-        3: "Грибной суп",
-        4: "Рамен суп"
+        3: "Грибной крем-суп",
+        4: "Рамен суп",
+        5: "Сочный Рибай Стейк",
+        6: "Паста Карбонара",
+        7: "Классический Плов",
+        8: "Апельсиновый фреш",
+        9: "Классический Лимонад",
+        10: "Фреш из авокадо и зелени",
+        11: "Шоколадный Фондан",
+        12: "Классический Чизкейк"
       }
     },
     uz: {
@@ -1186,6 +1217,7 @@
       cat_soups: "Sho'rvalar",
       cat_mains: "Asosiy taomlar",
       cat_drinks: "Ichimliklar",
+      cat_desserts: "Dessertlar",
       cart_items: "ta taom",
       cart_view: "Buyurtma",
       modal_title: "Buyurtmangiz",
@@ -1215,8 +1247,16 @@
       items: {
         1: "Tovuq sho'rva",
         2: "Oshqovoq sho'rva",
-        3: "Qo'ziqorinli sho'rva",
-        4: "Ramen sho'rva"
+        3: "Qo'ziqorinli krem-sho'rva",
+        4: "Ramen sho'rva",
+        5: "Ribay Steyk",
+        6: "Karbonara Pastasi",
+        7: "An'anaviy Osh",
+        8: "Apelsin fresh",
+        9: "Klassik Limonad",
+        10: "Avokado va ko'katli fresh",
+        11: "Shokoladli Fondan",
+        12: "Klassik Chizkeyk"
       }
     },
     en: {
@@ -1236,6 +1276,7 @@
       cat_soups: "Soups",
       cat_mains: "Main Dishes",
       cat_drinks: "Drinks",
+      cat_desserts: "Desserts",
       cart_items: "items",
       cart_view: "View Cart",
       modal_title: "Your Order",
@@ -1265,8 +1306,16 @@
       items: {
         1: "Chicken Soup",
         2: "Pumpkin Soup",
-        3: "Mushroom Soup",
-        4: "Ramen Soup"
+        3: "Mushroom Cream Soup",
+        4: "Ramen Soup",
+        5: "Ribeye Steak",
+        6: "Pasta Carbonara",
+        7: "Traditional Plov",
+        8: "Fresh Orange Juice",
+        9: "Classic Lemonade",
+        10: "Green Avocado Juice",
+        11: "Chocolate Fondant",
+        12: "Classic Cheesecake"
       }
     },
     zh: {
@@ -1286,6 +1335,7 @@
       cat_soups: "汤类",
       cat_mains: "主菜",
       cat_drinks: "饮料",
+      cat_desserts: "甜点",
       cart_items: "件",
       cart_view: "查看订单",
       modal_title: "您的订单",
@@ -1312,7 +1362,12 @@
       taxi_time_label: "用车时间:",
       taxi_passengers_label: "乘客人数:",
       taxi_send: "叫车",
-      items: { 1: "鸡汤", 2: "南瓜汤", 3: "蘑菇汤", 4: "拉面" }
+      items: { 
+        1: "鸡汤", 2: "南瓜汤", 3: "奶油蘑菇汤", 4: "拉面",
+        5: "肋眼牛排", 6: "奶油培根意大利面", 7: "传统抓饭",
+        8: "鲜榨橙汁", 9: "经典柠檬水", 10: "牛油果特饮",
+        11: "熔岩巧克力蛋糕", 12: "经典芝士蛋糕"
+      }
     },
     ar: {
       room_key: "غرفة:",
@@ -1331,6 +1386,7 @@
       cat_soups: "حساء",
       cat_mains: "الأطباق الرئيسية",
       cat_drinks: "مشروبات",
+      cat_desserts: "حلويات",
       cart_items: "عناصر",
       cart_view: "عرض الطلب",
       modal_title: "طلبك",
@@ -1357,7 +1413,12 @@
       taxi_time_label: "وقت الوصول:",
       taxi_passengers_label: "عدد الركاب:",
       taxi_send: "طلب تاكسي",
-      items: { 1: "حساء الدجاج", 2: "حساء القرع", 3: "حساء الفطر", 4: "حساء Рамен" }
+      items: { 
+        1: "حساء الدجاج", 2: "حساء القرع", 3: "حساء الفطر بالكريمة", 4: "حساء Рамен",
+        5: "ستيك ريب آي", 6: "باستا كربونات", 7: " أرز بلوف تقليدي",
+        8: "عصير برتقال طازج", 9: "ليموناد كلاسيكي", 10: "عصير أفوكادو أخضر",
+        11: "فوندان الشوكولاتة", 12: "تشيز كيك كلاسيك"
+      }
     },
     fr: {
       room_key: "Chambre:",
@@ -1376,6 +1437,7 @@
       cat_soups: "Soupes",
       cat_mains: "Plats principaux",
       cat_drinks: "Boissons",
+      cat_desserts: "Desserts",
       cart_items: "articles",
       cart_view: "Voir la commande",
       modal_title: "Votre commande",
@@ -1402,7 +1464,12 @@
       taxi_time_label: "Heure de prise en charge:",
       taxi_passengers_label: "Passagers:",
       taxi_send: "Commander",
-      items: { 1: "Soupe au poulet", 2: "Soupe au potiron", 3: "Soupe aux champignons", 4: "Ramen" }
+      items: { 
+        1: "Soupe au poulet", 2: "Soupe au potiron", 3: "Velouté de champignons", 4: "Ramen",
+        5: "Steak Ribeye", 6: "Pâtes Carbonara", 7: "Plov Traditionnel",
+        8: "Jus d'orange pressé", 9: "Limonade classique", 10: "Jus d'avocat et herbes",
+        11: "Fondant au chocolat", 12: "Cheesecake classique"
+      }
     },
     es: {
       room_key: "Habitación:",
@@ -1413,7 +1480,7 @@
       service_reception: "Recepción",
       service_menu: "Menú",
       service_review: "Dejar una opinión",
-      service_problem: "Reportar un проблема",
+      service_problem: "Reportar un problema",
       hk_title: "Housekeeping",
       hk_call_maids: "Llamar a las camareras",
       hk_clean_room: "Limpiar mi habitación",
@@ -1421,6 +1488,7 @@
       cat_soups: "Sopas",
       cat_mains: "Platos principales",
       cat_drinks: "Bebidas",
+      cat_desserts: "Postres",
       cart_items: "artículos",
       cart_view: "Ver pedido",
       modal_title: "Su pedido",
@@ -1433,8 +1501,8 @@
       review_rating_label: "Califique nuestro servicio:",
       review_comment_label: "Su comentario:",
       review_send: "Enviar opinión",
-      problem_title: "Reportar un проблема",
-      problem_comment_label: "Describa el проблема:",
+      problem_title: "Reportar un problema",
+      problem_comment_label: "Describa el problema:",
       problem_send: "Enviar reporte",
       select_stars_warn: "¡Por favor seleccione una calificación!",
       alarm_title: "Configurar despertador",
@@ -1447,7 +1515,12 @@
       taxi_time_label: "Hora de recogida:",
       taxi_passengers_label: "Pasajeros:",
       taxi_send: "Pedir taxi",
-      items: { 1: "Sopa de pollo", 2: "Sopa de calabaza", 3: "Sopa de champiñones", 4: "Ramen" }
+      items: { 
+        1: "Sopa de pollo", 2: "Sopa de calabaza", 3: "Sopa crema de champiñones", 4: "Ramen",
+        5: "Bife de chorizo Ribeye", 6: "Pasta Carbonara", 7: "Plov Tradicional",
+        8: "Jugo de naranja natural", 9: "Limonada clásica", 10: "Jugo verde de aguacate",
+        11: "Volcán de chocolate", 12: "Cheesecake clásico"
+      }
     },
     de: {
       room_key: "Zimmer:",
@@ -1466,6 +1539,7 @@
       cat_soups: "Suppen",
       cat_mains: "Hauptgerichte",
       cat_drinks: "Getränke",
+      cat_desserts: "Desserts",
       cart_items: "Artikel",
       cart_view: "Bestellung anzeigen",
       modal_title: "Ihre Bestellung",
@@ -1492,7 +1566,12 @@
       taxi_time_label: "Abholzeit:",
       taxi_passengers_label: "Fahrgäste:",
       taxi_send: "Taxi bestellen",
-      items: { 1: "Hühnersuppe", 2: "Kürbissuppe", 3: "Pilzsuppe", 4: "Ramen-Suppe" }
+      items: { 
+        1: "Hühnersuppe", 2: "Kürbissuppe", 3: "Pilzcremesuppe", 4: "Ramen-Suppe",
+        5: "Ribeye-Steak", 6: "Pasta Carbonara", 7: "Traditioneller Plow",
+        8: "Frisch gepresster Orangensaft", 9: "Klassische Limonade", 10: "Grüner Avocado-Smoothie",
+        11: "Schokoladenfondant", 12: "Klassischer Käsekuchen"
+      }
     },
     kk: {
       room_key: "Бөлме:",
@@ -1511,6 +1590,7 @@
       cat_soups: "Сорпалар",
       cat_mains: "Негізгі тағамдар",
       cat_drinks: "Сусындар",
+      cat_desserts: "Десерттер",
       cart_items: "тағам",
       cart_view: "Тапсырыс",
       modal_title: "Сіздің тапсырысыңыз",
@@ -1537,7 +1617,12 @@
       taxi_time_label: "Келу уақыты:",
       taxi_passengers_label: "Жолаушылар саны:",
       taxi_send: "Шақыру",
-      items: { 1: "Тауық сорпасы", 2: "Асқабақ сорпасы", 3: "Саңырауқұлақ сорпасы", 4: "Рамен" }
+      items: { 
+        1: "Тауық сорпасы", 2: "Асқабақ сорпасы", 3: "Саңырауқұлақ крем-сорпасы", 4: "Рамен",
+        5: "Рибай Стейк", 6: "Карбонара Пастасы", 7: "Дәстүрлі Палау",
+        8: "Апельсин фреші", 9: "Классикалық Лимонад", 10: "Авокадо мен шөптер фреші",
+        11: "Шоколадты Фондан", 12: "Классикалық Чизкейк"
+      }
     },
     tr: {
       room_key: "Oda:",
@@ -1556,6 +1641,7 @@
       cat_soups: "Çorbalar",
       cat_mains: "Ana Yemekler",
       cat_drinks: "İçecekler",
+      cat_desserts: "Tatlılar",
       cart_items: "ürün",
       cart_view: "Siparişi Gör",
       modal_title: "Siparişiniz",
@@ -1582,7 +1668,12 @@
       taxi_time_label: "Alınış Saati:",
       taxi_passengers_label: "Yolcu Sayısı:",
       taxi_send: "Taksi İste",
-      items: { 1: "Tavuk Çorbası", 2: "Balkabağı Çorbası", 3: "Mantar Çorbası", 4: "Ramen" }
+      items: { 
+        1: "Tavuk Çorbası", 2: "Balkabağı Çorbası", 3: "Mantar Kremalı Çorbası", 4: "Ramen",
+        5: "Ribeye Biftek", 6: "Makarna Carbonara", 7: "Geleneksel Özbek Pilavı",
+        8: "Taze Sıkılmış Portakal Suyu", 9: "Klasik Limonata", 10: "Avokado ve Yeşillik Suyu",
+        11: "Çikolatalı Fondan", 12: "Klasik Cheesecake"
+      }
     }
   };
 
@@ -1598,10 +1689,18 @@
   let lastScrollY = window.scrollY;
 
   const dbMenu = [
-    { id: 1, cat: "soups", price: 48000, img: "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=300" },
-    { id: 2, cat: "soups", price: 50000, img: "https://images.unsplash.com/photo-1540420773420-3366772f4497?w=300" },
-    { id: 3, cat: "soups", price: 52000, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=300" },
-    { id: 4, cat: "soups", price: 65000, img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300" }
+    { id: 1, cat: "soups", price: 48000, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=600&q=80" },
+    { id: 2, cat: "soups", price: 50000, img: "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?auto=format&fit=crop&w=600&q=80" },
+    { id: 3, cat: "soups", price: 52000, img: "https://images.unsplash.com/photo-1540420773420-3366772f4497?auto=format&fit=crop&w=600&q=80" },
+    { id: 4, cat: "soups", price: 65000, img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80" },
+    { id: 5, cat: "mains", price: 140000, img: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80" },
+    { id: 6, cat: "mains", price: 78000, img: "https://images.unsplash.com/photo-1612874742237-6526221588e3?auto=format&fit=crop&w=600&q=80" },
+    { id: 7, cat: "mains", price: 85000, img: "https://images.unsplash.com/photo-1633964913295-ceb43826e7c9?auto=format&fit=crop&w=600&q=80" },
+    { id: 8, cat: "drinks", price: 30000, img: "https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=600&q=80" },
+    { id: 9, cat: "drinks", price: 28000, img: "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=600&q=80" },
+    { id: 10, cat: "drinks", price: 35000, img: "https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=600&q=80" },
+    { id: 11, cat: "desserts", price: 45000, img: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=600&q=80" },
+    { id: 12, cat: "desserts", price: 42000, img: "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=600&q=80" }
   ];
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -1954,7 +2053,7 @@
 
       list.innerHTML += `
         <div class="item-card">
-          <img src="${item.img}" class="item-img" alt="${title}">
+          <img src="${item.img}" class="item-img" alt="${title}" loading="lazy">
           <div class="item-details">
             <div class="item-title">${title}</div>
             <div class="item-bottom">
