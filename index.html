@@ -70,7 +70,7 @@
       direction: rtl;
     }
 
-    /* --- ВЕРХНЯЯ ПАНЕЛЬ (ФИКСИРОВАННАЯ ВНАЧАЛЕ ЭКРАНА) --- */
+    /* --- ВЕРХНЯЯ ПАНЕЛЬ --- */
     .top-panel {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -83,6 +83,11 @@
       align-items: center;
       padding: 10px 14px;
       border-bottom: 1px solid var(--card-border);
+      transition: transform 0.3s ease;
+    }
+
+    .top-panel.hidden {
+      transform: translateY(-100%);
     }
 
     .left-controls {
@@ -394,14 +399,14 @@
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       color: var(--text-main);
-      padding: 12px 20px;
-      border-radius: 14px;
-      font-size: 15px;
-      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .back-btn:hover {
@@ -748,28 +753,19 @@
       transform: scale(0.97);
     }
 
-    /* УВЕЛИЧЕННАЯ КНОПКА ЗАКРЫТЬ */
     .close-modal {
       width: 100%;
-      background: var(--accent-gray);
-      color: var(--text-main);
-      padding: 14px;
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      margin-top: 10px;
+      background: transparent;
+      color: var(--text-muted);
+      padding: 10px;
+      border: none;
+      margin-top: 6px;
       cursor: pointer;
-      font-weight: 700;
-      font-size: 15px;
-      text-align: center;
+      font-weight: 600;
     }
 
     .close-modal:hover {
-      border-color: var(--accent-gold);
-      color: var(--accent-gold);
-    }
-
-    .close-modal:active {
-      transform: scale(0.97);
+      color: var(--text-main);
     }
 
     .toast {
@@ -819,23 +815,23 @@
   </div>
 
   <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
-  <div class="top-panel">
+  <div class="top-panel" id="topPanel">
     <div class="left-controls">
       <!-- ДРОПДАУН ЯЗЫКОВ -->
       <div class="lang-dropdown-container" id="langContainer">
         <button class="lang-dropdown-btn" onclick="toggleLangDropdown(event)">
-          <span class="flag-icon" id="currentFlag">RU</span>
+          <span class="flag-icon" id="currentFlag">US</span>
           <span class="arrow">▼</span>
         </button>
         <div class="lang-dropdown-menu" id="langMenu">
-          <div class="lang-option selected" onclick="selectLang('ru', 'RU', 'Russian', event)">
-            <span class="flag-code">RU</span>
-            <span class="lang-name">Russian</span>
-            <span class="check-mark">✓</span>
-          </div>
-          <div class="lang-option" onclick="selectLang('en', 'US', 'English', event)">
+          <div class="lang-option selected" onclick="selectLang('en', 'US', 'English', event)">
             <span class="flag-code">US</span>
             <span class="lang-name">English</span>
+            <span class="check-mark">✓</span>
+          </div>
+          <div class="lang-option" onclick="selectLang('ru', 'RU', 'Russian', event)">
+            <span class="flag-code">RU</span>
+            <span class="lang-name">Russian</span>
             <span class="check-mark">✓</span>
           </div>
           <div class="lang-option" onclick="selectLang('uz', 'UZ', 'Uzbek', event)">
@@ -1438,7 +1434,7 @@
       review_comment_label: "Su comentario:",
       review_send: "Enviar opinión",
       problem_title: "Reportar un проблема",
-      problem_comment_label: "Describa el problema:",
+      problem_comment_label: "Describa el проблема:",
       problem_send: "Enviar reporte",
       select_stars_warn: "¡Por favor seleccione una calificación!",
       alarm_title: "Configurar despertador",
@@ -1599,6 +1595,7 @@
   let currentCategory = 'all';
   let selectedRating = 0;
   let scrollPosition = 0;
+  let lastScrollY = window.scrollY;
 
   const dbMenu = [
     { id: 1, cat: "soups", price: 48000, img: "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=300" },
@@ -1621,6 +1618,21 @@
     renderMenu();
   });
 
+  /* СКРЫТИЕ ВЕРХНЕЙ ПАНЕЛИ ПРИ СКРОЛЛЕ */
+  window.addEventListener('scroll', () => {
+    if (document.body.classList.contains('modal-open')) return;
+    const topPanel = document.getElementById('topPanel');
+    const currentScrollY = window.scrollY;
+
+    if (currentScrollY > lastScrollY && currentScrollY > 50) {
+      topPanel.classList.add('hidden');
+      document.getElementById('langContainer').classList.remove('open');
+    } else {
+      topPanel.classList.remove('hidden');
+    }
+    lastScrollY = currentScrollY;
+  });
+
   /* УПРАВЛЕНИЕ ДРОПДАУНОМ ЯЗЫКОВ */
   function toggleLangDropdown(event) {
     event.stopPropagation();
@@ -1639,6 +1651,8 @@
 
     document.getElementById('langContainer').classList.remove('open');
     setLanguage(lang);
+    renderMenu();
+    if (cart.length > 0) updateCartUI();
   }
 
   document.addEventListener('click', () => {
@@ -1678,10 +1692,6 @@
         el.innerText = i18n[fallback][key];
       }
     });
-
-    // Полное обновление данных меню и корзины при смене языка
-    renderMenu();
-    updateCartUI();
   }
 
   function showMenu() {
