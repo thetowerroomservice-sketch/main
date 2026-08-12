@@ -2,373 +2,1889 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Tower Room Service</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>The Tower Hotel — Room Service</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
+    /* ПЕРЕМЕННЫЕ ТЕМЫ */
     :root {
-      --bg-body: #0d0d0d;
-      --card-bg: #1a1a1a;
+      --bg-color: #000000;
+      --card-bg: #141416;
+      --card-border: #222226;
       --text-main: #ffffff;
-      --accent: #ff9800;
-      --border-color: #2a2a2a;
+      --text-muted: #8e8e93;
+      --accent-gold: #d4af37;
+      --accent-gray: #2c2c30;
+      --accent-danger: #ff453a;
+      --shadow-lg: 0 10px 30px rgba(0,0,0,0.6);
+      --panel-bg: rgba(0, 0, 0, 0.9);
+      --dropdown-bg: #141416;
+      --dropdown-hover: #222226;
+    }
+
+    [data-theme="light"] {
+      --bg-color: #f4f4f7;
+      --card-bg: #ffffff;
+      --card-border: #e0e0e5;
+      --text-main: #1c1c1e;
+      --text-muted: #6e6e73;
+      --accent-gold: #b8860b;
+      --accent-gray: #e5e5ea;
+      --accent-danger: #d32f2f;
+      --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+      --panel-bg: rgba(255, 255, 255, 0.9);
+      --dropdown-bg: #ffffff;
+      --dropdown-hover: #f0f0f5;
     }
 
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0; padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     body {
-      background-color: var(--bg-body);
+      background-color: var(--bg-color);
       color: var(--text-main);
-      padding: 20px 20px 100px 20px;
+      padding-bottom: 120px;
+      overflow-x: hidden;
     }
 
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
+    body[dir="rtl"] {
+      direction: rtl;
     }
 
-    .header h1 {
-      font-size: 22px;
-      color: var(--accent);
+    /* --- ВЕРХНЯЯ ПАНЕЛЬ --- */
+    .top-panel {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: var(--panel-bg);
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--card-border);
     }
 
-    .room-block {
+    .left-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ВЫПАДАЮЩЕЕ МЕНЮ ЯЗЫКОВ */
+    .lang-dropdown-container {
+      position: relative;
+    }
+
+    .lang-dropdown-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       background: var(--card-bg);
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      border: 1px solid var(--border-color);
-    }
-
-    .room-block label {
-      display: block;
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 6px 12px;
+      cursor: pointer;
+      color: var(--text-main);
       font-size: 14px;
-      margin-bottom: 8px;
-      color: #aaa;
+      font-weight: 600;
     }
 
-    .room-block input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid var(--border-color);
-      background: #111;
-      color: #fff;
+    .lang-dropdown-btn:hover {
+      border-color: var(--accent-gold);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+    }
+
+    .lang-dropdown-btn .flag-icon {
       font-size: 16px;
     }
 
-    .menu-list {
+    .lang-dropdown-btn .arrow {
+      font-size: 10px;
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+    }
+
+    .lang-dropdown-container.open .arrow {
+      transform: rotate(180deg);
+    }
+
+    .lang-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      background: var(--dropdown-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      box-shadow: var(--shadow-lg);
+      padding: 6px 0;
+      z-index: 1005;
+      min-width: 160px;
+      max-height: 320px;
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    body[dir="rtl"] .lang-dropdown-menu {
+      left: auto;
+      right: 0;
+    }
+
+    .lang-dropdown-menu::-webkit-scrollbar {
+      display: none;
+    }
+
+    .lang-dropdown-container.open .lang-dropdown-menu {
+      display: block;
+      animation: fadeInDown 0.2s ease-out;
+    }
+
+    .lang-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-main);
+      transition: background 0.2s, padding-left 0.2s;
+    }
+
+    .lang-option:hover {
+      background: var(--dropdown-hover);
+      padding-left: 18px;
+    }
+
+    .lang-option.selected {
+      background: var(--dropdown-hover);
+    }
+
+    .lang-option .flag-code {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-gold);
+      width: 22px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .lang-option .lang-name {
+      flex-grow: 1;
+    }
+
+    .lang-option .check-mark {
+      visibility: hidden;
+      color: var(--accent-gold);
+      font-weight: bold;
+    }
+
+    .lang-option.selected .check-mark {
+      visibility: visible;
+    }
+
+    .theme-toggle-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .theme-toggle-btn:hover {
+      border-color: var(--accent-gold);
+      transform: scale(1.08) rotate(10deg);
+    }
+
+    .theme-toggle-btn:active {
+      transform: scale(0.9);
+    }
+
+    .room-badge {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 6px 12px;
+      font-size: 12px;
+      display: flex;
+      gap: 6px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .room-number {
+      font-weight: 700;
+      color: var(--accent-gold);
+    }
+
+    /* --- ПОСТОЯННЫЙ БАННЕР --- */
+    .hero-banner-wrapper {
+      padding-top: 65px;
+    }
+
+    .hero-banner {
+      width: calc(100% - 28px);
+      margin: 0 auto;
+      height: 180px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* --- ШАПКА --- */
+    .header {
+      text-align: center;
+      padding-top: 14px;
+      margin-bottom: 20px;
+      animation: fadeInDown 0.5s ease-out;
+    }
+
+    .header-logo-text {
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+
+    .header h2 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    /* --- СЕТКА СЕРВИСОВ --- */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 0 14px;
+      margin-bottom: 24px;
+    }
+
+    .service-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 20px 14px;
+      text-align: center;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      animation: fadeInUp 0.4s ease-out;
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-gold);
+      box-shadow: 0 8px 20px rgba(212, 175, 55, 0.15);
+    }
+
+    .service-card:hover .service-icon-wrapper {
+      transform: scale(1.1);
+      background: rgba(212, 175, 55, 0.25);
+    }
+
+    .service-card:active {
+      transform: scale(0.95);
+    }
+
+    .service-card.large-card {
+      grid-row: span 2;
+      background: linear-gradient(145deg, var(--card-bg) 0%, rgba(212, 175, 55, 0.08) 100%);
+      border-color: rgba(212, 175, 55, 0.3);
+    }
+
+    .service-card.large-card:hover {
+      box-shadow: 0 10px 25px rgba(212, 175, 55, 0.25);
+    }
+
+    .service-card.problem-card {
+      border-color: rgba(255, 69, 58, 0.25);
+    }
+
+    .service-card.problem-card:hover {
+      border-color: var(--accent-danger);
+      box-shadow: 0 8px 20px rgba(255, 69, 58, 0.2);
+    }
+
+    .service-card.problem-card:hover .service-icon-wrapper {
+      background: rgba(255, 69, 58, 0.25);
+    }
+
+    .service-card.problem-card .service-icon-wrapper {
+      background: rgba(255, 69, 58, 0.12);
+      border-color: rgba(255, 69, 58, 0.3);
+    }
+
+    .service-card.problem-card .service-icon-wrapper svg {
+      fill: var(--accent-danger);
+    }
+
+    .service-icon-wrapper {
+      width: 52px;
+      height: 52px;
+      background: rgba(212, 175, 55, 0.12);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .service-icon-wrapper svg {
+      width: 26px;
+      height: 26px;
+      fill: var(--accent-gold);
+    }
+
+    .service-title {
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .back-btn-wrapper {
+      padding: 0 14px 12px 14px;
+    }
+
+    .back-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .back-btn:hover {
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+      transform: translateX(-3px);
+    }
+
+    .back-btn:active {
+      transform: scale(0.95);
+    }
+
+    .categories {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 0 14px 12px 14px;
+      scrollbar-width: none;
+    }
+
+    .categories::-webkit-scrollbar { display: none; }
+
+    .cat-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .cat-btn:hover {
+      border-color: var(--accent-gold);
+      color: var(--text-main);
+      transform: translateY(-2px);
+    }
+
+    .cat-btn.active {
+      background: var(--accent-gold);
+      color: #ffffff;
+      border-color: var(--accent-gold);
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    }
+
+    .cat-btn:active {
+      transform: scale(0.95);
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
       gap: 12px;
+      padding: 0 14px;
     }
 
     .item-card {
       background: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 15px;
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: fadeInUp 0.3s ease-out;
+    }
+
+    .item-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--card-border);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    }
+
+    .item-card:hover .item-img {
+      transform: scale(1.05);
+    }
+
+    .item-img {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      background: #1f1f24;
+      transition: transform 0.3s ease;
+    }
+
+    .item-details {
+      padding: 12px;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .item-title {
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .item-bottom {
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-
-    .item-info h3 {
-      font-size: 16px;
-      margin-bottom: 4px;
+      margin-top: 6px;
     }
 
     .item-price {
-      color: var(--accent);
-      font-weight: bold;
-      font-size: 14px;
+      color: var(--accent-gold);
+      font-weight: 700;
+      font-size: 13px;
     }
 
     .add-btn {
-      background: var(--accent);
+      background: var(--accent-gold);
+      color: #ffffff;
       border: none;
-      color: #000;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-weight: bold;
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .add-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4);
+    }
+
+    .add-btn:active {
+      transform: scale(0.85);
+    }
+
+    .card-qty-control {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-gray);
+      border-radius: 10px;
+      padding: 2px 6px;
+    }
+
+    .card-qty-btn {
+      background: transparent;
+      color: var(--text-main);
+      border: none;
+      width: 22px;
+      height: 26px;
+      font-weight: 800;
+      font-size: 16px;
       cursor: pointer;
     }
 
-    /* Cart Bar */
+    .card-qty-btn:hover {
+      color: var(--accent-gold);
+      transform: scale(1.2);
+    }
+
+    .card-qty-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-gold);
+    }
+
     .cart-bar {
       position: fixed;
-      bottom: 20px;
-      left: 20px;
-      right: 20px;
-      background: var(--accent);
-      color: #000;
-      padding: 15px 20px;
-      border-radius: 10px;
-      display: flex;
+      bottom: 16px; left: 14px; right: 14px;
+      background: var(--accent-gold);
+      color: #ffffff;
+      padding: 14px 18px;
+      border-radius: 18px;
+      display: none;
       justify-content: space-between;
       align-items: center;
-      font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      box-shadow: var(--shadow-lg);
+      z-index: 1001;
+      font-weight: 700;
+      animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* Modal */
+    .cart-bar:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(212, 175, 55, 0.4);
+    }
+
+    .cart-count { font-size: 12px; opacity: 0.9; }
+    .cart-total { font-size: 16px; font-weight: 800; }
+
     .modal {
       display: none;
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.85);
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-      padding: 20px;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      align-items: flex-end;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal.show {
+      display: flex;
+      opacity: 1;
     }
 
     .modal-body {
       background: var(--card-bg);
-      padding: 20px;
-      border-radius: 12px;
+      border-top: 1px solid var(--card-border);
+      border-radius: 24px 24px 0 0;
       width: 100%;
-      max-width: 400px;
-      border: 1px solid var(--border-color);
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 24px 20px;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .cart-line {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--border-color);
+    .modal.show .modal-body {
+      transform: translateY(0);
     }
 
-    .qty-controls button {
-      background: #333;
-      color: #fff;
-      border: none;
-      width: 28px;
-      height: 28px;
-      border-radius: 4px;
-      font-weight: bold;
+    .modal-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--accent-gold);
+      margin-bottom: 16px;
+      text-align: center;
     }
 
-    .submit-btn {
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    body[dir="rtl"] .form-group {
+      text-align: right;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .form-group textarea,
+    .form-group input,
+    .form-group select {
       width: 100%;
-      background: var(--accent);
-      color: #000;
+      background: var(--bg-color);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
       padding: 12px;
-      border: none;
-      border-radius: 8px;
-      font-weight: bold;
-      margin-top: 15px;
-      cursor: pointer;
-      font-size: 16px;
+      border-radius: 14px;
+      font-size: 14px;
+      outline: none;
     }
 
-    .close-btn {
+    .form-group textarea:focus,
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .rating-stars {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 16px 0 20px 0;
+      direction: ltr;
+    }
+
+    .star {
+      font-size: 32px;
+      color: var(--card-border);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .star:hover {
+      transform: scale(1.25);
+      color: var(--accent-gold);
+    }
+
+    .star.active {
+      color: var(--accent-gold);
+      transform: scale(1.1);
+    }
+
+    .action-btn {
+      width: 100%;
+      background: var(--accent-gold);
+      color: #ffffff;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 15px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(212, 175, 55, 0.35);
+    }
+
+    .action-btn.danger-btn {
+      background: var(--accent-danger);
+    }
+
+    .action-btn.danger-btn:hover {
+      box-shadow: 0 6px 18px rgba(255, 69, 58, 0.35);
+    }
+
+    .action-btn:active {
+      transform: scale(0.97);
+    }
+
+    .close-modal {
       width: 100%;
       background: transparent;
-      color: #888;
-      padding: 8px;
+      color: var(--text-muted);
+      padding: 10px;
       border: none;
-      margin-top: 8px;
+      margin-top: 6px;
       cursor: pointer;
+      font-weight: 600;
+    }
+
+    .close-modal:hover {
+      color: var(--text-main);
+    }
+
+    .toast {
+      position: fixed;
+      top: -70px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--card-bg);
+      border: 1px solid var(--accent-gold);
+      color: var(--text-main);
+      padding: 12px 20px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      z-index: 3000;
+      transition: top 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .toast.show { top: 16px; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
 
+  <!-- TOAST УВЕДОМЛЕНИЕ -->
+  <div class="toast" id="toastNotification">
+    <span style="color: var(--accent-gold);">✓</span>
+    <span id="toastMessage"></span>
+  </div>
+
+  <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
+  <div class="top-panel">
+    <div class="left-controls">
+      <!-- ДРОПДАУН ЯЗЫКОВ -->
+      <div class="lang-dropdown-container" id="langContainer">
+        <button class="lang-dropdown-btn" onclick="toggleLangDropdown(event)">
+          <span class="flag-icon" id="currentFlag">US</span>
+          <span class="arrow">▼</span>
+        </button>
+        <div class="lang-dropdown-menu" id="langMenu">
+          <div class="lang-option selected" onclick="selectLang('en', 'US', 'English', event)">
+            <span class="flag-code">US</span>
+            <span class="lang-name">English</span>
+            <span class="check-mark">✓</span>
+          </div>
+          <div class="lang-option" onclick="selectLang('ru', 'RU', 'Russian', event)">
+            <span class="flag-code">RU</span>
+            <span class="lang-name">Russian</span>
+            <span class="check-mark">✓</span>
+          </div>
+          <div class="lang-option" onclick="selectLang('uz', 'UZ', 'Uzbek', event)">
+            <span class="flag-code">UZ</span>
+            <span class="lang-name">Uzbek</span>
+            <span class="check-mark">✓</span>
+          </div>
+          <div class="lang-option" onclick="selectLang('ar', 'SA', 'Arabic', event)">
+            <span class="flag-code">SA</span>
+            <span class="lang-name">Arabic</span>
+            <span class="check-mark">✓</span>
+          </div>
+          <div class="lang-option" onclick="selectLang('zh', 'CN', 'Chinese', event)">
+            <span class="flag-code">CN</span>
+            <span class="lang-name">Chinese</span>
+            <span class="check-mark">✓</span>
+          </div>
+          <div class="lang-option" onclick="selectLang('fr', 'FR', 'French', event)">
+            <span class="flag-code">FR</span>
+            <span class="lang-name">French</span>
+            <span class="check-mark">✓</span>
+          </div>
+          <div class="lang-option" onclick="selectLang('es', 'ES', 'Spanish', event)">
+            <span class="flag-code">ES</span>
+            <span class="lang-name">Spanish</span>
+            <span class="check-mark">✓</span>
+          </div>
+          <div class="lang-option" onclick="selectLang('de', 'DE', 'Deutsch', event)">
+            <span class="flag-code">DE</span>
+            <span class="lang-name">Deutsch</span>
+            <span class="check-mark">✓</span>
+          </div>
+          <div class="lang-option" onclick="selectLang('kk', 'KZ', 'Kazakh', event)">
+            <span class="flag-code">KZ</span>
+            <span class="lang-name">Kazakh</span>
+            <span class="check-mark">✓</span>
+          </div>
+          <div class="lang-option" onclick="selectLang('tr', 'TR', 'Turkish', event)">
+            <span class="flag-code">TR</span>
+            <span class="lang-name">Turkish</span>
+            <span class="check-mark">✓</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+    </div>
+
+    <div class="room-badge">
+      <span data-i18n="room_key">Номер:</span> <span class="room-number">101</span>
+    </div>
+  </div>
+
+  <!-- ПОСТОЯННЫЙ БАННЕР -->
+  <div class="hero-banner-wrapper">
+    <div class="hero-banner">
+      <img src="image.png" alt="The Tower Hotel Room">
+    </div>
+  </div>
+
+  <!-- ШАПКА -->
   <div class="header">
-    <h1>The Tower Room Service</h1>
+    <div class="header-logo-text">THE TOWER HOTEL</div>
+    <h2>Room Service</h2>
   </div>
 
-  <div class="room-block">
-    <label for="roomInput">Номер комнаты:</label>
-    <input type="text" id="roomInput" value="101" placeholder="Введите номер комнаты">
-  </div>
-
-  <div class="menu-list">
-    <div class="item-card">
-      <div class="item-info">
-        <h3>Pumpkin Soup</h3>
-        <div class="item-price">50 000 UZS</div>
+  <!-- СЕТКА КАРТОЧЕК -->
+  <div class="services-grid" id="mainServices">
+    
+    <!-- 1. Будильник -->
+    <div class="service-card" onclick="openAlarmModal()">
+      <div class="service-icon-wrapper">
+        <svg viewBox="0 0 24 24"><path d="M12 22c4.97 0 9-4.03 9-9s-4.03-9-9-9-9 4.03-9 9 4.03 9 9 9zm0-16c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.14-7-7 3.14-7 7-7zm1 3h-2v5l4.25 2.52.77-1.28-3.52-2.09V9zM6 2L2.5 5.5l1.42 1.42L7.41 3.4 6 2zm12 0l-1.41 1.4 3.49 3.52 1.42-1.42L18 2z"/></svg>
       </div>
-      <button class="add-btn" onclick="addToCart('Pumpkin Soup', 50000)">+</button>
+      <span class="service-title" data-i18n="service_alarm">Будильник</span>
     </div>
 
-    <div class="item-card">
-      <div class="item-info">
-        <h3>Club Sandwich</h3>
-        <div class="item-price">75 000 UZS</div>
+    <!-- 2. Сервисы отеля -->
+    <div class="service-card" onclick="sendServiceRequest('service_hotel')">
+      <div class="service-icon-wrapper">
+        <svg viewBox="0 0 24 24"><path d="M19 13c-1.1 0-2 .9-2 2v4H7v-4c0-1.1-.9-2-2-2s-2 .9-2 2v4c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2zm-7-3c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm8-7H4c-1.1 0-2 .9-2 2v4h20V5c0-1.1-.9-2-2-2z"/></svg>
       </div>
-      <button class="add-btn" onclick="addToCart('Club Sandwich', 75000)">+</button>
+      <span class="service-title" data-i18n="service_hotel">Услуги отеля</span>
     </div>
 
-    <div class="item-card">
-      <div class="item-info">
-        <h3>Fresh Orange Juice</h3>
-        <div class="item-price">35 000 UZS</div>
+    <!-- 3. Вызвать такси -->
+    <div class="service-card" onclick="openTaxiModal()">
+      <div class="service-icon-wrapper">
+        <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
       </div>
-      <button class="add-btn" onclick="addToCart('Fresh Orange Juice', 35000)">+</button>
+      <span class="service-title" data-i18n="service_taxi">Вызвать такси</span>
+    </div>
+
+    <!-- 4. Ресепшн -->
+    <div class="service-card" onclick="sendServiceRequest('service_reception')">
+      <div class="service-icon-wrapper">
+        <svg viewBox="0 0 24 24"><path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57-.35-.11-.74-.03-1.02.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.21c.28-.26.36-.65.25-1C8.7 6.45 8.5 5.25 8.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1z"/></svg>
+      </div>
+      <span class="service-title" data-i18n="service_reception">Ресепшн</span>
+    </div>
+
+    <!-- 5. Сообщить о проблеме -->
+    <div class="service-card problem-card" onclick="openModal('problemModal')">
+      <div class="service-icon-wrapper">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+      </div>
+      <span class="service-title" data-i18n="service_problem">Сообщить о проблеме</span>
+    </div>
+
+    <!-- 6. Меню еды -->
+    <div class="service-card large-card" onclick="showMenu()">
+      <div class="service-icon-wrapper" style="width: 60px; height: 60px;">
+        <svg viewBox="0 0 24 24" style="width: 30px; height: 30px;"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.46 3.9 3.45 4.38l-.95 7.62h3l-.95-7.62C9.54 12.9 11 11.12 11 9zm5-7v12h2V9h3V2h-5z"/></svg>
+      </div>
+      <span class="service-title" style="font-size: 15px;" data-i18n="service_menu">Меню еды</span>
+    </div>
+
+    <!-- 7. Оставить отзыв -->
+    <div class="service-card" onclick="openReviewModal()">
+      <div class="service-icon-wrapper">
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      </div>
+      <span class="service-title" data-i18n="service_review">Оставить отзыв</span>
+    </div>
+
+  </div>
+
+  <!-- МЕНЮ ЕДЫ -->
+  <div id="foodMenuSection" style="display: none;">
+    <div class="back-btn-wrapper">
+      <button class="back-btn" onclick="hideMenu()">
+        <span>←</span> <span data-i18n="btn_back">Назад</span>
+      </button>
+    </div>
+
+    <div class="categories">
+      <button class="cat-btn active" onclick="filterCat('all', this)" data-i18n="cat_all">Все блюда</button>
+      <button class="cat-btn" onclick="filterCat('soups', this)" data-i18n="cat_soups">Супы</button>
+      <button class="cat-btn" onclick="filterCat('mains', this)" data-i18n="cat_mains">Главные блюда</button>
+      <button class="cat-btn" onclick="filterCat('drinks', this)" data-i18n="cat_drinks">Напитки</button>
+    </div>
+
+    <div class="menu-grid" id="menuList"></div>
+  </div>
+
+  <!-- КОРЗИНА ВНИЗУ -->
+  <div class="cart-bar" id="cartBar" onclick="openModal('orderModal')">
+    <div>
+      <div class="cart-count"><span id="cartCount">0</span> <span data-i18n="cart_items">позиции</span></div>
+      <div class="cart-total" id="cartTotalSum">0 UZS</div>
+    </div>
+    <div><span data-i18n="cart_view">Заказ</span> →</div>
+  </div>
+
+  <!-- МОДАЛКА: БУДИЛЬНИК -->
+  <div class="modal" id="alarmModal">
+    <div class="modal-body">
+      <div class="modal-title" data-i18n="alarm_title">Заказать будильник</div>
+      
+      <div class="form-group">
+        <label data-i18n="alarm_time_label">Время звонка:</label>
+        <input type="time" id="alarmTime" value="08:00">
+      </div>
+
+      <div class="form-group">
+        <label data-i18n="alarm_date_label">Дата:</label>
+        <input type="date" id="alarmDate">
+      </div>
+
+      <div class="form-group">
+        <label data-i18n="alarm_note_label">Примечание (необязательно):</label>
+        <textarea id="alarmNote" placeholder="..." style="min-height: 60px;"></textarea>
+      </div>
+
+      <button class="action-btn" onclick="sendAlarmRequest()" data-i18n="alarm_send">Установить будильник</button>
+      <button class="close-modal" onclick="closeModal('alarmModal')" data-i18n="modal_close">Закрыть</button>
     </div>
   </div>
 
-  <!-- Bottom Bar -->
-  <div class="cart-bar" id="cartBar" style="display: none;" onclick="openModal()">
-    <span>Заказ (<span id="cartCount">0</span>)</span>
-    <span id="cartTotal">0 UZS</span>
+  <!-- МОДАЛКА: ТАКСИ -->
+  <div class="modal" id="taxiModal">
+    <div class="modal-body">
+      <div class="modal-title" data-i18n="taxi_title">Заказать такси</div>
+      
+      <div class="form-group">
+        <label data-i18n="taxi_dest_label">Куда едем:</label>
+        <input type="text" id="taxiDest" placeholder="...">
+      </div>
+
+      <div class="form-group">
+        <label data-i18n="taxi_time_label">Время подачи:</label>
+        <input type="time" id="taxiTime">
+      </div>
+
+      <div class="form-group">
+        <label data-i18n="taxi_passengers_label">Количество пассажиров:</label>
+        <select id="taxiPassengers">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4+">4+</option>
+        </select>
+      </div>
+
+      <button class="action-btn" onclick="sendTaxiRequest()" data-i18n="taxi_send">Заказать такси</button>
+      <button class="close-modal" onclick="closeModal('taxiModal')" data-i18n="modal_close">Закрыть</button>
+    </div>
   </div>
 
-  <!-- Modal -->
+  <!-- МОДАЛКА: ОСТАВИТЬ ОТЗЫВ -->
+  <div class="modal" id="reviewModal">
+    <div class="modal-body">
+      <div class="modal-title" data-i18n="review_title">Оставить отзыв</div>
+      
+      <div style="text-align: center;">
+        <span style="font-size: 13px; color: var(--text-muted);" data-i18n="review_rating_label">Оцените качество обслуживания:</span>
+        <div class="rating-stars" id="starRating">
+          <span class="star" onclick="setRating(1)">★</span>
+          <span class="star" onclick="setRating(2)">★</span>
+          <span class="star" onclick="setRating(3)">★</span>
+          <span class="star" onclick="setRating(4)">★</span>
+          <span class="star" onclick="setRating(5)">★</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label data-i18n="review_comment_label">Ваш комментарий:</label>
+        <textarea id="reviewComment" placeholder="..."></textarea>
+      </div>
+
+      <button class="action-btn" onclick="sendReview()" data-i18n="review_send">Отправить отзыв</button>
+      <button class="close-modal" onclick="closeModal('reviewModal')" data-i18n="modal_close">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- МОДАЛКА: СООБЩИТЬ О ПРОБЛЕМЕ -->
+  <div class="modal" id="problemModal">
+    <div class="modal-body">
+      <div class="modal-title" style="color: var(--accent-danger);" data-i18n="problem_title">Сообщить о проблеме</div>
+      
+      <div class="form-group">
+        <label data-i18n="problem_comment_label">Опишите возникшую проблему:</label>
+        <textarea id="problemComment" placeholder="..."></textarea>
+      </div>
+
+      <button class="action-btn danger-btn" onclick="sendProblemReport()" data-i18n="problem_send">Отправить жалобу</button>
+      <button class="close-modal" onclick="closeModal('problemModal')" data-i18n="modal_close">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- МОДАЛКА КОРЗИНЫ -->
   <div class="modal" id="orderModal">
     <div class="modal-body">
-      <h2 style="margin-bottom: 15px; font-size: 18px;">Детали заказа</h2>
+      <div class="modal-title" data-i18n="modal_title">Ваш заказ</div>
       <div id="modalItems"></div>
-      <div style="margin-top: 15px; font-size: 18px; font-weight: bold;">
-        Итого: <span id="modalTotalSum">0 UZS</span>
+
+      <div style="margin-top: 20px; display: flex; justify-content: space-between; font-weight: 700; font-size: 16px;">
+        <span data-i18n="modal_total">Итого:</span>
+        <span id="modalTotalSum" style="color: var(--accent-gold);">0 UZS</span>
       </div>
-      <button class="submit-btn" id="sendBtn" onclick="sendOrder()">Подтвердить заказ</button>
-      <button class="close-btn" onclick="closeModal()">Закрыть</button>
+
+      <button class="action-btn" id="sendBtn" onclick="sendOrder()" data-i18n="modal_send">Отправить заказ</button>
+      <button class="close-modal" onclick="closeModal('orderModal')" data-i18n="modal_close">Закрыть</button>
     </div>
   </div>
 
 <script>
+  const i18n = {
+    ru: {
+      room_key: "Номер:",
+      btn_back: "Назад",
+      service_alarm: "Будильник",
+      service_hotel: "Услуги отеля",
+      service_taxi: "Вызвать такси",
+      service_reception: "Ресепшн",
+      service_menu: "Меню еды",
+      service_review: "Оставить отзыв",
+      service_problem: "Сообщить о проблеме",
+      cat_all: "Все блюда",
+      cat_soups: "Супы",
+      cat_mains: "Главные блюда",
+      cat_drinks: "Напитки",
+      cart_items: "позиции",
+      cart_view: "Заказ",
+      modal_title: "Ваш заказ",
+      modal_total: "Итого:",
+      modal_send: "Отправить заказ",
+      modal_close: "Закрыть",
+      order_success: "Отправлено успешно!",
+      price_uzs: "UZS",
+      review_title: "Оставить отзыв",
+      review_rating_label: "Оцените качество обслуживания:",
+      review_comment_label: "Ваш комментарий:",
+      review_send: "Отправить отзыв",
+      problem_title: "Сообщить о проблеме",
+      problem_comment_label: "Опишите проблему:",
+      problem_send: "Отправить жалобу",
+      select_stars_warn: "Пожалуйста, выберите рейтинг!",
+      alarm_title: "Заказать будильник",
+      alarm_time_label: "Время звонка:",
+      alarm_date_label: "Дата:",
+      alarm_note_label: "Примечание:",
+      alarm_send: "Установить будильник",
+      taxi_title: "Заказать такси",
+      taxi_dest_label: "Куда едем:",
+      taxi_time_label: "Время подачи:",
+      taxi_passengers_label: "Количество пассажиров:",
+      taxi_send: "Заказать такси",
+      items: {
+        1: "Куриный суп",
+        2: "Тыквенный суп",
+        3: "Грибной суп",
+        4: "Рамен суп"
+      }
+    },
+    uz: {
+      room_key: "Xona:",
+      btn_back: "Orqaga",
+      service_alarm: "Uyg'otgich",
+      service_hotel: "Xizmatlar",
+      service_taxi: "Taksi chaqirish",
+      service_reception: "Resepshn",
+      service_menu: "Taomlar",
+      service_review: "Sharh qoldirish",
+      service_problem: "Muammo haqida xabar",
+      cat_all: "Barchasi",
+      cat_soups: "Sho'rvalar",
+      cat_mains: "Asosiy taomlar",
+      cat_drinks: "Ichimliklar",
+      cart_items: "ta taom",
+      cart_view: "Buyurtma",
+      modal_title: "Buyurtmangiz",
+      modal_total: "Jami:",
+      modal_send: "Yuborish",
+      modal_close: "Yopish",
+      order_success: "Muvaffaqiyatli yuborildi!",
+      price_uzs: "SO'M",
+      review_title: "Sharh qoldirish",
+      review_rating_label: "Xizmat sifatini baholang:",
+      review_comment_label: "Izohingiz:",
+      review_send: "Yuborish",
+      problem_title: "Muammo haqida xabar",
+      problem_comment_label: "Muammoni tasvirlang:",
+      problem_send: "Shikoyatni yuborish",
+      select_stars_warn: "Iltimos, bahoni tanlang!",
+      alarm_title: "Uyg'otgichni sozlash",
+      alarm_time_label: "Uyg'otish vaqti:",
+      alarm_date_label: "Sana:",
+      alarm_note_label: "Izoh:",
+      alarm_send: "O'rnatish",
+      taxi_title: "Taksi chaqirish",
+      taxi_dest_label: "Qayerga:",
+      taxi_time_label: "Kelish vaqti:",
+      taxi_passengers_label: "Yo'lovchilar soni:",
+      taxi_send: "Taksi chaqirish",
+      items: {
+        1: "Tovuq sho'rva",
+        2: "Oshqovoq sho'rva",
+        3: "Qo'ziqorinli sho'rva",
+        4: "Ramen sho'rva"
+      }
+    },
+    en: {
+      room_key: "Room:",
+      btn_back: "Back",
+      service_alarm: "Alarm Clock",
+      service_hotel: "Hotel Services",
+      service_taxi: "Call Taxi",
+      service_reception: "Reception",
+      service_menu: "Food Menu",
+      service_review: "Leave a Review",
+      service_problem: "Report a Problem",
+      cat_all: "All Dishes",
+      cat_soups: "Soups",
+      cat_mains: "Main Dishes",
+      cat_drinks: "Drinks",
+      cart_items: "items",
+      cart_view: "View Cart",
+      modal_title: "Your Order",
+      modal_total: "Total:",
+      modal_send: "Place Order",
+      modal_close: "Close",
+      order_success: "Sent successfully!",
+      price_uzs: "UZS",
+      review_title: "Leave a Review",
+      review_rating_label: "Rate our service:",
+      review_comment_label: "Your comment:",
+      review_send: "Submit Review",
+      problem_title: "Report a Problem",
+      problem_comment_label: "Describe the issue:",
+      problem_send: "Submit Report",
+      select_stars_warn: "Please select a star rating!",
+      alarm_title: "Set Wake-Up Call",
+      alarm_time_label: "Time:",
+      alarm_date_label: "Date:",
+      alarm_note_label: "Note:",
+      alarm_send: "Set Alarm",
+      taxi_title: "Call a Taxi",
+      taxi_dest_label: "Destination:",
+      taxi_time_label: "Pickup Time:",
+      taxi_passengers_label: "Passengers:",
+      taxi_send: "Order Taxi",
+      items: {
+        1: "Chicken Soup",
+        2: "Pumpkin Soup",
+        3: "Mushroom Soup",
+        4: "Ramen Soup"
+      }
+    },
+    zh: {
+      room_key: "房间:",
+      btn_back: "返回",
+      service_alarm: "闹钟",
+      service_hotel: "酒店服务",
+      service_taxi: "叫出租车",
+      service_reception: "前台",
+      service_menu: "菜谱",
+      service_review: "留下评价",
+      service_problem: "报告问题",
+      cat_all: "全部",
+      cat_soups: "汤类",
+      cat_mains: "主菜",
+      cat_drinks: "饮料",
+      cart_items: "件",
+      cart_view: "查看订单",
+      modal_title: "您的订单",
+      modal_total: "总计:",
+      modal_send: "提交订单",
+      modal_close: "关闭",
+      order_success: "发送成功！",
+      price_uzs: "UZS",
+      review_title: "留下评价",
+      review_rating_label: "评估我们的服务:",
+      review_comment_label: "您的评论:",
+      review_send: "提交评价",
+      problem_title: "报告问题",
+      problem_comment_label: "描述问题:",
+      problem_send: "提交报告",
+      select_stars_warn: "请选择星级评分！",
+      alarm_title: "设置叫醒服务",
+      alarm_time_label: "叫醒时间:",
+      alarm_date_label: "日期:",
+      alarm_note_label: "备注:",
+      alarm_send: "设置闹钟",
+      taxi_title: "预约出租车",
+      taxi_dest_label: "目的地:",
+      taxi_time_label: "用车时间:",
+      taxi_passengers_label: "乘客人数:",
+      taxi_send: "叫车",
+      items: {
+        1: "鸡汤",
+        2: "南瓜汤",
+        3: "蘑菇汤",
+        4: "拉面"
+      }
+    },
+    ar: {
+      room_key: "غرفة:",
+      btn_back: "رجوع",
+      service_alarm: "منبه",
+      service_hotel: "خدمات الفندق",
+      service_taxi: "طلب سيارة أجرة",
+      service_reception: "الاستقبال",
+      service_menu: "قائمة الطعام",
+      service_review: "ترك تقييم",
+      service_problem: "الإبلاغ عن مشكلة",
+      cat_all: "الكل",
+      cat_soups: "حساء",
+      cat_mains: "الأطباق الرئيسية",
+      cat_drinks: "مشروبات",
+      cart_items: "عناصر",
+      cart_view: "عرض الطلب",
+      modal_title: "طلبك",
+      modal_total: "المجموع:",
+      modal_send: "إرسال الطلب",
+      modal_close: "إغلاق",
+      order_success: "تم الإرسال بنجاح!",
+      price_uzs: "UZS",
+      review_title: "ترك تقييم",
+      review_rating_label: "قيم خدمتنا:",
+      review_comment_label: "تعليقك:",
+      review_send: "إرسال التقييم",
+      problem_title: "الإبلاغ عن مشكلة",
+      problem_comment_label: "صف المشكلة:",
+      problem_send: "إرسال البلاغ",
+      select_stars_warn: "يرجى تحديد التقييم!",
+      alarm_title: "ضبط المنبه",
+      alarm_time_label: "الوقت:",
+      alarm_date_label: "التاريخ:",
+      alarm_note_label: "ملاحظة:",
+      alarm_send: "ضبط المنبه",
+      taxi_title: "طلب سيارة أجرة",
+      taxi_dest_label: "الوجهة:",
+      taxi_time_label: "وقت الوصول:",
+      taxi_passengers_label: "عدد الركاب:",
+      taxi_send: "طلب تاكسي",
+      items: { 1: "حساء الدجاج", 2: "حساء القرع", 3: "حساء الفطر", 4: "حساء Рамен" }
+    },
+    fr: {
+      room_key: "Chambre:",
+      btn_back: "Retour",
+      service_alarm: "Réveil",
+      service_hotel: "Services de l'hôtel",
+      service_taxi: "Appeler un taxi",
+      service_reception: "Réception",
+      service_menu: "Menu",
+      service_review: "Laisser un avis",
+      service_problem: "Signaler un problème",
+      cat_all: "Tous",
+      cat_soups: "Soupes",
+      cat_mains: "Plats principaux",
+      cat_drinks: "Boissons",
+      cart_items: "articles",
+      cart_view: "Voir la commande",
+      modal_title: "Votre commande",
+      modal_total: "Total:",
+      modal_send: "Passer la commande",
+      modal_close: "Fermer",
+      order_success: "Envoyé avec succès!",
+      price_uzs: "UZS",
+      review_title: "Laisser un avis",
+      review_rating_label: "Évaluez notre service:",
+      review_comment_label: "Votre commentaire:",
+      review_send: "Soumettre",
+      problem_title: "Signaler un problème",
+      problem_comment_label: "Décrivez le problème:",
+      problem_send: "Envoyer le rapport",
+      select_stars_warn: "Veuillez sélectionner une note!",
+      alarm_title: "Régler le réveil",
+      alarm_time_label: "Heure:",
+      alarm_date_label: "Date:",
+      alarm_note_label: "Note:",
+      alarm_send: "Régler",
+      taxi_title: "Commander un taxi",
+      taxi_dest_label: "Destination:",
+      taxi_time_label: "Heure de prise en charge:",
+      taxi_passengers_label: "Passagers:",
+      taxi_send: "Commander",
+      items: { 1: "Soupe au poulet", 2: "Soupe au potiron", 3: "Soupe aux champignons", 4: "Ramen" }
+    },
+    es: {
+      room_key: "Habitación:",
+      btn_back: "Volver",
+      service_alarm: "Despertador",
+      service_hotel: "Servicios del hotel",
+      service_taxi: "Pedir taxi",
+      service_reception: "Recepción",
+      service_menu: "Menú",
+      service_review: "Dejar una opinión",
+      service_problem: "Reportar un problema",
+      cat_all: "Todos",
+      cat_soups: "Sopas",
+      cat_mains: "Platos principales",
+      cat_drinks: "Bebidas",
+      cart_items: "artículos",
+      cart_view: "Ver pedido",
+      modal_title: "Su pedido",
+      modal_total: "Total:",
+      modal_send: "Realizar pedido",
+      modal_close: "Cerrar",
+      order_success: "¡Enviado con éxito!",
+      price_uzs: "UZS",
+      review_title: "Dejar una opinión",
+      review_rating_label: "Califique nuestro servicio:",
+      review_comment_label: "Su comentario:",
+      review_send: "Enviar opinión",
+      problem_title: "Reportar un problema",
+      problem_comment_label: "Describa el problema:",
+      problem_send: "Enviar reporte",
+      select_stars_warn: "¡Por favor seleccione una calificación!",
+      alarm_title: "Configurar despertador",
+      alarm_time_label: "Hora:",
+      alarm_date_label: "Fecha:",
+      alarm_note_label: "Nota:",
+      alarm_send: "Configurar",
+      taxi_title: "Pedir un taxi",
+      taxi_dest_label: "Destino:",
+      taxi_time_label: "Hora de recogida:",
+      taxi_passengers_label: "Pasajeros:",
+      taxi_send: "Pedir taxi",
+      items: { 1: "Sopa de pollo", 2: "Sopa de calabaza", 3: "Sopa de champiñones", 4: "Ramen" }
+    },
+    de: {
+      room_key: "Zimmer:",
+      btn_back: "Zurück",
+      service_alarm: "Wecker",
+      service_hotel: "Hoteldienste",
+      service_taxi: "Taxi rufen",
+      service_reception: "Rezeption",
+      service_menu: "Speisekarte",
+      service_review: "Bewertung abgeben",
+      service_problem: "Problem melden",
+      cat_all: "Alle",
+      cat_soups: "Suppen",
+      cat_mains: "Hauptgerichte",
+      cat_drinks: "Getränke",
+      cart_items: "Artikel",
+      cart_view: "Bestellung anzeigen",
+      modal_title: "Ihre Bestellung",
+      modal_total: "Gesamt:",
+      modal_send: "Bestellung abschicken",
+      modal_close: "Schließen",
+      order_success: "Erfolgreich gesendet!",
+      price_uzs: "UZS",
+      review_title: "Bewertung abgeben",
+      review_rating_label: "Bewerten Sie unseren Service:",
+      review_comment_label: "Ihr Kommentar:",
+      review_send: "Absenden",
+      problem_title: "Problem melden",
+      problem_comment_label: "Beschreiben Sie das Problem:",
+      problem_send: "Bericht senden",
+      select_stars_warn: "Bitte wählen Sie eine Bewertung!",
+      alarm_title: "Weckruf einstellen",
+      alarm_time_label: "Uhrzeit:",
+      alarm_date_label: "Datum:",
+      alarm_note_label: "Notiz:",
+      alarm_send: "Einstellen",
+      taxi_title: "Taxi bestellen",
+      taxi_dest_label: "Ziel:",
+      taxi_time_label: "Abholzeit:",
+      taxi_passengers_label: "Fahrgäste:",
+      taxi_send: "Taxi bestellen",
+      items: { 1: "Hühnersuppe", 2: "Kürbissuppe", 3: "Pilzsuppe", 4: "Ramen-Suppe" }
+    },
+    kk: {
+      room_key: "Бөлме:",
+      btn_back: "Артқа",
+      service_alarm: "Оятқыш",
+      service_hotel: "Қонақүй қызметтері",
+      service_taxi: "Такси шақыру",
+      service_reception: "Ресепшн",
+      service_menu: "Тағам мәзірі",
+      service_review: "Пікір қалдыру",
+      service_problem: "Мәселе туралы хабарлау",
+      cat_all: "Барлығы",
+      cat_soups: "Сорпалар",
+      cat_mains: "Негізгі тағамдар",
+      cat_drinks: "Сусындар",
+      cart_items: "тағам",
+      cart_view: "Тапсырыс",
+      modal_title: "Сіздің тапсырысыңыз",
+      modal_total: "Жиыны:",
+      modal_send: "Тапсырыс беру",
+      modal_close: "Жабу",
+      order_success: "Сәтті жіберілді!",
+      price_uzs: "UZS",
+      review_title: "Пікір қалдыру",
+      review_rating_label: "Қызмет сапасын бағалаңыз:",
+      review_comment_label: "Сіздің пікіріңіз:",
+      review_send: "Жіберу",
+      problem_title: "Шағым жіберу",
+      problem_comment_label: "Мәселені сипаттаңыз:",
+      problem_send: "Шағымды жіберу",
+      select_stars_warn: "Бағалауды таңдаңыз!",
+      alarm_title: "Оятқышты орнату",
+      alarm_time_label: "Уақыты:",
+      alarm_date_label: "Күні:",
+      alarm_note_label: "Ескертпе:",
+      alarm_send: "Орнату",
+      taxi_title: "Такси шақыру",
+      taxi_dest_label: "Қайда:",
+      taxi_time_label: "Келу уақыты:",
+      taxi_passengers_label: "Жолаушылар саны:",
+      taxi_send: "Шақыру",
+      items: { 1: "Тауық сорпасы", 2: "Асқабақ сорпасы", 3: "Саңырауқұлақ сорпасы", 4: "Рамен" }
+    },
+    tr: {
+      room_key: "Oda:",
+      btn_back: "Geri",
+      service_alarm: "Uyandırma Servisi",
+      service_hotel: "Otel Hizmetleri",
+      service_taxi: "Taksi Çağır",
+      service_reception: "Resepsiyon",
+      service_menu: "Yemek Menüsü",
+      service_review: "Değerlendirme Yap",
+      service_problem: "Sorun Bildir",
+      cat_all: "Tümü",
+      cat_soups: "Çorbalar",
+      cat_mains: "Ana Yemekler",
+      cat_drinks: "İçecekler",
+      cart_items: "ürün",
+      cart_view: "Siparişi Gör",
+      modal_title: "Siparişiniz",
+      modal_total: "Toplam:",
+      modal_send: "Siparişi Gönder",
+      modal_close: "Kapat",
+      order_success: "Başarıyla gönderildi!",
+      price_uzs: "UZS",
+      review_title: "Değerlendirme Yap",
+      review_rating_label: "Hizmetimizi değerlendirin:",
+      review_comment_label: "Yorumunuz:",
+      review_send: "Gönder",
+      problem_title: "Sorun Bildir",
+      problem_comment_label: "Sorunu açıklayın:",
+      problem_send: "Raporu Gönder",
+      select_stars_warn: "Lütfen bir puan seçin!",
+      alarm_title: "Alarm Kur",
+      alarm_time_label: "Saat:",
+      alarm_date_label: "Tarih:",
+      alarm_note_label: "Not:",
+      alarm_send: "Alarmı Kur",
+      taxi_title: "Taksi Çağır",
+      taxi_dest_label: "Nereye:",
+      taxi_time_label: "Alınış Saati:",
+      taxi_passengers_label: "Yolcu Sayısı:",
+      taxi_send: "Taksi İste",
+      items: { 1: "Tavuk Çorbası", 2: "Balkabağı Çorbası", 3: "Mantar Çorbası", 4: "Ramen" }
+    }
+  };
+
   const WORKER_URL = "https://solitary-frog-ffbc.thetowerroomservice.workers.dev";
   const tg = window.Telegram?.WebApp;
   if (tg) tg.ready();
 
+  let currentLang = 'en';
   let cart = [];
+  let currentCategory = 'all';
+  let selectedRating = 0;
 
-  function addToCart(name, price) {
-    const item = cart.find(i => i.name === name);
-    if (item) {
-      item.qty++;
-    } else {
-      cart.push({ name, price, qty: 1 });
-    }
-    updateUI();
+  const dbMenu = [
+    { id: 1, cat: "soups", price: 48000, img: "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=300" },
+    { id: 2, cat: "soups", price: 50000, img: "https://images.unsplash.com/photo-1540420773420-3366772f4497?w=300" },
+    { id: 3, cat: "soups", price: 52000, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=300" },
+    { id: 4, cat: "soups", price: 65000, img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300" }
+  ];
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('alarmDate').value = today;
+
+    const now = new Date();
+    now.setMinutes(now.getMinutes() + 15);
+    const hours = String(now.getHours()).padStart(2, '0');
+    const mins = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('taxiTime').value = `${hours}:${mins}`;
+
+    setLanguage(currentLang);
+    renderMenu();
+  });
+
+  /* УПРАВЛЕНИЕ ДРОПДАУНОМ ЯЗЫКОВ */
+  function toggleLangDropdown(event) {
+    event.stopPropagation();
+    document.getElementById('langContainer').classList.toggle('open');
   }
 
-  function changeQty(name, delta) {
-    const item = cart.find(i => i.name === name);
-    if (item) {
-      item.qty += delta;
-      if (item.qty <= 0) {
-        cart = cart.filter(i => i.name !== name);
+  function selectLang(lang, code, name, event) {
+    if (event) event.stopPropagation();
+    currentLang = lang;
+    document.getElementById('currentFlag').innerText = code;
+    
+    document.querySelectorAll('.lang-option').forEach(el => el.classList.remove('selected'));
+    if (event && event.currentTarget) {
+      event.currentTarget.classList.add('selected');
+    }
+
+    document.getElementById('langContainer').classList.remove('open');
+    setLanguage(lang);
+    renderMenu();
+    if (cart.length > 0) updateCartUI();
+  }
+
+  document.addEventListener('click', () => {
+    document.getElementById('langContainer').classList.remove('open');
+  });
+
+  function toggleTheme() {
+    const body = document.body;
+    const themeBtn = document.getElementById('themeBtn');
+    if (body.getAttribute('data-theme') === 'light') {
+      body.removeAttribute('data-theme');
+      themeBtn.innerText = '🌙';
+    } else {
+      body.setAttribute('data-theme', 'light');
+      themeBtn.innerText = '☀️';
+    }
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toastNotification');
+    document.getElementById('toastMessage').innerText = msg;
+    toast.classList.add('show');
+    setTimeout(() => { toast.classList.remove('show'); }, 3000);
+  }
+
+  function setLanguage(lang) {
+    const fallback = i18n[lang] ? lang : 'en';
+    if (lang === 'ar') {
+      document.body.setAttribute('dir', 'rtl');
+    } else {
+      document.body.removeAttribute('dir');
+    }
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (i18n[fallback] && i18n[fallback][key]) {
+        el.innerText = i18n[fallback][key];
       }
-    }
-    updateUI();
-    renderModalItems();
+    });
   }
 
-  function updateUI() {
-    const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
-    const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-
-    const cartBar = document.getElementById('cartBar');
-    document.getElementById('cartCount').innerText = totalCount;
-    document.getElementById('cartTotal').innerText = totalPrice.toLocaleString() + " UZS";
-
-    if (totalCount > 0) {
-      cartBar.style.display = 'flex';
-    } else {
-      cartBar.style.display = 'none';
-      closeModal();
-    }
+  function showMenu() {
+    document.getElementById('mainServices').style.display = 'none';
+    document.getElementById('foodMenuSection').style.display = 'block';
   }
 
-  function openModal() {
+  function hideMenu() {
+    document.getElementById('foodMenuSection').style.display = 'none';
+    document.getElementById('mainServices').style.display = 'grid';
+  }
+
+  function openModal(modalId) {
+    document.getElementById(modalId).classList.add('show');
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('show');
+  }
+
+  /* БУДИЛЬНИК */
+  function openAlarmModal() {
+    openModal('alarmModal');
+  }
+
+  async function sendAlarmRequest() {
+    const time = document.getElementById('alarmTime').value;
+    const date = document.getElementById('alarmDate').value;
+    const note = document.getElementById('alarmNote').value.trim() || 'Без примечания';
+    
+    if (!time || !date) {
+      showToast("Укажите время и дату.");
+      return;
+    }
+
+    const roomNumber = document.querySelector('.room-number').innerText;
+    const username = tg?.initDataUnsafe?.user?.username 
+      ? `@${tg.initDataUnsafe.user.username}` 
+      : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
+
+    const reqText = `⏰ <b>ЗАПРОС БУДИЛЬНИКА</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n📅 <b>Дата:</b> ${date}\n🕒 <b>Время:</b> ${time}\n📝 <b>Заметка:</b> ${note}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+
+    await postData(reqText, username, 'alarmModal');
+  }
+
+  /* ТАКСИ */
+  function openTaxiModal() {
+    openModal('taxiModal');
+  }
+
+  async function sendTaxiRequest() {
+    const dest = document.getElementById('taxiDest').value.trim() || 'Не указано';
+    const time = document.getElementById('taxiTime').value || 'Ближайшее';
+    const passengers = document.getElementById('taxiPassengers').value;
+
+    const roomNumber = document.querySelector('.room-number').innerText;
+    const username = tg?.initDataUnsafe?.user?.username 
+      ? `@${tg.initDataUnsafe.user.username}` 
+      : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
+
+    const reqText = `🚖 <b>ЗАКАЗ ТАКСИ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n📍 <b>Направление:</b> ${dest}\n🕒 <b>Время подачи:</b> ${time}\n👥 <b>Пассажиров:</b> ${passengers}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+
+    await postData(reqText, username, 'taxiModal');
+  }
+
+  /* РЕЙТИНГ И ОТЗЫВЫ */
+  function openReviewModal() {
+    selectedRating = 0;
+    updateStarsUI();
+    document.getElementById('reviewComment').value = '';
+    openModal('reviewModal');
+  }
+
+  function setRating(val) {
+    selectedRating = val;
+    updateStarsUI();
+  }
+
+  function updateStarsUI() {
+    const stars = document.querySelectorAll('#starRating .star');
+    stars.forEach((star, idx) => {
+      if (idx < selectedRating) star.classList.add('active');
+      else star.classList.remove('active');
+    });
+  }
+
+  async function sendReview() {
+    const langObj = i18n[currentLang] || i18n['en'];
+    if (selectedRating === 0) {
+      showToast(langObj['select_stars_warn']);
+      return;
+    }
+
+    const comment = document.getElementById('reviewComment').value.trim() || 'Без комментария';
+    const roomNumber = document.querySelector('.room-number').innerText;
+    const username = tg?.initDataUnsafe?.user?.username 
+      ? `@${tg.initDataUnsafe.user.username}` 
+      : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
+
+    const starsStr = "★".repeat(selectedRating) + "☆".repeat(5 - selectedRating);
+    const reqText = `⭐ <b>НОВЫЙ ОТЗЫВ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n🌟 <b>Оценка:</b> ${starsStr} (${selectedRating}/5)\n💬 <b>Отзыв:</b> ${comment}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+
+    await postData(reqText, username, 'reviewModal');
+  }
+
+  /* ЖАЛОБЫ */
+  async function sendProblemReport() {
+    const comment = document.getElementById('problemComment').value.trim();
+    if (!comment) {
+      showToast("Заполните описание проблемы.");
+      return;
+    }
+
+    const roomNumber = document.querySelector('.room-number').innerText;
+    const username = tg?.initDataUnsafe?.user?.username 
+      ? `@${tg.initDataUnsafe.user.username}` 
+      : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
+
+    const reqText = `⚠️ <b>ЖАЛОБА / ПРОБЛЕМА</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n🚨 <b>Описание:</b> ${comment}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+
+    await postData(reqText, username, 'problemModal', () => {
+      document.getElementById('problemComment').value = '';
+    });
+  }
+
+  /* КОРЗИНА И ЗАКАЗ ЕДЫ */
+  async function sendOrder() {
     if (cart.length === 0) return;
-    renderModalItems();
-    document.getElementById('orderModal').style.display = 'flex';
+
+    const langObj = i18n[currentLang] || i18n['en'];
+    const roomNumber = document.querySelector('.room-number').innerText;
+    const username = tg?.initDataUnsafe?.user?.username 
+      ? `@${tg.initDataUnsafe.user.username}` 
+      : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
+
+    let orderList = cart.map(item => {
+      const title = (langObj.items && langObj.items[item.id]) ? langObj.items[item.id] : "Dish";
+      return `• ${title} x${item.qty} — ${(item.price * item.qty).toLocaleString('ru-RU')} ${langObj['price_uzs']}`;
+    }).join('\n');
+
+    const totalSum = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+    const reqText = `🍽️ <b>ЗАКАЗ ЕДЫ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n\n<b>Состав заказа:</b>\n${orderList}\n\n💰 <b>Итого:</b> ${totalSum.toLocaleString('ru-RU')} ${langObj['price_uzs']}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+
+    await postData(reqText, username, 'orderModal', () => {
+      cart = [];
+      updateCartUI();
+      renderMenu();
+    });
   }
 
-  function closeModal() {
-    document.getElementById('orderModal').style.display = 'none';
-  }
-
-  function renderModalItems() {
-    const container = document.getElementById('modalItems');
-    container.innerHTML = '';
-    let total = 0;
+  function renderOrderModal() {
+    const langObj = i18n[currentLang] || i18n['en'];
+    const itemsContainer = document.getElementById('modalItems');
+    itemsContainer.innerHTML = '';
+    const totalSum = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
 
     cart.forEach(item => {
-      const sum = item.price * item.qty;
-      total += sum;
-      container.innerHTML += `
-        <div class="cart-line">
+      const title = (langObj.items && langObj.items[item.id]) ? langObj.items[item.id] : "Dish";
+      itemsContainer.innerHTML += `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px;">
           <div>
-            <div><b>${item.name}</b></div>
-            <div style="font-size: 12px; color: #aaa;">${item.price.toLocaleString()} UZS</div>
+            <div style="font-weight: 600; font-size: 14px;">${title}</div>
+            <div style="font-size: 12px; color: var(--text-muted);">${item.price.toLocaleString('ru-RU')} ${langObj['price_uzs']}</div>
           </div>
-          <div class="qty-controls">
-            <button onclick="changeQty('${item.name}', -1)">-</button>
-            <span style="margin: 0 8px;">${item.qty}</span>
-            <button onclick="changeQty('${item.name}', 1)">+</button>
+          <div class="card-qty-control">
+            <button class="card-qty-btn" onclick="changeQty(${item.id}, -1); renderOrderModal();">-</button>
+            <span class="card-qty-val">${item.qty}</span>
+            <button class="card-qty-btn" onclick="changeQty(${item.id}, 1); renderOrderModal();">+</button>
           </div>
         </div>
       `;
     });
 
-    document.getElementById('modalTotalSum').innerText = total.toLocaleString() + " UZS";
+    document.getElementById('modalTotalSum').innerText = `${totalSum.toLocaleString('ru-RU')} ${langObj['price_uzs']}`;
   }
 
-  async function sendOrder() {
-    const roomNumber = document.getElementById('roomInput').value.trim() || 'Не указан';
-    const sendBtn = document.getElementById('sendBtn');
-    
-    if (cart.length === 0) return;
-
-    sendBtn.disabled = true;
-    sendBtn.innerText = "Отправка...";
-
-    let itemsText = "";
-    let total = 0;
-
-    cart.forEach((item, index) => {
-      const sum = item.price * item.qty;
-      total += sum;
-      itemsText += `${index + 1}. ${item.name} x${item.qty} — ${sum.toLocaleString()} UZS\n`;
-    });
-
-    const orderText = `🍽 <b>НОВЫЙ ЗАКАЗ ИЗ МЕНЮ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n\n📋 <b>Состав заказа:</b>\n${itemsText}\n💰 <b>Итого:</b> ${total.toLocaleString()} UZS\n⏳ <b>Статус:</b> Ожидает доставки`;
-
-    const username = tg?.initDataUnsafe?.user?.username 
-      ? `@${tg.initDataUnsafe.user.username}` 
-      : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
-
+  /* ОБЩАЯ ФУНКЦИЯ ОТПРАВКИ НА WORKER */
+  async function postData(reqText, username, modalId = null, onSuccessCallback = null) {
+    const langObj = i18n[currentLang] || i18n['en'];
     try {
       const response = await fetch(WORKER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: orderText,
-          username: username
-        })
+        body: JSON.stringify({ text: reqText, username: username })
       });
 
       const result = await response.json();
-
       if (result.success || result.ok) {
-        alert("Заказ успешно отправлен!");
-        cart = [];
-        updateUI();
-        closeModal();
+        showToast(langObj['order_success']);
+        if (modalId) closeModal(modalId);
+        if (onSuccessCallback) onSuccessCallback();
       } else {
-        alert("Ошибка отправки: " + (result.error || "Попробуйте позже"));
+        showToast("Ошибка отправки.");
       }
     } catch (err) {
-      console.error(err);
-      alert("Ошибка подключения к серверу.");
-    } finally {
-      sendBtn.disabled = false;
-      sendBtn.innerText = "Подтвердить заказ";
+      showToast("Ошибка сети.");
     }
+  }
+
+  /* МЕНЮ И КОРЗИНА */
+  function filterCat(cat, btn) {
+    currentCategory = cat;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderMenu();
+  }
+
+  function renderMenu() {
+    const langObj = i18n[currentLang] || i18n['en'];
+    const list = document.getElementById('menuList');
+    list.innerHTML = '';
+    const itemsToDisplay = currentCategory === 'all' ? dbMenu : dbMenu.filter(item => item.cat === currentCategory);
+
+    itemsToDisplay.forEach(item => {
+      const cartItem = cart.find(c => c.id === item.id);
+      const qty = cartItem ? cartItem.qty : 0;
+      const title = (langObj.items && langObj.items[item.id]) ? langObj.items[item.id] : "Dish";
+
+      let actionBlock = qty > 0 ? `
+        <div class="card-qty-control">
+          <button class="card-qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
+          <span class="card-qty-val">${qty}</span>
+          <button class="card-qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+        </div>` : `<button class="add-btn" onclick="addToCart(${item.id})">+</button>`;
+
+      list.innerHTML += `
+        <div class="item-card">
+          <img src="${item.img}" class="item-img" alt="${title}">
+          <div class="item-details">
+            <div class="item-title">${title}</div>
+            <div class="item-bottom">
+              <div class="item-price">${item.price.toLocaleString('ru-RU')} ${langObj['price_uzs']}</div>
+              ${actionBlock}
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  function addToCart(id) {
+    const item = dbMenu.find(i => i.id === id);
+    if (!item) return;
+    const found = cart.find(i => i.id === id);
+    if (found) found.qty++;
+    else cart.push({ ...item, qty: 1 });
+    updateCartUI();
+    renderMenu();
+  }
+
+  function changeQty(id, delta) {
+    const item = cart.find(i => i.id === id);
+    if (item) {
+      item.qty += delta;
+      if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+    }
+    updateCartUI();
+    renderMenu();
+  }
+
+  function updateCartUI() {
+    const langObj = i18n[currentLang] || i18n['en'];
+    const bar = document.getElementById('cartBar');
+    const totalCount = cart.reduce((sum, i) => sum + i.qty, 0);
+    const totalSum = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+    if (totalCount > 0) {
+      document.getElementById('cartCount').innerText = totalCount;
+      document.getElementById('cartTotalSum').innerText = totalSum.toLocaleString('ru-RU') + " " + langObj['price_uzs'];
+      bar.style.display = 'flex';
+      renderOrderModal();
+    } else {
+      bar.style.display = 'none';
+      closeModal('orderModal');
+    }
+  }
+
+  async function sendServiceRequest(i18nKey) {
+    const langObj = i18n[currentLang] || i18n['en'];
+    const serviceName = langObj[i18nKey] || i18nKey;
+    const roomNumber = document.querySelector('.room-number').innerText;
+    const username = tg?.initDataUnsafe?.user?.username 
+      ? `@${tg.initDataUnsafe.user.username}` 
+      : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
+      
+    const reqText = `🧺 <b>ЗАПРОС УСЛУГИ: ${serviceName.toUpperCase()}</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+
+    await postData(reqText, username);
   }
 </script>
 </body>
