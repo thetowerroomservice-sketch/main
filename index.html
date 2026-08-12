@@ -876,7 +876,7 @@
     </div>
 
     <div class="room-badge">
-      <span data-i18n="room_key">Номер:</span> <span class="room-number" id="roomNumberVal">101</span>
+      <span data-i18n="room_key">Номер:</span> <span class="room-number">101</span>
     </div>
   </div>
 
@@ -904,12 +904,12 @@
       <span class="service-title" data-i18n="service_alarm">Будильник</span>
     </div>
 
-    <!-- 2. Сервисы отеля -->
-    <div class="service-card" onclick="sendServiceRequest('service_hotel')">
+    <!-- 2. Housekeeping (Обслуга) -->
+    <div class="service-card" onclick="openModal('housekeepingModal')">
       <div class="service-icon-wrapper">
         <svg viewBox="0 0 24 24"><path d="M19 13c-1.1 0-2 .9-2 2v4H7v-4c0-1.1-.9-2-2-2s-2 .9-2 2v4c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2zm-7-3c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm8-7H4c-1.1 0-2 .9-2 2v4h20V5c0-1.1-.9-2-2-2z"/></svg>
       </div>
-      <span class="service-title" data-i18n="service_hotel">Услуги отеля</span>
+      <span class="service-title" data-i18n="service_hotel">Housekeeping</span>
     </div>
 
     <!-- 3. Вызвать такси -->
@@ -921,7 +921,7 @@
     </div>
 
     <!-- 4. Ресепшн -->
-    <div class="service-card" onclick="sendServiceRequest('service_reception')">
+    <div class="service-card" onclick="openModal('receptionModal')">
       <div class="service-icon-wrapper">
         <svg viewBox="0 0 24 24"><path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57-.35-.11-.74-.03-1.02.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.21c.28-.26.36-.65.25-1C8.7 6.45 8.5 5.25 8.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1z"/></svg>
       </div>
@@ -979,6 +979,25 @@
       <div class="cart-total" id="cartTotalSum">0 UZS</div>
     </div>
     <div><span data-i18n="cart_view">Заказ</span> →</div>
+  </div>
+
+  <!-- МОДАЛКА: HOUSEKEEPING -->
+  <div class="modal" id="housekeepingModal">
+    <div class="modal-body">
+      <div class="modal-title" data-i18n="hk_title">Housekeeping</div>
+      <button class="action-btn" onclick="sendHousekeepingAction('call_maids')" style="margin-bottom: 12px;" data-i18n="hk_call_maids">Позвать горничных</button>
+      <button class="action-btn" onclick="sendHousekeepingAction('clean_room')" data-i18n="hk_clean_room">Убраться в моем номере</button>
+      <button class="close-modal" onclick="closeModal('housekeepingModal')" data-i18n="modal_close">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- МОДАЛКА: РЕСЕПШН -->
+  <div class="modal" id="receptionModal">
+    <div class="modal-body">
+      <div class="modal-title" data-i18n="service_reception">Ресепшн</div>
+      <button class="action-btn" style="padding: 18px 10px; font-size: 17px;" onclick="sendReceptionCall()">Номер ресепшена - 1 1 1 1</button>
+      <button class="close-modal" onclick="closeModal('receptionModal')" data-i18n="modal_close">Закрыть</button>
+    </div>
   </div>
 
   <!-- МОДАЛКА: БУДИЛЬНИК -->
@@ -1099,12 +1118,15 @@
       room_key: "Номер:",
       btn_back: "Назад",
       service_alarm: "Будильник",
-      service_hotel: "Услуги отеля",
+      service_hotel: "Housekeeping",
       service_taxi: "Вызвать такси",
       service_reception: "Ресепшн",
       service_menu: "Меню еды",
       service_review: "Оставить отзыв",
       service_problem: "Сообщить о проблеме",
+      hk_title: "Housekeeping",
+      hk_call_maids: "Позвать горничных",
+      hk_clean_room: "Убраться в моем номере",
       cat_all: "Все блюда",
       cat_soups: "Супы",
       cat_mains: "Главные блюда",
@@ -1139,27 +1161,22 @@
         1: "Куриный суп",
         2: "Тыквенный суп",
         3: "Грибной суп",
-        4: "Рамен суп",
-        5: "Стейк Рибай",
-        6: "Паста Карбонара",
-        7: "Классический Плов",
-        8: "Курица Гриль",
-        9: "Кока-Кола 0.5л",
-        10: "Апельсиновый Фреш",
-        11: "Зеленый Чай",
-        12: "Капучино"
+        4: "Рамен суп"
       }
     },
     uz: {
       room_key: "Xona:",
       btn_back: "Orqaga",
       service_alarm: "Uyg'otgich",
-      service_hotel: "Xizmatlar",
+      service_hotel: "Housekeeping",
       service_taxi: "Taksi chaqirish",
       service_reception: "Resepshn",
       service_menu: "Taomlar",
       service_review: "Sharh qoldirish",
       service_problem: "Muammo haqida xabar",
+      hk_title: "Housekeeping",
+      hk_call_maids: "Xizmatchilarni chaqirish",
+      hk_clean_room: "Xonani tozalash",
       cat_all: "Barchasi",
       cat_soups: "Sho'rvalar",
       cat_mains: "Asosiy taomlar",
@@ -1194,15 +1211,7 @@
         1: "Tovuq sho'rva",
         2: "Oshqovoq sho'rva",
         3: "Qo'ziqorinli sho'rva",
-        4: "Ramen sho'rva",
-        5: "Ribay Steyki",
-        6: "Karbonara Pastasi",
-        7: "An'anaviy Palov",
-        8: "Gril Tovuq",
-        9: "Koka-Kola 0.5l",
-        10: "Apelsin Sharbati",
-        11: "Kók Choy",
-        12: "Kapuchino"
+        4: "Ramen sho'rva"
       }
     },
     en: {
@@ -1215,6 +1224,9 @@
       service_menu: "Food Menu",
       service_review: "Leave a Review",
       service_problem: "Report a Problem",
+      hk_title: "Housekeeping",
+      hk_call_maids: "Call Housekeeper",
+      hk_clean_room: "Clean My Room",
       cat_all: "All Dishes",
       cat_soups: "Soups",
       cat_mains: "Main Dishes",
@@ -1249,27 +1261,22 @@
         1: "Chicken Soup",
         2: "Pumpkin Soup",
         3: "Mushroom Soup",
-        4: "Ramen Soup",
-        5: "Ribeye Steak",
-        6: "Pasta Carbonara",
-        7: "Traditional Plov",
-        8: "Grilled Chicken",
-        9: "Coca-Cola 0.5L",
-        10: "Fresh Orange Juice",
-        11: "Green Tea",
-        12: "Cappuccino"
+        4: "Ramen Soup"
       }
     },
     zh: {
       room_key: "房间:",
       btn_back: "返回",
       service_alarm: "闹钟",
-      service_hotel: "酒店服务",
+      service_hotel: "客房服务",
       service_taxi: "叫出租车",
       service_reception: "前台",
       service_menu: "菜谱",
       service_review: "留下评价",
       service_problem: "报告问题",
+      hk_title: "客房服务",
+      hk_call_maids: "呼叫服务员",
+      hk_clean_room: "打扫房间",
       cat_all: "全部",
       cat_soups: "汤类",
       cat_mains: "主菜",
@@ -1300,31 +1307,21 @@
       taxi_time_label: "用车时间:",
       taxi_passengers_label: "乘客人数:",
       taxi_send: "叫车",
-      items: {
-        1: "鸡汤",
-        2: "南瓜汤",
-        3: "蘑菇汤",
-        4: "拉面",
-        5: "肋眼牛排",
-        6: "奶油培根面",
-        7: "传统抓饭",
-        8: "烤鸡",
-        9: "可口可乐 0.5L",
-        10: "鲜榨橙汁",
-        11: "绿茶",
-        12: "卡布奇诺"
-      }
+      items: { 1: "鸡汤", 2: "南瓜汤", 3: "蘑菇汤", 4: "拉面" }
     },
     ar: {
       room_key: "غرفة:",
       btn_back: "رجوع",
       service_alarm: "منبه",
-      service_hotel: "خدمات الفندق",
+      service_hotel: "تنظيف الغرف",
       service_taxi: "طلب سيارة أجرة",
       service_reception: "الاستقبال",
       service_menu: "قائمة الطعام",
       service_review: "ترك تقييم",
       service_problem: "الإبلاغ عن مشكلة",
+      hk_title: "تنظيف الغرف",
+      hk_call_maids: "استدعاء العاملة",
+      hk_clean_room: "تنظيف غرفتي",
       cat_all: "الكل",
       cat_soups: "حساء",
       cat_mains: "الأطباق الرئيسية",
@@ -1355,31 +1352,21 @@
       taxi_time_label: "وقت الوصول:",
       taxi_passengers_label: "عدد الركاب:",
       taxi_send: "طلب تاكسي",
-      items: {
-        1: "حساء الدجاج",
-        2: "حساء القرع",
-        3: "حساء الفطر",
-        4: "حساء Рамен",
-        5: "ستيك ريب آي",
-        6: "باستا كاربونارا",
-        7: "بلاف تقليدي",
-        8: "دجاج مشوي",
-        9: "كوكاكولا 0.5 لتر",
-        10: "عصير برتقال طازج",
-        11: "شاي أخضر",
-        12: "كابوتشينو"
-      }
+      items: { 1: "حساء الدجاج", 2: "حساء القرع", 3: "حساء الفطر", 4: "حساء Рамен" }
     },
     fr: {
       room_key: "Chambre:",
       btn_back: "Retour",
       service_alarm: "Réveil",
-      service_hotel: "Services de l'hôtel",
+      service_hotel: "Housekeeping",
       service_taxi: "Appeler un taxi",
       service_reception: "Réception",
       service_menu: "Menu",
       service_review: "Laisser un avis",
       service_problem: "Signaler un problème",
+      hk_title: "Housekeeping",
+      hk_call_maids: "Appeler la femme de chambre",
+      hk_clean_room: "Nettoyer ma chambre",
       cat_all: "Tous",
       cat_soups: "Soupes",
       cat_mains: "Plats principaux",
@@ -1410,31 +1397,21 @@
       taxi_time_label: "Heure de prise en charge:",
       taxi_passengers_label: "Passagers:",
       taxi_send: "Commander",
-      items: {
-        1: "Soupe au poulet",
-        2: "Soupe au potiron",
-        3: "Soupe aux champignons",
-        4: "Ramen",
-        5: "Entrecôte Ribeye",
-        6: "Pâtes Carbonara",
-        7: "Plov Traditionnel",
-        8: "Poulet Grillé",
-        9: "Coca-Cola 0.5L",
-        10: "Jus d'Orange Frais",
-        11: "Thé Vert",
-        12: "Cappuccino"
-      }
+      items: { 1: "Soupe au poulet", 2: "Soupe au potiron", 3: "Soupe aux champignons", 4: "Ramen" }
     },
     es: {
       room_key: "Habitación:",
       btn_back: "Volver",
       service_alarm: "Despertador",
-      service_hotel: "Servicios del hotel",
+      service_hotel: "Housekeeping",
       service_taxi: "Pedir taxi",
       service_reception: "Recepción",
       service_menu: "Menú",
       service_review: "Dejar una opinión",
-      service_problem: "Reportar un problema",
+      service_problem: "Reportar un проблема",
+      hk_title: "Housekeeping",
+      hk_call_maids: "Llamar a las camareras",
+      hk_clean_room: "Limpiar mi habitación",
       cat_all: "Todos",
       cat_soups: "Sopas",
       cat_mains: "Platos principales",
@@ -1451,7 +1428,7 @@
       review_rating_label: "Califique nuestro servicio:",
       review_comment_label: "Su comentario:",
       review_send: "Enviar opinión",
-      problem_title: "Reportar un problema",
+      problem_title: "Reportar un проблема",
       problem_comment_label: "Describa el problema:",
       problem_send: "Enviar reporte",
       select_stars_warn: "¡Por favor seleccione una calificación!",
@@ -1465,31 +1442,21 @@
       taxi_time_label: "Hora de recogida:",
       taxi_passengers_label: "Pasajeros:",
       taxi_send: "Pedir taxi",
-      items: {
-        1: "Sopa de pollo",
-        2: "Sopa de calabaza",
-        3: "Sopa de champiñones",
-        4: "Ramen",
-        5: "Bife de chorizo Ribeye",
-        6: "Pasta Carbonara",
-        7: "Plov Tradicional",
-        8: "Pollo al Horno",
-        9: "Coca-Cola 0.5L",
-        10: "Jugo de Naranja Natural",
-        11: "Té Verde",
-        12: "Capuchino"
-      }
+      items: { 1: "Sopa de pollo", 2: "Sopa de calabaza", 3: "Sopa de champiñones", 4: "Ramen" }
     },
     de: {
       room_key: "Zimmer:",
       btn_back: "Zurück",
       service_alarm: "Wecker",
-      service_hotel: "Hoteldienste",
+      service_hotel: "Housekeeping",
       service_taxi: "Taxi rufen",
       service_reception: "Rezeption",
       service_menu: "Speisekarte",
       service_review: "Bewertung abgeben",
       service_problem: "Problem melden",
+      hk_title: "Housekeeping",
+      hk_call_maids: "Zimmermädchen rufen",
+      hk_clean_room: "Zimmer reinigen",
       cat_all: "Alle",
       cat_soups: "Suppen",
       cat_mains: "Hauptgerichte",
@@ -1520,31 +1487,21 @@
       taxi_time_label: "Abholzeit:",
       taxi_passengers_label: "Fahrgäste:",
       taxi_send: "Taxi bestellen",
-      items: {
-        1: "Hühnersuppe",
-        2: "Kürbissuppe",
-        3: "Pilzsuppe",
-        4: "Ramen-Suppe",
-        5: "Ribeye Steak",
-        6: "Pasta Carbonara",
-        7: "Traditioneller Plow",
-        8: "Gegrilltes Hähnchen",
-        9: "Coca-Cola 0.5L",
-        10: "Frischer Orangensaft",
-        11: "Grüner Tee",
-        12: "Cappuccino"
-      }
+      items: { 1: "Hühnersuppe", 2: "Kürbissuppe", 3: "Pilzsuppe", 4: "Ramen-Suppe" }
     },
     kk: {
       room_key: "Бөлме:",
       btn_back: "Артқа",
       service_alarm: "Оятқыш",
-      service_hotel: "Қонақүй қызметтері",
+      service_hotel: "Housekeeping",
       service_taxi: "Такси шақыру",
       service_reception: "Ресепшн",
       service_menu: "Тағам мәзірі",
       service_review: "Пікір қалдыру",
       service_problem: "Мәселе туралы хабарлау",
+      hk_title: "Housekeeping",
+      hk_call_maids: "Тазалықшыны шақыру",
+      hk_clean_room: "Бөлмені тазалау",
       cat_all: "Барлығы",
       cat_soups: "Сорпалар",
       cat_mains: "Негізгі тағамдар",
@@ -1575,31 +1532,21 @@
       taxi_time_label: "Келу уақыты:",
       taxi_passengers_label: "Жолаушылар саны:",
       taxi_send: "Шақыру",
-      items: {
-        1: "Тауық сорпасы",
-        2: "Асқабақ сорпасы",
-        3: "Саңырауқұлақ сорпасы",
-        4: "Рамен",
-        5: "Рибай Стейкі",
-        6: "Карбонара Пастасы",
-        7: "Дәстүрлі Палау",
-        8: "Гриль Тауық",
-        9: "Кока-Кола 0.5л",
-        10: "Апельсин Фреші",
-        11: "Жасыл Шай",
-        12: "Капучино"
-      }
+      items: { 1: "Тауық сорпасы", 2: "Асқабақ сорпасы", 3: "Саңырауқұлақ сорпасы", 4: "Рамен" }
     },
     tr: {
       room_key: "Oda:",
       btn_back: "Geri",
       service_alarm: "Uyandırma Servisi",
-      service_hotel: "Otel Hizmetleri",
+      service_hotel: "Housekeeping",
       service_taxi: "Taksi Çağır",
       service_reception: "Resepsiyon",
       service_menu: "Yemek Menüsü",
       service_review: "Değerlendirme Yap",
       service_problem: "Sorun Bildir",
+      hk_title: "Housekeeping",
+      hk_call_maids: "Kat Hizmetlisini Çağır",
+      hk_clean_room: "Odamı Temizleyin",
       cat_all: "Tümü",
       cat_soups: "Çorbalar",
       cat_mains: "Ana Yemekler",
@@ -1630,20 +1577,7 @@
       taxi_time_label: "Alınış Saati:",
       taxi_passengers_label: "Yolcu Sayısı:",
       taxi_send: "Taksi İste",
-      items: {
-        1: "Tavuk Çorbası",
-        2: "Balkabağı Çorbası",
-        3: "Mantar Çorbası",
-        4: "Ramen",
-        5: "Ribeye Antrikot",
-        6: "Makarna Carbonara",
-        7: "Geleneksel Özbek Pilavı",
-        8: "Izgara Tavuk",
-        9: "Kola 0.5L",
-        10: "Taze Sıkılmış Portakal Suyu",
-        11: "Yeşil Çay",
-        12: "Kapuçino"
-      }
+      items: { 1: "Tavuk Çorbası", 2: "Balkabağı Çorbası", 3: "Mantar Çorbası", 4: "Ramen" }
     }
   };
 
@@ -1651,38 +1585,20 @@
   const tg = window.Telegram?.WebApp;
   if (tg) tg.ready();
 
-  let currentLang = 'en';
+  let currentLang = 'ru';
   let cart = [];
   let currentCategory = 'all';
   let selectedRating = 0;
   let scrollPosition = 0;
 
   const dbMenu = [
-    /* Супы */
     { id: 1, cat: "soups", price: 48000, img: "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=300" },
     { id: 2, cat: "soups", price: 50000, img: "https://images.unsplash.com/photo-1540420773420-3366772f4497?w=300" },
     { id: 3, cat: "soups", price: 52000, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=300" },
-    { id: 4, cat: "soups", price: 65000, img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300" },
-    /* Главные блюда */
-    { id: 5, cat: "mains", price: 145000, img: "https://images.unsplash.com/photo-1558030006-450675393462?w=300" },
-    { id: 6, cat: "mains", price: 88000, img: "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=300" },
-    { id: 7, cat: "mains", price: 75000, img: "https://images.unsplash.com/photo-1633964913295-ceb43826e7c9?w=300" },
-    { id: 8, cat: "mains", price: 92000, img: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?w=300" },
-    /* Напитки */
-    { id: 9, cat: "drinks", price: 20000, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" },
-    { id: 10, cat: "drinks", price: 35000, img: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=300" },
-    { id: 11, cat: "drinks", price: 25000, img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=300" },
-    { id: 12, cat: "drinks", price: 30000, img: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300" }
+    { id: 4, cat: "soups", price: 65000, img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=300" }
   ];
 
   document.addEventListener('DOMContentLoaded', () => {
-    /* Получение параметра номера комнаты из Telegram WebApp (start_param) или URL */
-    const urlParams = new URLSearchParams(window.location.search);
-    const startParam = tg?.initDataUnsafe?.start_param || urlParams.get('room');
-    if (startParam) {
-      document.getElementById('roomNumberVal').innerText = startParam;
-    }
-
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('alarmDate').value = today;
 
@@ -1742,7 +1658,7 @@
   }
 
   function setLanguage(lang) {
-    const fallback = i18n[lang] ? lang : 'en';
+    const fallback = i18n[lang] ? lang : 'ru';
     if (lang === 'ar') {
       document.body.setAttribute('dir', 'rtl');
     } else {
@@ -1781,6 +1697,35 @@
     window.scrollTo(0, scrollPosition);
   }
 
+  /* HOUSEKEEPING */
+  async function sendHousekeepingAction(actionType) {
+    const langObj = i18n[currentLang] || i18n['ru'];
+    const actionText = actionType === 'call_maids' 
+      ? (langObj['hk_call_maids'] || 'Позвать горничных')
+      : (langObj['hk_clean_room'] || 'Убраться в моем номере');
+
+    const roomNumber = document.querySelector('.room-number').innerText;
+    const username = tg?.initDataUnsafe?.user?.username 
+      ? `@${tg.initDataUnsafe.user.username}` 
+      : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
+
+    const reqText = `🧹 <b>HOUSEKEEPING</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n📌 <b>Действие:</b> ${actionText}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+
+    await postData(reqText, username, 'housekeepingModal');
+  }
+
+  /* РЕСЕПШН */
+  async function sendReceptionCall() {
+    const roomNumber = document.querySelector('.room-number').innerText;
+    const username = tg?.initDataUnsafe?.user?.username 
+      ? `@${tg.initDataUnsafe.user.username}` 
+      : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
+
+    const reqText = `📞 <b>ВЫЗОВ РЕСЕПШЕНА</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n☎️ <b>Запрос на номер:</b> 1111\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+
+    await postData(reqText, username, 'receptionModal');
+  }
+
   /* БУДИЛЬНИК */
   function openAlarmModal() {
     openModal('alarmModal');
@@ -1796,7 +1741,7 @@
       return;
     }
 
-    const roomNumber = document.getElementById('roomNumberVal').innerText;
+    const roomNumber = document.querySelector('.room-number').innerText;
     const username = tg?.initDataUnsafe?.user?.username 
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
@@ -1816,7 +1761,7 @@
     const time = document.getElementById('taxiTime').value || 'Ближайшее';
     const passengers = document.getElementById('taxiPassengers').value;
 
-    const roomNumber = document.getElementById('roomNumberVal').innerText;
+    const roomNumber = document.querySelector('.room-number').innerText;
     const username = tg?.initDataUnsafe?.user?.username 
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
@@ -1848,14 +1793,14 @@
   }
 
   async function sendReview() {
-    const langObj = i18n[currentLang] || i18n['en'];
+    const langObj = i18n[currentLang] || i18n['ru'];
     if (selectedRating === 0) {
       showToast(langObj['select_stars_warn']);
       return;
     }
 
     const comment = document.getElementById('reviewComment').value.trim() || 'Без комментария';
-    const roomNumber = document.getElementById('roomNumberVal').innerText;
+    const roomNumber = document.querySelector('.room-number').innerText;
     const username = tg?.initDataUnsafe?.user?.username 
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
@@ -1874,7 +1819,7 @@
       return;
     }
 
-    const roomNumber = document.getElementById('roomNumberVal').innerText;
+    const roomNumber = document.querySelector('.room-number').innerText;
     const username = tg?.initDataUnsafe?.user?.username 
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
@@ -1890,8 +1835,8 @@
   async function sendOrder() {
     if (cart.length === 0) return;
 
-    const langObj = i18n[currentLang] || i18n['en'];
-    const roomNumber = document.getElementById('roomNumberVal').innerText;
+    const langObj = i18n[currentLang] || i18n['ru'];
+    const roomNumber = document.querySelector('.room-number').innerText;
     const username = tg?.initDataUnsafe?.user?.username 
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
@@ -1912,7 +1857,7 @@
   }
 
   function renderOrderModal() {
-    const langObj = i18n[currentLang] || i18n['en'];
+    const langObj = i18n[currentLang] || i18n['ru'];
     const itemsContainer = document.getElementById('modalItems');
     itemsContainer.innerHTML = '';
     const totalSum = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
@@ -1939,7 +1884,7 @@
 
   /* ОБЩАЯ ФУНКЦИЯ ОТПРАВКИ НА WORKER */
   async function postData(reqText, username, modalId = null, onSuccessCallback = null) {
-    const langObj = i18n[currentLang] || i18n['en'];
+    const langObj = i18n[currentLang] || i18n['ru'];
     try {
       const response = await fetch(WORKER_URL, {
         method: "POST",
@@ -1969,7 +1914,7 @@
   }
 
   function renderMenu() {
-    const langObj = i18n[currentLang] || i18n['en'];
+    const langObj = i18n[currentLang] || i18n['ru'];
     const list = document.getElementById('menuList');
     list.innerHTML = '';
     const itemsToDisplay = currentCategory === 'all' ? dbMenu : dbMenu.filter(item => item.cat === currentCategory);
@@ -2022,7 +1967,7 @@
   }
 
   function updateCartUI() {
-    const langObj = i18n[currentLang] || i18n['en'];
+    const langObj = i18n[currentLang] || i18n['ru'];
     const bar = document.getElementById('cartBar');
     const totalCount = cart.reduce((sum, i) => sum + i.qty, 0);
     const totalSum = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
@@ -2036,19 +1981,6 @@
       bar.style.display = 'none';
       closeModal('orderModal');
     }
-  }
-
-  async function sendServiceRequest(i18nKey) {
-    const langObj = i18n[currentLang] || i18n['en'];
-    const serviceName = langObj[i18nKey] || i18nKey;
-    const roomNumber = document.getElementById('roomNumberVal').innerText;
-    const username = tg?.initDataUnsafe?.user?.username 
-      ? `@${tg.initDataUnsafe.user.username}` 
-      : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
-      
-    const reqText = `🧺 <b>ЗАПРОС УСЛУГИ: ${serviceName.toUpperCase()}</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
-
-    await postData(reqText, username);
   }
 </script>
 </body>
