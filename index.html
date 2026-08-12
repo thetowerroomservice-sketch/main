@@ -344,22 +344,22 @@
       box-shadow: 0 10px 25px rgba(212, 175, 55, 0.25);
     }
 
+    /* ОБНОВЛЕННЫЕ СТИЛИ КАРТОЧКИ ПРОБЛЕМЫ: Без неона */
     .service-card.problem-card {
-      border-color: rgba(255, 69, 58, 0.25);
+      border-color: var(--card-border);
     }
 
     .service-card.problem-card:hover {
       border-color: var(--accent-danger);
-      box-shadow: 0 8px 20px rgba(255, 69, 58, 0.2);
     }
 
     .service-card.problem-card:hover .service-icon-wrapper {
-      background: rgba(255, 69, 58, 0.25);
+      background: rgba(255, 69, 58, 0.15);
     }
 
     .service-card.problem-card .service-icon-wrapper {
-      background: rgba(255, 69, 58, 0.12);
-      border-color: rgba(255, 69, 58, 0.3);
+      background: rgba(255, 69, 58, 0.08);
+      border-color: rgba(255, 69, 58, 0.2);
     }
 
     .service-card.problem-card .service-icon-wrapper svg {
@@ -939,10 +939,10 @@
       <span class="service-title" data-i18n="service_reception">Ресепшн</span>
     </div>
 
-    <!-- 5. Сообщить о проблеме -->
+    <!-- 5. Сообщить о проблеме (ОБНОВЛЕННАЯ ИКОНКА) -->
     <div class="service-card problem-card" onclick="openModal('problemModal')">
       <div class="service-icon-wrapper">
-        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.4-2.4c.4-.4.4-1 0-1.3z"/></svg>
       </div>
       <span class="service-title" data-i18n="service_problem">Сообщить о проблеме</span>
     </div>
