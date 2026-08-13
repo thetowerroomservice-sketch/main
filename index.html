@@ -855,7 +855,7 @@
     </div>
 
     <div class="room-badge">
-      <span data-i18n="room_key">Номер:</span> <span class="room-number">101</span>
+      <span data-i18n="room_key">Номер:</span> <span class="room-number" id="roomNumber">101</span>
     </div>
   </div>
 
@@ -1436,7 +1436,7 @@
       review_rating_label: "Califique nuestro servicio:",
       review_comment_label: "Su comentario:",
       review_send: "Enviar opinión",
-      problem_title: "Reportar un problema",
+      problem_title: "Reportar un проблема",
       problem_comment_label: "Describa el problema:",
       problem_send: "Enviar reporte",
       select_stars_warn: "¡Por favor seleccione una calificación!",
@@ -1616,6 +1616,16 @@
   ];
 
   document.addEventListener('DOMContentLoaded', () => {
+    // Автоматический парсинг номера комнаты из URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomFromUrl = urlParams.get('room') || urlParams.get('room_number');
+    if (roomFromUrl) {
+      const roomElement = document.getElementById('roomNumber');
+      if (roomElement) {
+        roomElement.innerText = roomFromUrl;
+      }
+    }
+
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('alarmDate').value = today;
     document.getElementById('taxiDate').value = today;
@@ -1625,14 +1635,6 @@
     const hours = String(now.getHours()).padStart(2, '0');
     const mins = String(now.getMinutes()).padStart(2, '0');
     document.getElementById('taxiTime').value = `${hours}:${mins}`;
-
-    // Автоматическое определение номера комнаты из URL параметра (?room=101 или ?r=101)
-    const urlParams = new URLSearchParams(window.location.search);
-    const roomParam = urlParams.get('room') || urlParams.get('r');
-    if (roomParam) {
-      const roomElement = document.querySelector('.room-number');
-      if (roomElement) roomElement.innerText = roomParam;
-    }
 
     setLanguage(currentLang);
     renderMenu();
