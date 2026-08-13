@@ -344,27 +344,6 @@
       box-shadow: 0 10px 25px rgba(212, 175, 55, 0.25);
     }
 
-    .service-card.problem-card {
-      border-color: var(--card-border);
-    }
-
-    .service-card.problem-card:hover {
-      border-color: var(--accent-danger);
-    }
-
-    .service-card.problem-card:hover .service-icon-wrapper {
-      background: rgba(255, 69, 58, 0.15);
-    }
-
-    .service-card.problem-card .service-icon-wrapper {
-      background: rgba(255, 69, 58, 0.08);
-      border-color: rgba(255, 69, 58, 0.2);
-    }
-
-    .service-card.problem-card .service-icon-wrapper svg {
-      fill: var(--accent-danger);
-    }
-
     .service-icon-wrapper {
       width: 52px;
       height: 52px;
@@ -741,14 +720,6 @@
       box-shadow: 0 6px 18px rgba(212, 175, 55, 0.35);
     }
 
-    .action-btn.danger-btn {
-      background: var(--accent-danger);
-    }
-
-    .action-btn.danger-btn:hover {
-      box-shadow: 0 6px 18px rgba(255, 69, 58, 0.35);
-    }
-
     .action-btn:active {
       transform: scale(0.97);
     }
@@ -937,7 +908,7 @@
     </div>
 
     <!-- 5. Сообщить о проблеме -->
-    <div class="service-card problem-card" onclick="openModal('problemModal')">
+    <div class="service-card" onclick="openModal('problemModal')">
       <div class="service-icon-wrapper">
         <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.4-2.4c.4-.4.4-1 0-1.3z"/></svg>
       </div>
@@ -1044,6 +1015,11 @@
       </div>
 
       <div class="form-group">
+        <label data-i18n="alarm_date_label">Дата:</label>
+        <input type="date" id="taxiDate">
+      </div>
+
+      <div class="form-group">
         <label data-i18n="taxi_time_label">Время подачи:</label>
         <input type="time" id="taxiTime">
       </div>
@@ -1092,14 +1068,14 @@
   <!-- МОДАЛКА: СООБЩИТЬ О ПРОБЛЕМЕ -->
   <div class="modal" id="problemModal">
     <div class="modal-body">
-      <div class="modal-title" style="color: var(--accent-danger);" data-i18n="problem_title">Сообщить о проблеме</div>
+      <div class="modal-title" data-i18n="problem_title">Сообщить о проблеме</div>
       
       <div class="form-group">
         <label data-i18n="problem_comment_label">Опишите возникшую проблему:</label>
         <textarea id="problemComment" placeholder="..."></textarea>
       </div>
 
-      <button class="action-btn danger-btn" onclick="sendProblemReport()" data-i18n="problem_send">Отправить жалобу</button>
+      <button class="action-btn" onclick="sendProblemReport()" data-i18n="problem_send">Отправить жалобу</button>
       <button class="close-modal" onclick="closeModal('problemModal')" data-i18n="modal_close">Закрыть</button>
     </div>
   </div>
@@ -1617,7 +1593,6 @@
   const tg = window.Telegram?.WebApp;
   if (tg) tg.ready();
 
-  // ИЗМЕНЕНИЕ 1: Язык по умолчанию выставлен на Русский 'ru'
   let currentLang = 'ru';
   let cart = [];
   let currentCategory = 'all';
@@ -1643,6 +1618,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('alarmDate').value = today;
+    document.getElementById('taxiDate').value = today;
 
     const now = new Date();
     now.setMinutes(now.getMinutes() + 15);
@@ -1805,7 +1781,6 @@
 
     const reqText = `⏰ <b>ЗАПРОС БУДИЛЬНИКА</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n📅 <b>Дата:</b> ${date}\n🕒 <b>Время:</b> ${time}\n📝 <b>Заметка:</b> ${note || 'Без примечания'}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
 
-    // ИЗМЕНЕНИЕ 2: Передаём комментарий отдельным параметром user_comment для перевода на сервере
     await postData(reqText, username, 'alarmModal', null, note);
   }
 
@@ -1816,6 +1791,7 @@
 
   async function sendTaxiRequest() {
     const dest = document.getElementById('taxiDest').value.trim();
+    const date = document.getElementById('taxiDate').value;
     const time = document.getElementById('taxiTime').value || 'Ближайшее';
     const passengers = document.getElementById('taxiPassengers').value;
 
@@ -1824,9 +1800,8 @@
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
 
-    const reqText = `🚖 <b>ЗАКАЗ ТАКСИ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n📍 <b>Направление:</b> ${dest || 'Не указано'}\n🕒 <b>Время подачи:</b> ${time}\n👥 <b>Пассажиров:</b> ${passengers}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+    const reqText = `🚖 <b>ЗАКАЗ ТАКСИ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n📍 <b>Направление:</b> ${dest || 'Не указано'}\n📅 <b>Дата:</b> ${date}\n🕒 <b>Время подачи:</b> ${time}\n👥 <b>Пассажиров:</b> ${passengers}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
 
-    // Передаём пункт назначения для перевода
     await postData(reqText, username, 'taxiModal', null, dest);
   }
 
@@ -1867,7 +1842,6 @@
     const starsStr = "★".repeat(selectedRating) + "☆".repeat(5 - selectedRating);
     const reqText = `⭐ <b>НОВЫЙ ОТЗЫВ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n🌟 <b>Оценка:</b> ${starsStr} (${selectedRating}/5)\n💬 <b>Отзыв:</b> ${comment || 'Без комментария'}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
 
-    // Передаём комментарий отзыва для автоперевода
     await postData(reqText, username, 'reviewModal', null, comment);
   }
 
@@ -1886,7 +1860,6 @@
 
     const reqText = `⚠️ <b>ЖАЛОБА / ПРОБЛЕМА</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n🚨 <b>Описание:</b> ${comment}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
 
-    // Передаём текст жалобы для перевода
     await postData(reqText, username, 'problemModal', () => {
       document.getElementById('problemComment').value = '';
     }, comment);
@@ -1944,7 +1917,6 @@
   }
 
   /* ОБЩАЯ ФУНКЦИЯ ОТПРАВКИ НА WORKER */
-  // ИЗМЕНЕНИЕ 3: Добавлен параметр user_comment для передачи чистых комментариев
   async function postData(reqText, username, modalId = null, onSuccessCallback = null, userComment = "") {
     const langObj = i18n[currentLang] || i18n['ru'];
     try {
