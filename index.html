@@ -1096,7 +1096,7 @@
     </div>
   </div>
 
-<!-- ПОДКТЮЧЕНИЕ SUPABASE SDK -->
+<!-- ПОДКЛЮЧЕНИЕ SUPABASE SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
@@ -1588,7 +1588,12 @@
     }
   }
 
+  // ПОЛУЧЕНИЕ НОМЕРА КОМНАТЫ ИЗ TELEGRAM START_PARAM ИЛИ URL
   function getRoomFromUrl() {
+    if (tg?.initDataUnsafe?.start_param) {
+      return tg.initDataUnsafe.start_param;
+    }
+
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has('room')) return searchParams.get('room');
 
