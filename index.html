@@ -1096,7 +1096,15 @@
     </div>
   </div>
 
+<!-- ПОДКТЮЧЕНИЕ SUPABASE SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+  // ИНИЦИАЛИЗАЦИЯ SUPABASE
+  const SUPABASE_URL = "https://zohutvrmjqplhchbgius.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_nCtUJolNbQTP7ozzWrXryQ_fACTAfRf";
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
   const i18n = {
     ru: {
       room_key: "Номер:",
@@ -1140,21 +1148,7 @@
       taxi_dest_label: "Куда едем:",
       taxi_time_label: "Время подачи:",
       taxi_passengers_label: "Количество пассажиров:",
-      taxi_send: "Заказать такси",
-      items: {
-        1: "Куриный суп",
-        2: "Тыквенный суп",
-        3: "Грибной суп",
-        4: "Рамен суп",
-        5: "Стейк Рибай",
-        6: "Паста Карбонара",
-        7: "Классический бургер",
-        8: "Пицца Маргарита",
-        9: "Свежевыжатый сок",
-        10: "Кофе Капучино",
-        11: "Зеленый чай",
-        12: "Кока-Кола"
-      }
+      taxi_send: "Заказать такси"
     },
     uz: {
       room_key: "Xona:",
@@ -1198,21 +1192,7 @@
       taxi_dest_label: "Qayerga:",
       taxi_time_label: "Kelish vaqti:",
       taxi_passengers_label: "Yo'lovchilar soni:",
-      taxi_send: "Taksi chaqirish",
-      items: {
-        1: "Tovuq sho'rva",
-        2: "Oshqovoq sho'rva",
-        3: "Qo'ziqorinli sho'rva",
-        4: "Ramen sho'rva",
-        5: "Ribay steyk",
-        6: "Karbonara pastasi",
-        7: "Klassik burger",
-        8: "Margarita pitsa",
-        9: "Yangi siqilgan sharbat",
-        10: "Kapuchino qahvasi",
-        11: "Yashil choy",
-        12: "Koka-Kola"
-      }
+      taxi_send: "Taksi chaqirish"
     },
     en: {
       room_key: "Room:",
@@ -1256,21 +1236,7 @@
       taxi_dest_label: "Destination:",
       taxi_time_label: "Pickup Time:",
       taxi_passengers_label: "Passengers:",
-      taxi_send: "Order Taxi",
-      items: {
-        1: "Chicken Soup",
-        2: "Pumpkin Soup",
-        3: "Mushroom Soup",
-        4: "Ramen Soup",
-        5: "Ribeye Steak",
-        6: "Pasta Carbonara",
-        7: "Classic Burger",
-        8: "Margherita Pizza",
-        9: "Fresh Juice",
-        10: "Cappuccino Coffee",
-        11: "Green Tea",
-        12: "Coca-Cola"
-      }
+      taxi_send: "Order Taxi"
     },
     zh: {
       room_key: "房间:",
@@ -1314,8 +1280,7 @@
       taxi_dest_label: "目的地:",
       taxi_time_label: "用车时间:",
       taxi_passengers_label: "乘客人数:",
-      taxi_send: "叫车",
-      items: { 1: "鸡汤", 2: "南瓜汤", 3: "蘑菇汤", 4: "拉面", 5: "肋眼牛排", 6: "奶油培根面", 7: "经典汉堡", 8: "玛格丽特披萨", 9: "鲜榨果汁", 10: "卡布奇诺", 11: "绿茶", 12: "可口可乐" }
+      taxi_send: "叫车"
     },
     ar: {
       room_key: "غرفة:",
@@ -1359,8 +1324,7 @@
       taxi_dest_label: "الوجهة:",
       taxi_time_label: "وقت الوصول:",
       taxi_passengers_label: "عدد الركاب:",
-      taxi_send: "طلب تاكسي",
-      items: { 1: "حساء الدجاج", 2: "حساء القرع", 3: "حساء الفطر", 4: "حساء Рамен", 5: "ستيك ريباي", 6: "باستا كربونات", 7: "برجر كلاسيك", 8: "بيتزا مارجريتا", 9: "عصير طازج", 10: "كابوتشينو", 11: "شاي أخضر", 12: "كوكاكولا" }
+      taxi_send: "طلب تاكسي"
     },
     fr: {
       room_key: "Chambre:",
@@ -1404,8 +1368,7 @@
       taxi_dest_label: "Destination:",
       taxi_time_label: "Heure de prise en charge:",
       taxi_passengers_label: "Passagers:",
-      taxi_send: "Commander",
-      items: { 1: "Soupe au poulet", 2: "Soupe au potiron", 3: "Soupe aux champignons", 4: "Ramen", 5: "Entrecôte Ribeye", 6: "Pâtes Carbonara", 7: "Burger Classique", 8: "Pizza Margherita", 9: "Jus frais", 10: "Café Cappuccino", 11: "Thé vert", 12: "Coca-Cola" }
+      taxi_send: "Commander"
     },
     es: {
       room_key: "Habitación:",
@@ -1449,8 +1412,7 @@
       taxi_dest_label: "Destino:",
       taxi_time_label: "Hora de recogida:",
       taxi_passengers_label: "Pasajeros:",
-      taxi_send: "Pedir taxi",
-      items: { 1: "Sopa de pollo", 2: "Sopa de calabaza", 3: "Sopa de champiñones", 4: "Ramen", 5: "Bife de chorizo Ribeye", 6: "Pasta Carbonara", 7: "Hamburguesa clásica", 8: "Pizza Margherita", 9: "Jugo fresco", 10: "Café Capuchino", 11: "Té verde", 12: "Coca-Cola" }
+      taxi_send: "Pedir taxi"
     },
     de: {
       room_key: "Zimmer:",
@@ -1494,8 +1456,7 @@
       taxi_dest_label: "Ziel:",
       taxi_time_label: "Abholzeit:",
       taxi_passengers_label: "Fahrgäste:",
-      taxi_send: "Taxi bestellen",
-      items: { 1: "Hühnersuppe", 2: "Kürbissuppe", 3: "Pilzsuppe", 4: "Ramen-Suppe", 5: "Ribeye-Steak", 6: "Pasta Carbonara", 7: "Klassischer Burger", 8: "Pizza Margherita", 9: "Frischer Saft", 10: "Cappuccino-Kaffee", 11: "Grüner Tee", 12: "Coca-Cola" }
+      taxi_send: "Taxi bestellen"
     },
     kk: {
       room_key: "Бөлме:",
@@ -1539,8 +1500,7 @@
       taxi_dest_label: "Қайда:",
       taxi_time_label: "Келу уақыты:",
       taxi_passengers_label: "Жолаушылар саны:",
-      taxi_send: "Шақыру",
-      items: { 1: "Тауық сорпасы", 2: "Асқабақ сорпасы", 3: "Саңырауқұлақ сорпасы", 4: "Рамен", 5: "Рибай стейгі", 6: "Карбонара пастасы", 7: "Классикалық бургер", 8: "Маргарита пиццасы", 9: "Жаңа сығылған шырын", 10: "Капучино кофесі", 11: "Жасыл шай", 12: "Кока-Кола" }
+      taxi_send: "Шақыру"
     },
     tr: {
       room_key: "Oda:",
@@ -1584,8 +1544,7 @@
       taxi_dest_label: "Nereye:",
       taxi_time_label: "Alınış Saati:",
       taxi_passengers_label: "Yolcu Sayısı:",
-      taxi_send: "Taksi İste",
-      items: { 1: "Tavuk Çorbası", 2: "Balkabağı Çorbası", 3: "Mantar Çorbası", 4: "Ramen", 5: "Ribeye Biftek", 6: "Makarna Carbonara", 7: "Klasik Burger", 8: "Margarita Pizza", 9: "Taze Sıkılmış Meyve Suyu", 10: "Kappuçino", 11: "Yeşil Çay", 12: "Koka-Kola" }
+      taxi_send: "Taksi İste"
     }
   };
 
@@ -1600,22 +1559,35 @@
   let scrollPosition = 0;
   let lastScrollY = window.scrollY;
 
-  const dbMenu = [
-    { id: 1, cat: "soups", price: 48000, img: "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=400&auto=format&fit=crop" },
-    { id: 2, cat: "soups", price: 50000, img: "https://images.unsplash.com/photo-1540420773420-3366772f4497?w=400&auto=format&fit=crop" },
-    { id: 3, cat: "soups", price: 52000, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&auto=format&fit=crop" },
-    { id: 4, cat: "soups", price: 65000, img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&auto=format&fit=crop" },
-    { id: 5, cat: "mains", price: 140000, img: "https://images.unsplash.com/photo-1558030006-450675393462?w=400&auto=format&fit=crop" },
-    { id: 6, cat: "mains", price: 85000, img: "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=400&auto=format&fit=crop" },
-    { id: 7, cat: "mains", price: 75000, img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&auto=format&fit=crop" },
-    { id: 8, cat: "mains", price: 90000, img: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=400&auto=format&fit=crop" },
-    { id: 9, cat: "drinks", price: 30000, img: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400&auto=format&fit=crop" },
-    { id: 10, cat: "drinks", price: 35000, img: "https://images.unsplash.com/photo-1534778101976-62847782c213?w=400&auto=format&fit=crop" },
-    { id: 11, cat: "drinks", price: 20000, img: "https://images.unsplash.com/photo-1627435601361-ec25f5b1d0e5?w=400&auto=format&fit=crop" },
-    { id: 12, cat: "drinks", price: 18000, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&auto=format&fit=crop" }
-  ];
+  let dbMenu = [];
 
-  /* ЧТЕНИЕ HASH/QUERY ПАРАМЕТРОВ ДЛЯ НОМЕРА КОМНАТЫ */
+  // ЗАГРУЗКА ДАННЫХ ИЗ SUPABASE
+  async function fetchMenuFromSupabase() {
+    try {
+      const { data, error } = await supabaseClient
+        .from('menu')
+        .select('*');
+
+      if (error) {
+        console.error('Ошибка получения данных из Supabase:', error);
+        return;
+      }
+
+      if (data && data.length > 0) {
+        dbMenu = data.map(item => ({
+          id: item.id,
+          name: item.name,
+          cat: item.category || 'mains',
+          price: item.price,
+          img: item.img || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop"
+        }));
+      }
+      renderMenu();
+    } catch (err) {
+      console.error('Сбой сети Supabase:', err);
+    }
+  }
+
   function getRoomFromUrl() {
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has('room')) return searchParams.get('room');
@@ -1624,7 +1596,7 @@
     const hashParams = new URLSearchParams(hash);
     if (hashParams.has('room')) return hashParams.get('room');
 
-    return "101"; // Дефолтный номер
+    return "101";
   }
 
   document.addEventListener('DOMContentLoaded', () => {
@@ -1643,10 +1615,9 @@
     document.getElementById('taxiTime').value = `${hours}:${mins}`;
 
     setLanguage(currentLang);
-    renderMenu();
+    fetchMenuFromSupabase();
   });
 
-  /* СКРЫТИЕ ВЕРХНЕЙ ПАНЕЛИ ПРИ СКРОЛЛЕ */
   window.addEventListener('scroll', () => {
     if (document.body.classList.contains('modal-open')) return;
     const topPanel = document.getElementById('topPanel');
@@ -1661,7 +1632,6 @@
     lastScrollY = currentScrollY;
   });
 
-  /* УПРАВЛЕНИЕ ДРОПДАУНОМ ЯЗЫКОВ */
   function toggleLangDropdown(event) {
     event.stopPropagation();
     document.getElementById('langContainer').classList.toggle('open');
@@ -1746,7 +1716,6 @@
     window.scrollTo(0, scrollPosition);
   }
 
-  /* HOUSEKEEPING */
   async function sendHousekeepingAction(actionType) {
     const langObj = i18n[currentLang] || i18n['ru'];
     const actionText = actionType === 'call_maids' 
@@ -1763,7 +1732,6 @@
     await postData(reqText, username, 'housekeepingModal');
   }
 
-  /* РЕСЕПШН */
   async function sendReceptionCall() {
     const roomNumber = document.querySelector('.room-number').innerText;
     const username = tg?.initDataUnsafe?.user?.username 
@@ -1775,7 +1743,6 @@
     await postData(reqText, username, 'receptionModal');
   }
 
-  /* БУДИЛЬНИК */
   function openAlarmModal() {
     openModal('alarmModal');
   }
@@ -1800,7 +1767,6 @@
     await postData(reqText, username, 'alarmModal', null, note);
   }
 
-  /* ТАКСИ */
   function openTaxiModal() {
     openModal('taxiModal');
   }
@@ -1821,7 +1787,6 @@
     await postData(reqText, username, 'taxiModal', null, dest);
   }
 
-  /* РЕЙТИНГ И ОТЗЫВЫ */
   function openReviewModal() {
     selectedRating = 0;
     updateStarsUI();
@@ -1861,7 +1826,6 @@
     await postData(reqText, username, 'reviewModal', null, comment);
   }
 
-  /* ЖАЛОБЫ */
   async function sendProblemReport() {
     const comment = document.getElementById('problemComment').value.trim();
     if (!comment) {
@@ -1881,7 +1845,6 @@
     }, comment);
   }
 
-  /* КОРЗИНА И ЗАКАЗ ЕДЫ */
   async function sendOrder() {
     if (cart.length === 0) return;
 
@@ -1892,8 +1855,7 @@
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
 
     let orderList = cart.map(item => {
-      const title = (langObj.items && langObj.items[item.id]) ? langObj.items[item.id] : "Dish";
-      return `• ${title} x${item.qty} — ${(item.price * item.qty).toLocaleString('ru-RU')} ${langObj['price_uzs']}`;
+      return `• ${item.name} x${item.qty} — ${(item.price * item.qty).toLocaleString('ru-RU')} ${langObj['price_uzs']}`;
     }).join('\n');
 
     const totalSum = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
@@ -1913,11 +1875,10 @@
     const totalSum = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
 
     cart.forEach(item => {
-      const title = (langObj.items && langObj.items[item.id]) ? langObj.items[item.id] : "Dish";
       itemsContainer.innerHTML += `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px;">
           <div>
-            <div style="font-weight: 600; font-size: 14px;">${title}</div>
+            <div style="font-weight: 600; font-size: 14px;">${item.name}</div>
             <div style="font-size: 12px; color: var(--text-muted);">${item.price.toLocaleString('ru-RU')} ${langObj['price_uzs']}</div>
           </div>
           <div class="card-qty-control">
@@ -1932,7 +1893,6 @@
     document.getElementById('modalTotalSum').innerText = `${totalSum.toLocaleString('ru-RU')} ${langObj['price_uzs']}`;
   }
 
-  /* ОБЩАЯ ФУНКЦИЯ ОТПРАВКИ НА WORKER */
   async function postData(reqText, username, modalId = null, onSuccessCallback = null, userComment = "") {
     const langObj = i18n[currentLang] || i18n['ru'];
     try {
@@ -1960,7 +1920,6 @@
     }
   }
 
-  /* МЕНЮ И КОРЗИНА */
   function filterCat(cat, btn) {
     currentCategory = cat;
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
@@ -1977,7 +1936,6 @@
     itemsToDisplay.forEach(item => {
       const cartItem = cart.find(c => c.id === item.id);
       const qty = cartItem ? cartItem.qty : 0;
-      const title = (langObj.items && langObj.items[item.id]) ? langObj.items[item.id] : "Dish";
 
       let actionBlock = qty > 0 ? `
         <div class="card-qty-control">
@@ -1988,9 +1946,9 @@
 
       list.innerHTML += `
         <div class="item-card">
-          <img src="${item.img}" class="item-img" alt="${title}">
+          <img src="${item.img}" class="item-img" alt="${item.name}">
           <div class="item-details">
-            <div class="item-title">${title}</div>
+            <div class="item-title">${item.name}</div>
             <div class="item-bottom">
               <div class="item-price">${item.price.toLocaleString('ru-RU')} ${langObj['price_uzs']}</div>
               ${actionBlock}
