@@ -1626,6 +1626,14 @@
     const mins = String(now.getMinutes()).padStart(2, '0');
     document.getElementById('taxiTime').value = `${hours}:${mins}`;
 
+    // Автоматическое определение номера комнаты из URL параметра (?room=101 или ?r=101)
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomParam = urlParams.get('room') || urlParams.get('r');
+    if (roomParam) {
+      const roomElement = document.querySelector('.room-number');
+      if (roomElement) roomElement.innerText = roomParam;
+    }
+
     setLanguage(currentLang);
     renderMenu();
   });
