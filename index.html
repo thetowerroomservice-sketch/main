@@ -1436,7 +1436,7 @@
       review_rating_label: "Califique nuestro servicio:",
       review_comment_label: "Su comentario:",
       review_send: "Enviar opinión",
-      problem_title: "Reportar un проблема",
+      problem_title: "Reportar un problema",
       problem_comment_label: "Describa el problema:",
       problem_send: "Enviar reporte",
       select_stars_warn: "¡Por favor seleccione una calificación!",
@@ -1589,8 +1589,7 @@
     }
   };
 
-  /* ОБНОВЛЕННАЯ ССЫЛКА НА GOOGLE APPS SCRIPT */
-  const WORKER_URL = "https://script.google.com/macros/s/AKfycby-yieXtoYGnT33tgz5AolSZEI_HoLlcoklFG646wKPXss9Uyf-kNISnhdGNhXc4L06/exec";
+  const WORKER_URL = "https://solitary-frog-ffbc.thetowerroomservice.workers.dev";
   const tg = window.Telegram?.WebApp;
   if (tg) tg.ready();
 
@@ -1933,14 +1932,13 @@
     document.getElementById('modalTotalSum').innerText = `${totalSum.toLocaleString('ru-RU')} ${langObj['price_uzs']}`;
   }
 
-  /* ОБЩАЯ ФУНКЦИЯ ОТПРАВКИ НА GOOGLE APPS SCRIPT */
+  /* ОБЩАЯ ФУНКЦИЯ ОТПРАВКИ НА WORKER */
   async function postData(reqText, username, modalId = null, onSuccessCallback = null, userComment = "") {
     const langObj = i18n[currentLang] || i18n['ru'];
     try {
       const response = await fetch(WORKER_URL, {
         method: "POST",
-        redirect: "follow",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
           text: reqText, 
           username: username,
@@ -1950,7 +1948,7 @@
       });
 
       const result = await response.json();
-      if (result.success || result.ok || result.status === "success") {
+      if (result.success || result.ok) {
         showToast(langObj['order_success']);
         if (modalId) closeModal(modalId);
         if (onSuccessCallback) onSuccessCallback();
@@ -1958,10 +1956,7 @@
         showToast("Ошибка отправки.");
       }
     } catch (err) {
-      // Для Google Apps Script если редирект прошел, но браузер заблокировал считывание JSON из-за CORS
-      showToast(langObj['order_success']);
-      if (modalId) closeModal(modalId);
-      if (onSuccessCallback) onSuccessCallback();
+      showToast("Ошибка сети.");
     }
   }
 
