@@ -344,7 +344,6 @@
       box-shadow: 0 10px 25px rgba(212, 175, 55, 0.25);
     }
 
-    /* ОБНОВЛЕННЫЕ СТИЛИ КАРТОЧКИ ПРОБЛЕМЫ: Без неона */
     .service-card.problem-card {
       border-color: var(--card-border);
     }
@@ -395,7 +394,6 @@
       padding: 0 14px 14px 14px;
     }
 
-    /* УВЕЛИЧЕННЫЕ КНОПКИ НАЗАД */
     .back-btn {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -755,7 +753,6 @@
       transform: scale(0.97);
     }
 
-    /* УВЕЛИЧЕННЫЕ КНОПКИ ЗАКРЫТИЯ В МОДАЛКАХ */
     .close-modal {
       width: 100%;
       background: var(--card-bg);
@@ -826,18 +823,18 @@
       <!-- ДРОПДАУН ЯЗЫКОВ -->
       <div class="lang-dropdown-container" id="langContainer">
         <button class="lang-dropdown-btn" onclick="toggleLangDropdown(event)">
-          <span class="flag-icon" id="currentFlag">US</span>
+          <span class="flag-icon" id="currentFlag">RU</span>
           <span class="arrow">▼</span>
         </button>
         <div class="lang-dropdown-menu" id="langMenu">
-          <div class="lang-option selected" onclick="selectLang('en', 'US', 'English', event)">
-            <span class="flag-code">US</span>
-            <span class="lang-name">English</span>
-            <span class="check-mark">✓</span>
-          </div>
-          <div class="lang-option" onclick="selectLang('ru', 'RU', 'Russian', event)">
+          <div class="lang-option selected" onclick="selectLang('ru', 'RU', 'Russian', event)">
             <span class="flag-code">RU</span>
             <span class="lang-name">Russian</span>
+            <span class="check-mark">✓</span>
+          </div>
+          <div class="lang-option" onclick="selectLang('en', 'US', 'English', event)">
+            <span class="flag-code">US</span>
+            <span class="lang-name">English</span>
             <span class="check-mark">✓</span>
           </div>
           <div class="lang-option" onclick="selectLang('uz', 'UZ', 'Uzbek', event)">
@@ -939,7 +936,7 @@
       <span class="service-title" data-i18n="service_reception">Ресепшн</span>
     </div>
 
-    <!-- 5. Сообщить о проблеме (ОБНОВЛЕННАЯ ИКОНКА) -->
+    <!-- 5. Сообщить о проблеме -->
     <div class="service-card problem-card" onclick="openModal('problemModal')">
       <div class="service-icon-wrapper">
         <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.4-2.4c.4-.4.4-1 0-1.3z"/></svg>
@@ -1620,6 +1617,7 @@
   const tg = window.Telegram?.WebApp;
   if (tg) tg.ready();
 
+  // ИЗМЕНЕНИЕ 1: Язык по умолчанию выставлен на Русский 'ru'
   let currentLang = 'ru';
   let cart = [];
   let currentCategory = 'all';
@@ -1627,21 +1625,15 @@
   let scrollPosition = 0;
   let lastScrollY = window.scrollY;
 
-  // ОБНОВЛЕННОЕ И РАСШИРЕННОЕ МЕНЮ С ФОТОГРАФИЯМИ
   const dbMenu = [
-    // Супы
     { id: 1, cat: "soups", price: 48000, img: "https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=400&auto=format&fit=crop" },
     { id: 2, cat: "soups", price: 50000, img: "https://images.unsplash.com/photo-1540420773420-3366772f4497?w=400&auto=format&fit=crop" },
     { id: 3, cat: "soups", price: 52000, img: "https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&auto=format&fit=crop" },
     { id: 4, cat: "soups", price: 65000, img: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400&auto=format&fit=crop" },
-    
-    // Главные блюда
     { id: 5, cat: "mains", price: 140000, img: "https://images.unsplash.com/photo-1558030006-450675393462?w=400&auto=format&fit=crop" },
     { id: 6, cat: "mains", price: 85000, img: "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=400&auto=format&fit=crop" },
     { id: 7, cat: "mains", price: 75000, img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&auto=format&fit=crop" },
     { id: 8, cat: "mains", price: 90000, img: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=400&auto=format&fit=crop" },
-
-    // Напитки
     { id: 9, cat: "drinks", price: 30000, img: "https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400&auto=format&fit=crop" },
     { id: 10, cat: "drinks", price: 35000, img: "https://images.unsplash.com/photo-1534778101976-62847782c213?w=400&auto=format&fit=crop" },
     { id: 11, cat: "drinks", price: 20000, img: "https://images.unsplash.com/photo-1627435601361-ec25f5b1d0e5?w=400&auto=format&fit=crop" },
@@ -1799,7 +1791,7 @@
   async function sendAlarmRequest() {
     const time = document.getElementById('alarmTime').value;
     const date = document.getElementById('alarmDate').value;
-    const note = document.getElementById('alarmNote').value.trim() || 'Без примечания';
+    const note = document.getElementById('alarmNote').value.trim();
     
     if (!time || !date) {
       showToast("Укажите время и дату.");
@@ -1811,9 +1803,10 @@
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
 
-    const reqText = `⏰ <b>ЗАПРОС БУДИЛЬНИКА</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n📅 <b>Дата:</b> ${date}\n🕒 <b>Время:</b> ${time}\n📝 <b>Заметка:</b> ${note}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+    const reqText = `⏰ <b>ЗАПРОС БУДИЛЬНИКА</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n📅 <b>Дата:</b> ${date}\n🕒 <b>Время:</b> ${time}\n📝 <b>Заметка:</b> ${note || 'Без примечания'}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
 
-    await postData(reqText, username, 'alarmModal');
+    // ИЗМЕНЕНИЕ 2: Передаём комментарий отдельным параметром user_comment для перевода на сервере
+    await postData(reqText, username, 'alarmModal', null, note);
   }
 
   /* ТАКСИ */
@@ -1822,7 +1815,7 @@
   }
 
   async function sendTaxiRequest() {
-    const dest = document.getElementById('taxiDest').value.trim() || 'Не указано';
+    const dest = document.getElementById('taxiDest').value.trim();
     const time = document.getElementById('taxiTime').value || 'Ближайшее';
     const passengers = document.getElementById('taxiPassengers').value;
 
@@ -1831,9 +1824,10 @@
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
 
-    const reqText = `🚖 <b>ЗАКАЗ ТАКСИ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n📍 <b>Направление:</b> ${dest}\n🕒 <b>Время подачи:</b> ${time}\n👥 <b>Пассажиров:</b> ${passengers}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+    const reqText = `🚖 <b>ЗАКАЗ ТАКСИ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n📍 <b>Направление:</b> ${dest || 'Не указано'}\n🕒 <b>Время подачи:</b> ${time}\n👥 <b>Пассажиров:</b> ${passengers}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
 
-    await postData(reqText, username, 'taxiModal');
+    // Передаём пункт назначения для перевода
+    await postData(reqText, username, 'taxiModal', null, dest);
   }
 
   /* РЕЙТИНГ И ОТЗЫВЫ */
@@ -1864,16 +1858,17 @@
       return;
     }
 
-    const comment = document.getElementById('reviewComment').value.trim() || 'Без комментария';
+    const comment = document.getElementById('reviewComment').value.trim();
     const roomNumber = document.querySelector('.room-number').innerText;
     const username = tg?.initDataUnsafe?.user?.username 
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
 
     const starsStr = "★".repeat(selectedRating) + "☆".repeat(5 - selectedRating);
-    const reqText = `⭐ <b>НОВЫЙ ОТЗЫВ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n🌟 <b>Оценка:</b> ${starsStr} (${selectedRating}/5)\n💬 <b>Отзыв:</b> ${comment}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+    const reqText = `⭐ <b>НОВЫЙ ОТЗЫВ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n🌟 <b>Оценка:</b> ${starsStr} (${selectedRating}/5)\n💬 <b>Отзыв:</b> ${comment || 'Без комментария'}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
 
-    await postData(reqText, username, 'reviewModal');
+    // Передаём комментарий отзыва для автоперевода
+    await postData(reqText, username, 'reviewModal', null, comment);
   }
 
   /* ЖАЛОБЫ */
@@ -1891,9 +1886,10 @@
 
     const reqText = `⚠️ <b>ЖАЛОБА / ПРОБЛЕМА</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n🚨 <b>Описание:</b> ${comment}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
 
+    // Передаём текст жалобы для перевода
     await postData(reqText, username, 'problemModal', () => {
       document.getElementById('problemComment').value = '';
-    });
+    }, comment);
   }
 
   /* КОРЗИНА И ЗАКАЗ ЕДЫ */
@@ -1948,13 +1944,19 @@
   }
 
   /* ОБЩАЯ ФУНКЦИЯ ОТПРАВКИ НА WORKER */
-  async function postData(reqText, username, modalId = null, onSuccessCallback = null) {
+  // ИЗМЕНЕНИЕ 3: Добавлен параметр user_comment для передачи чистых комментариев
+  async function postData(reqText, username, modalId = null, onSuccessCallback = null, userComment = "") {
     const langObj = i18n[currentLang] || i18n['ru'];
     try {
       const response = await fetch(WORKER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: reqText, username: username })
+        body: JSON.stringify({ 
+          text: reqText, 
+          username: username,
+          user_comment: userComment,
+          comment: userComment
+        })
       });
 
       const result = await response.json();
