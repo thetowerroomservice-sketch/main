@@ -855,7 +855,7 @@
     </div>
 
     <div class="room-badge">
-      <span data-i18n="room_key">Номер:</span> <span class="room-number" id="roomNumber">101</span>
+      <span data-i18n="room_key">Номер:</span> <span class="room-number">--</span>
     </div>
   </div>
 
@@ -1436,7 +1436,7 @@
       review_rating_label: "Califique nuestro servicio:",
       review_comment_label: "Su comentario:",
       review_send: "Enviar opinión",
-      problem_title: "Reportar un проблема",
+      problem_title: "Reportar un problema",
       problem_comment_label: "Describa el problema:",
       problem_send: "Enviar reporte",
       select_stars_warn: "¡Por favor seleccione una calificación!",
@@ -1615,16 +1615,22 @@
     { id: 12, cat: "drinks", price: 18000, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&auto=format&fit=crop" }
   ];
 
+  /* ЧТЕНИЕ HASH/QUERY ПАРАМЕТРОВ ДЛЯ НОМЕРА КОМНАТЫ */
+  function getRoomFromUrl() {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.has('room')) return searchParams.get('room');
+
+    const hash = window.location.hash.substring(1);
+    const hashParams = new URLSearchParams(hash);
+    if (hashParams.has('room')) return hashParams.get('room');
+
+    return "101"; // Дефолтный номер
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
-    // Автоматический парсинг номера комнаты из URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const roomFromUrl = urlParams.get('room') || urlParams.get('room_number');
-    if (roomFromUrl) {
-      const roomElement = document.getElementById('roomNumber');
-      if (roomElement) {
-        roomElement.innerText = roomFromUrl;
-      }
-    }
+    const roomNumber = getRoomFromUrl();
+    const roomEl = document.querySelector('.room-number');
+    if (roomEl) roomEl.innerText = roomNumber;
 
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('alarmDate').value = today;
