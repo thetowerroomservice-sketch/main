@@ -58,7 +58,6 @@
       position: relative;
     }
 
-    /* ФИКС ДЕРГАНИЯ ФОНА ПРИ МОДАЛКАХ */
     body.modal-open {
       overflow: hidden !important;
       position: fixed;
@@ -96,7 +95,6 @@
       gap: 8px;
     }
 
-    /* ВЫПАДАЮЩЕЕ МЕНЮ ЯЗЫКОВ */
     .lang-dropdown-container {
       position: relative;
     }
@@ -289,7 +287,7 @@
     }
 
     .header h2 {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 800;
       letter-spacing: -0.5px;
     }
@@ -866,10 +864,10 @@
     </div>
   </div>
 
-  <!-- ШАПКА -->
+  <!-- ШАПКА С ДИНАМИЧЕСКИМ НОМЕРОМ КОМНАТЫ -->
   <div class="header">
     <div class="header-logo-text">THE TOWER HOTEL</div>
-    <h2>Room Service</h2>
+    <h2 id="headerTitle">Room Service</h2>
   </div>
 
   <!-- СЕТКА КАРТОЧЕК -->
@@ -1142,18 +1140,9 @@
       taxi_passengers_label: "Количество пассажиров:",
       taxi_send: "Заказать такси",
       items: {
-        1: "Куриный суп",
-        2: "Тыквенный суп",
-        3: "Грибной суп",
-        4: "Рамен суп",
-        5: "Стейк Рибай",
-        6: "Паста Карбонара",
-        7: "Классический бургер",
-        8: "Пицца Маргарита",
-        9: "Свежевыжатый сок",
-        10: "Кофе Капучино",
-        11: "Зеленый чай",
-        12: "Кока-Кола"
+        1: "Куриный суп", 2: "Тыквенный суп", 3: "Грибной суп", 4: "Рамен суп",
+        5: "Стейк Рибай", 6: "Паста Карбонара", 7: "Классический бургер", 8: "Пицца Маргарита",
+        9: "Свежевыжатый сок", 10: "Кофе Капучино", 11: "Зеленый чай", 12: "Кока-Кола"
       }
     },
     uz: {
@@ -1200,18 +1189,9 @@
       taxi_passengers_label: "Yo'lovchilar soni:",
       taxi_send: "Taksi chaqirish",
       items: {
-        1: "Tovuq sho'rva",
-        2: "Oshqovoq sho'rva",
-        3: "Qo'ziqorinli sho'rva",
-        4: "Ramen sho'rva",
-        5: "Ribay steyk",
-        6: "Karbonara pastasi",
-        7: "Klassik burger",
-        8: "Margarita pitsa",
-        9: "Yangi siqilgan sharbat",
-        10: "Kapuchino qahvasi",
-        11: "Yashil choy",
-        12: "Koka-Kola"
+        1: "Tovuq sho'rva", 2: "Oshqovoq sho'rva", 3: "Qo'ziqorinli sho'rva", 4: "Ramen sho'rva",
+        5: "Ribay steyk", 6: "Karbonara pastasi", 7: "Klassik burger", 8: "Margarita pitsa",
+        9: "Yangi siqilgan sharbat", 10: "Kapuchino qahvasi", 11: "Yashil choy", 12: "Koka-Kola"
       }
     },
     en: {
@@ -1258,337 +1238,112 @@
       taxi_passengers_label: "Passengers:",
       taxi_send: "Order Taxi",
       items: {
-        1: "Chicken Soup",
-        2: "Pumpkin Soup",
-        3: "Mushroom Soup",
-        4: "Ramen Soup",
-        5: "Ribeye Steak",
-        6: "Pasta Carbonara",
-        7: "Classic Burger",
-        8: "Margherita Pizza",
-        9: "Fresh Juice",
-        10: "Cappuccino Coffee",
-        11: "Green Tea",
-        12: "Coca-Cola"
+        1: "Chicken Soup", 2: "Pumpkin Soup", 3: "Mushroom Soup", 4: "Ramen Soup",
+        5: "Ribeye Steak", 6: "Pasta Carbonara", 7: "Classic Burger", 8: "Margherita Pizza",
+        9: "Fresh Juice", 10: "Cappuccino Coffee", 11: "Green Tea", 12: "Coca-Cola"
       }
     },
     zh: {
-      room_key: "房间:",
-      btn_back: "返回",
-      service_alarm: "闹钟",
-      service_hotel: "客房服务",
-      service_taxi: "叫出租车",
-      service_reception: "前台",
-      service_menu: "菜谱",
-      service_review: "留下评价",
-      service_problem: "报告问题",
-      hk_title: "客房服务",
-      hk_call_maids: "呼叫服务员",
-      hk_clean_room: "打扫房间",
-      cat_all: "全部",
-      cat_soups: "汤类",
-      cat_mains: "主菜",
-      cat_drinks: "饮料",
-      cart_items: "件",
-      cart_view: "查看订单",
-      modal_title: "您的订单",
-      modal_total: "总计:",
-      modal_send: "提交订单",
-      modal_close: "关闭",
-      order_success: "发送成功！",
-      price_uzs: "UZS",
-      review_title: "留下评价",
-      review_rating_label: "评估我们的服务:",
-      review_comment_label: "您的评论:",
-      review_send: "提交评价",
-      problem_title: "报告问题",
-      problem_comment_label: "描述问题:",
-      problem_send: "提交报告",
-      select_stars_warn: "请选择星级评分！",
-      alarm_title: "设置叫醒服务",
-      alarm_time_label: "叫醒时间:",
-      alarm_date_label: "日期:",
-      alarm_note_label: "备注:",
-      alarm_send: "设置闹钟",
-      taxi_title: "预约出租车",
-      taxi_dest_label: "目的地:",
-      taxi_time_label: "用车时间:",
-      taxi_passengers_label: "乘客人数:",
-      taxi_send: "叫车",
+      room_key: "房间:", btn_back: "返回", service_alarm: "闹钟", service_hotel: "客房服务",
+      service_taxi: "叫出租车", service_reception: "前台", service_menu: "菜谱", service_review: "留下评价",
+      service_problem: "报告问题", hk_title: "客房服务", hk_call_maids: "呼叫服务员", hk_clean_room: "打扫房间",
+      cat_all: "全部", cat_soups: "汤类", cat_mains: "主菜", cat_drinks: "饮料", cart_items: "件",
+      cart_view: "查看订单", modal_title: "您的订单", modal_total: "总计:", modal_send: "提交订单",
+      modal_close: "关闭", order_success: "发送成功！", price_uzs: "UZS", review_title: "留下评价",
+      review_rating_label: "评估我们的服务:", review_comment_label: "您的评论:", review_send: "提交评价",
+      problem_title: "报告问题", problem_comment_label: "描述问题:", problem_send: "提交报告",
+      select_stars_warn: "请选择星级评分！", alarm_title: "设置叫醒服务", alarm_time_label: "叫醒时间:",
+      alarm_date_label: "日期:", alarm_note_label: "备注:", alarm_send: "设置闹钟", taxi_title: "预约出租车",
+      taxi_dest_label: "目的地:", taxi_time_label: "用车时间:", taxi_passengers_label: "乘客人数:", taxi_send: "叫车",
       items: { 1: "鸡汤", 2: "南瓜汤", 3: "蘑菇汤", 4: "拉面", 5: "肋眼牛排", 6: "奶油培根面", 7: "经典汉堡", 8: "玛格丽特披萨", 9: "鲜榨果汁", 10: "卡布奇诺", 11: "绿茶", 12: "可口可乐" }
     },
     ar: {
-      room_key: "غرفة:",
-      btn_back: "رجوع",
-      service_alarm: "منبه",
-      service_hotel: "تنظيف الغرف",
-      service_taxi: "طلب سيارة أجرة",
-      service_reception: "الاستقبال",
-      service_menu: "قائمة الطعام",
-      service_review: "ترك تقييم",
-      service_problem: "الإبلاغ عن مشكلة",
-      hk_title: "تنظيف الغرف",
-      hk_call_maids: "استدعاء العاملة",
-      hk_clean_room: "تنظيف غرفتي",
-      cat_all: "الكل",
-      cat_soups: "حساء",
-      cat_mains: "الأطباق الرئيسية",
-      cat_drinks: "مشروبات",
-      cart_items: "عناصر",
-      cart_view: "عرض الطلب",
-      modal_title: "طلبك",
-      modal_total: "المجموع:",
-      modal_send: "إرسال الطلب",
-      modal_close: "إغلاق",
-      order_success: "تم الإرسال بنجاح!",
-      price_uzs: "UZS",
-      review_title: "ترك تقييم",
-      review_rating_label: "قيم خدمتنا:",
-      review_comment_label: "تعليقك:",
-      review_send: "إرسال التقييم",
-      problem_title: "الإبلاغ عن مشكلة",
-      problem_comment_label: "صف المشكلة:",
-      problem_send: "إرسال البلاغ",
-      select_stars_warn: "يرجى تحديد التقييم!",
-      alarm_title: "ضبط المنبه",
-      alarm_time_label: "الوقت:",
-      alarm_date_label: "التاريخ:",
-      alarm_note_label: "ملاحظة:",
-      alarm_send: "ضبط المنبه",
-      taxi_title: "طلب سيارة أجرة",
-      taxi_dest_label: "الوجهة:",
-      taxi_time_label: "وقت الوصول:",
-      taxi_passengers_label: "عدد الركاب:",
-      taxi_send: "طلب تاكسي",
+      room_key: "غرفة:", btn_back: "رجوع", service_alarm: "منبه", service_hotel: "تنظيف الغرف",
+      service_taxi: "طلب سيارة أجرة", service_reception: "الاستقبال", service_menu: "قائمة الطعام", service_review: "ترك تقييم",
+      service_problem: "الإبلاغ عن مشكلة", hk_title: "تنظيف الغرف", hk_call_maids: "استدعاء العاملة", hk_clean_room: "تنظيف غرفتي",
+      cat_all: "الكل", cat_soups: "حساء", cat_mains: "الأطباق الرئيسية", cat_drinks: "مشروبات", cart_items: "عناصر",
+      cart_view: "عرض الطلب", modal_title: "طلبك", modal_total: "المجموع:", modal_send: "إرسال الطلب",
+      modal_close: "إغلاق", order_success: "تم الإرسال بنجاح!", price_uzs: "UZS", review_title: "ترك تقييم",
+      review_rating_label: "قيم خدمتنا:", review_comment_label: "تعليقك:", review_send: "إرسال التقييم",
+      problem_title: "الإبلاغ عن مشكلة", problem_comment_label: "صف المشكلة:", problem_send: "إرسال البلاغ",
+      select_stars_warn: "يرجى تحديد التقييم!", alarm_title: "ضبط المنبه", alarm_time_label: "الوقت:",
+      alarm_date_label: "التاريخ:", alarm_note_label: "ملاحظة:", alarm_send: "ضبط المنبه", taxi_title: "طلب سيارة أجرة",
+      taxi_dest_label: "الوجهة:", taxi_time_label: "وقت الوصول:", taxi_passengers_label: "عدد الركاب:", taxi_send: "طلب تاكسي",
       items: { 1: "حساء الدجاج", 2: "حساء القرع", 3: "حساء الفطر", 4: "حساء Рамен", 5: "ستيك ريباي", 6: "باستا كربونات", 7: "برجر كلاسيك", 8: "بيتزا مارجريتا", 9: "عصير طازج", 10: "كابوتشينو", 11: "شاي أخضر", 12: "كوكاكولا" }
     },
     fr: {
-      room_key: "Chambre:",
-      btn_back: "Retour",
-      service_alarm: "Réveil",
-      service_hotel: "Housekeeping",
-      service_taxi: "Appeler un taxi",
-      service_reception: "Réception",
-      service_menu: "Menu",
-      service_review: "Laisser un avis",
-      service_problem: "Signaler un problème",
-      hk_title: "Housekeeping",
-      hk_call_maids: "Appeler la femme de chambre",
-      hk_clean_room: "Nettoyer ma chambre",
-      cat_all: "Tous",
-      cat_soups: "Soupes",
-      cat_mains: "Plats principaux",
-      cat_drinks: "Boissons",
-      cart_items: "articles",
-      cart_view: "Voir la commande",
-      modal_title: "Votre commande",
-      modal_total: "Total:",
-      modal_send: "Passer la commande",
-      modal_close: "Fermer",
-      order_success: "Envoyé avec succès!",
-      price_uzs: "UZS",
-      review_title: "Laisser un avis",
-      review_rating_label: "Évaluez notre service:",
-      review_comment_label: "Votre commentaire:",
-      review_send: "Soumettre",
-      problem_title: "Signaler un problème",
-      problem_comment_label: "Décrivez le problème:",
-      problem_send: "Envoyer le rapport",
-      select_stars_warn: "Veuillez sélectionner une note!",
-      alarm_title: "Régler le réveil",
-      alarm_time_label: "Heure:",
-      alarm_date_label: "Date:",
-      alarm_note_label: "Note:",
-      alarm_send: "Régler",
-      taxi_title: "Commander un taxi",
-      taxi_dest_label: "Destination:",
-      taxi_time_label: "Heure de prise en charge:",
-      taxi_passengers_label: "Passagers:",
-      taxi_send: "Commander",
+      room_key: "Chambre:", btn_back: "Retour", service_alarm: "Réveil", service_hotel: "Housekeeping",
+      service_taxi: "Appeler un taxi", service_reception: "Réception", service_menu: "Menu", service_review: "Laisser un avis",
+      service_problem: "Signaler un problème", hk_title: "Housekeeping", hk_call_maids: "Appeler la femme de chambre", hk_clean_room: "Nettoyer ma chambre",
+      cat_all: "Tous", cat_soups: "Soupes", cat_mains: "Plats principaux", cat_drinks: "Boissons", cart_items: "articles",
+      cart_view: "Voir la commande", modal_title: "Votre commande", modal_total: "Total:", modal_send: "Passer la commande",
+      modal_close: "Fermer", order_success: "Envoyé avec succès!", price_uzs: "UZS", review_title: "Laisser un avis",
+      review_rating_label: "Évaluez notre service:", review_comment_label: "Votre commentaire:", review_send: "Soumettre",
+      problem_title: "Signaler un problème", problem_comment_label: "Décrivez le problème:", problem_send: "Envoyer le rapport",
+      select_stars_warn: "Veuillez sélectionner une note!", alarm_title: "Régler le réveil", alarm_time_label: "Heure:",
+      alarm_date_label: "Date:", alarm_note_label: "Note:", alarm_send: "Régler", taxi_title: "Commander un taxi",
+      taxi_dest_label: "Destination:", taxi_time_label: "Heure de prise en charge:", taxi_passengers_label: "Passagers:", taxi_send: "Commander",
       items: { 1: "Soupe au poulet", 2: "Soupe au potiron", 3: "Soupe aux champignons", 4: "Ramen", 5: "Entrecôte Ribeye", 6: "Pâtes Carbonara", 7: "Burger Classique", 8: "Pizza Margherita", 9: "Jus frais", 10: "Café Cappuccino", 11: "Thé vert", 12: "Coca-Cola" }
     },
     es: {
-      room_key: "Habitación:",
-      btn_back: "Volver",
-      service_alarm: "Despertador",
-      service_hotel: "Housekeeping",
-      service_taxi: "Pedir taxi",
-      service_reception: "Recepción",
-      service_menu: "Menú",
-      service_review: "Dejar una opinión",
-      service_problem: "Reportar un problema",
-      hk_title: "Housekeeping",
-      hk_call_maids: "Llamar a las camareras",
-      hk_clean_room: "Limpiar mi habitación",
-      cat_all: "Todos",
-      cat_soups: "Sopas",
-      cat_mains: "Platos principales",
-      cat_drinks: "Bebidas",
-      cart_items: "artículos",
-      cart_view: "Ver pedido",
-      modal_title: "Su pedido",
-      modal_total: "Total:",
-      modal_send: "Realizar pedido",
-      modal_close: "Cerrar",
-      order_success: "¡Enviado con éxito!",
-      price_uzs: "UZS",
-      review_title: "Dejar una opinión",
-      review_rating_label: "Califique nuestro servicio:",
-      review_comment_label: "Su comentario:",
-      review_send: "Enviar opinión",
-      problem_title: "Reportar un problema",
-      problem_comment_label: "Describa el problema:",
-      problem_send: "Enviar reporte",
-      select_stars_warn: "¡Por favor seleccione una calificación!",
-      alarm_title: "Configurar despertador",
-      alarm_time_label: "Hora:",
-      alarm_date_label: "Fecha:",
-      alarm_note_label: "Nota:",
-      alarm_send: "Configurar",
-      taxi_title: "Pedir un taxi",
-      taxi_dest_label: "Destino:",
-      taxi_time_label: "Hora de recogida:",
-      taxi_passengers_label: "Pasajeros:",
-      taxi_send: "Pedir taxi",
+      room_key: "Habitación:", btn_back: "Volver", service_alarm: "Despertador", service_hotel: "Housekeeping",
+      service_taxi: "Pedir taxi", service_reception: "Recepción", service_menu: "Menú", service_review: "Dejar una opinión",
+      service_problem: "Reportar un problema", hk_title: "Housekeeping", hk_call_maids: "Llamar a las camareras", hk_clean_room: "Limpiar mi habitación",
+      cat_all: "Todos", cat_soups: "Sopas", cat_mains: "Platos principales", cat_drinks: "Bebidas", cart_items: "artículos",
+      cart_view: "Ver pedido", modal_title: "Su pedido", modal_total: "Total:", modal_send: "Realizar pedido",
+      modal_close: "Cerrar", order_success: "¡Enviado con éxito!", price_uzs: "UZS", review_title: "Dejar una opinión",
+      review_rating_label: "Califique nuestro servicio:", review_comment_label: "Su comentario:", review_send: "Enviar opinión",
+      problem_title: "Reportar un problema", problem_comment_label: "Describa el problema:", problem_send: "Enviar reporte",
+      select_stars_warn: "¡Por favor seleccione una calificación!", alarm_title: "Configurar despertador", alarm_time_label: "Hora:",
+      alarm_date_label: "Fecha:", alarm_note_label: "Nota:", alarm_send: "Configurar", taxi_title: "Pedir un taxi",
+      taxi_dest_label: "Destino:", taxi_time_label: "Hora de recogida:", taxi_passengers_label: "Pasajeros:", taxi_send: "Pedir taxi",
       items: { 1: "Sopa de pollo", 2: "Sopa de calabaza", 3: "Sopa de champiñones", 4: "Ramen", 5: "Bife de chorizo Ribeye", 6: "Pasta Carbonara", 7: "Hamburguesa clásica", 8: "Pizza Margherita", 9: "Jugo fresco", 10: "Café Capuchino", 11: "Té verde", 12: "Coca-Cola" }
     },
     de: {
-      room_key: "Zimmer:",
-      btn_back: "Zurück",
-      service_alarm: "Wecker",
-      service_hotel: "Housekeeping",
-      service_taxi: "Taxi rufen",
-      service_reception: "Rezeption",
-      service_menu: "Speisekarte",
-      service_review: "Bewertung abgeben",
-      service_problem: "Problem melden",
-      hk_title: "Housekeeping",
-      hk_call_maids: "Zimmermädchen rufen",
-      hk_clean_room: "Zimmer reinigen",
-      cat_all: "Alle",
-      cat_soups: "Suppen",
-      cat_mains: "Hauptgerichte",
-      cat_drinks: "Getränke",
-      cart_items: "Artikel",
-      cart_view: "Bestellung anzeigen",
-      modal_title: "Ihre Bestellung",
-      modal_total: "Gesamt:",
-      modal_send: "Bestellung abschicken",
-      modal_close: "Schließen",
-      order_success: "Erfolgreich gesendet!",
-      price_uzs: "UZS",
-      review_title: "Bewertung abgeben",
-      review_rating_label: "Bewerten Sie unseren Service:",
-      review_comment_label: "Ihr Kommentar:",
-      review_send: "Absenden",
-      problem_title: "Problem melden",
-      problem_comment_label: "Beschreiben Sie das Problem:",
-      problem_send: "Bericht senden",
-      select_stars_warn: "Bitte wählen Sie eine Bewertung!",
-      alarm_title: "Weckruf einstellen",
-      alarm_time_label: "Uhrzeit:",
-      alarm_date_label: "Datum:",
-      alarm_note_label: "Notiz:",
-      alarm_send: "Einstellen",
-      taxi_title: "Taxi bestellen",
-      taxi_dest_label: "Ziel:",
-      taxi_time_label: "Abholzeit:",
-      taxi_passengers_label: "Fahrgäste:",
-      taxi_send: "Taxi bestellen",
+      room_key: "Zimmer:", btn_back: "Zurück", service_alarm: "Wecker", service_hotel: "Housekeeping",
+      service_taxi: "Taxi rufen", service_reception: "Rezeption", service_menu: "Speisekarte", service_review: "Bewertung abgeben",
+      service_problem: "Problem melden", hk_title: "Housekeeping", hk_call_maids: "Zimmermädchen rufen", hk_clean_room: "Zimmer reinigen",
+      cat_all: "Alle", cat_soups: "Suppen", cat_mains: "Hauptgerichte", cat_drinks: "Getränke", cart_items: "Artikel",
+      cart_view: "Bestellung anzeigen", modal_title: "Ihre Bestellung", modal_total: "Gesamt:", modal_send: "Bestellung abschicken",
+      modal_close: "Schließen", order_success: "Erfolgreich gesendet!", price_uzs: "UZS", review_title: "Bewertung abgeben",
+      review_rating_label: "Bewerten Sie unseren Service:", review_comment_label: "Ihr Kommentar:", review_send: "Absenden",
+      problem_title: "Problem melden", problem_comment_label: "Beschreiben Sie das Problem:", problem_send: "Bericht senden",
+      select_stars_warn: "Bitte wählen Sie eine Bewertung!", alarm_title: "Weckruf einstellen", alarm_time_label: "Uhrzeit:",
+      alarm_date_label: "Datum:", alarm_note_label: "Notiz:", alarm_send: "Einstellen", taxi_title: "Taxi bestellen",
+      taxi_dest_label: "Ziel:", taxi_time_label: "Abholzeit:", taxi_passengers_label: "Fahrgäste:", taxi_send: "Taxi bestellen",
       items: { 1: "Hühnersuppe", 2: "Kürbissuppe", 3: "Pilzsuppe", 4: "Ramen-Suppe", 5: "Ribeye-Steak", 6: "Pasta Carbonara", 7: "Klassischer Burger", 8: "Pizza Margherita", 9: "Frischer Saft", 10: "Cappuccino-Kaffee", 11: "Grüner Tee", 12: "Coca-Cola" }
     },
     kk: {
-      room_key: "Бөлме:",
-      btn_back: "Артқа",
-      service_alarm: "Оятқыш",
-      service_hotel: "Housekeeping",
-      service_taxi: "Такси шақыру",
-      service_reception: "Ресепшн",
-      service_menu: "Тағам мәзірі",
-      service_review: "Пікір қалдыру",
-      service_problem: "Мәселе туралы хабарлау",
-      hk_title: "Housekeeping",
-      hk_call_maids: "Тазалықшыны шақыру",
-      hk_clean_room: "Бөлмені тазалау",
-      cat_all: "Барлығы",
-      cat_soups: "Сорпалар",
-      cat_mains: "Негізгі тағамдар",
-      cat_drinks: "Сусындар",
-      cart_items: "тағам",
-      cart_view: "Тапсырыс",
-      modal_title: "Сіздің тапсырысыңыз",
-      modal_total: "Жиыны:",
-      modal_send: "Тапсырыс беру",
-      modal_close: "Жабу",
-      order_success: "Сәтті жіберілді!",
-      price_uzs: "UZS",
-      review_title: "Пікір қалдыру",
-      review_rating_label: "Қызмет сапасын бағалаңыз:",
-      review_comment_label: "Сіздің пікіріңіз:",
-      review_send: "Жіберу",
-      problem_title: "Шағым жіберу",
-      problem_comment_label: "Мәселені сипаттаңыз:",
-      problem_send: "Шағымды жіберу",
-      select_stars_warn: "Бағалауды таңдаңыз!",
-      alarm_title: "Оятқышты орнату",
-      alarm_time_label: "Уақыты:",
-      alarm_date_label: "Күні:",
-      alarm_note_label: "Ескертпе:",
-      alarm_send: "Орнату",
-      taxi_title: "Такси шақыру",
-      taxi_dest_label: "Қайда:",
-      taxi_time_label: "Келу уақыты:",
-      taxi_passengers_label: "Жолаушылар саны:",
-      taxi_send: "Шақыру",
+      room_key: "Бөлме:", btn_back: "Артқа", service_alarm: "Оятқыш", service_hotel: "Housekeeping",
+      service_taxi: "Такси шақыру", service_reception: "Ресепшн", service_menu: "Тағам мәзірі", service_review: "Пікір қалдыру",
+      service_problem: "Мәселе туралы хабарлау", hk_title: "Housekeeping", hk_call_maids: "Тазалықшыны шақыру", hk_clean_room: "Бөлмені тазалау",
+      cat_all: "Барлығы", cat_soups: "Сорпалар", cat_mains: "Негізгі тағамдар", cat_drinks: "Сусындар", cart_items: "тағам",
+      cart_view: "Тапсырыс", modal_title: "Сіздің тапсырысыңыз", modal_total: "Жиыны:", modal_send: "Тапсырыс беру",
+      modal_close: "Жабу", order_success: "Сәтті жіберілді!", price_uzs: "UZS", review_title: "Пікір қалдыру",
+      review_rating_label: "Қызмет сапасын бағалаңыз:", review_comment_label: "Сіздің пікіріңіз:", review_send: "Жіберу",
+      problem_title: "Шағым жіберу", problem_comment_label: "Мәселені сипаттаңыз:", problem_send: "Шағымды жіберу",
+      select_stars_warn: "Бағалауды таңдаңыз!", alarm_title: "Оятқышты орнату", alarm_time_label: "Уақыты:",
+      alarm_date_label: "Күні:", alarm_note_label: "Ескертпе:", alarm_send: "Орнату", taxi_title: "Такси шақыру",
+      taxi_dest_label: "Қайда:", taxi_time_label: "Келу уақыты:", taxi_passengers_label: "Жолаушылар саны:", taxi_send: "Шақыру",
       items: { 1: "Тауық сорпасы", 2: "Асқабақ сорпасы", 3: "Саңырауқұлақ сорпасы", 4: "Рамен", 5: "Рибай стейгі", 6: "Карбонара пастасы", 7: "Классикалық бургер", 8: "Маргарита пиццасы", 9: "Жаңа сығылған шырын", 10: "Капучино кофесі", 11: "Жасыл шай", 12: "Кока-Кола" }
     },
     tr: {
-      room_key: "Oda:",
-      btn_back: "Geri",
-      service_alarm: "Uyandırma Servisi",
-      service_hotel: "Housekeeping",
-      service_taxi: "Taksi Çağır",
-      service_reception: "Resepsiyon",
-      service_menu: "Yemek Menüsü",
-      service_review: "Değerlendirme Yap",
-      service_problem: "Sorun Bildir",
-      hk_title: "Housekeeping",
-      hk_call_maids: "Kat Hizmetlisini Çağır",
-      hk_clean_room: "Odamı Temizleyin",
-      cat_all: "Tümü",
-      cat_soups: "Çorbalar",
-      cat_mains: "Ana Yemekler",
-      cat_drinks: "İçecekler",
-      cart_items: "ürün",
-      cart_view: "Siparişi Gör",
-      modal_title: "Siparişiniz",
-      modal_total: "Toplam:",
-      modal_send: "Siparişi Gönder",
-      modal_close: "Kapat",
-      order_success: "Başarıyla gönderildi!",
-      price_uzs: "UZS",
-      review_title: "Değerlendirme Yap",
-      review_rating_label: "Hizmetimizi değerlendirin:",
-      review_comment_label: "Yorumunuz:",
-      review_send: "Gönder",
-      problem_title: "Sorun Bildir",
-      problem_comment_label: "Sorunu açıklayın:",
-      problem_send: "Raporu Gönder",
-      select_stars_warn: "Lütfen bir puan seçin!",
-      alarm_title: "Alarm Kur",
-      alarm_time_label: "Saat:",
-      alarm_date_label: "Tarih:",
-      alarm_note_label: "Not:",
-      alarm_send: "Alarmı Kur",
-      taxi_title: "Taksi Çağır",
-      taxi_dest_label: "Nereye:",
-      taxi_time_label: "Alınış Saati:",
-      taxi_passengers_label: "Yolcu Sayısı:",
-      taxi_send: "Taksi İste",
+      room_key: "Oda:", btn_back: "Geri", service_alarm: "Uyandırma Servisi", service_hotel: "Housekeeping",
+      service_taxi: "Taksi Çağır", service_reception: "Resepsiyon", service_menu: "Yemek Menüsü", service_review: "Değerlendirme Yap",
+      service_problem: "Sorun Bildir", hk_title: "Housekeeping", hk_call_maids: "Kat Hizmetlisini Çağır", hk_clean_room: "Odamı Temizleyin",
+      cat_all: "Tümü", cat_soups: "Çorbalar", cat_mains: "Ana Yemekler", cat_drinks: "İçecekler", cart_items: "ürün",
+      cart_view: "Siparişi Gör", modal_title: "Siparişiniz", modal_total: "Toplam:", modal_send: "Siparişi Gönder",
+      modal_close: "Kapat", order_success: "Başarıyla gönderildi!", price_uzs: "UZS", review_title: "Değerlendirme Yap",
+      review_rating_label: "Hizmetimizi değerlendirin:", review_comment_label: "Yorumunuz:", review_send: "Gönder",
+      problem_title: "Sorun Bildir", problem_comment_label: "Sorunu açıklayın:", problem_send: "Raporu Gönder",
+      select_stars_warn: "Lütfen bir puan seçin!", alarm_title: "Alarm Kur", alarm_time_label: "Saat:",
+      alarm_date_label: "Tarih:", alarm_note_label: "Not:", alarm_send: "Alarmı Kur", taxi_title: "Taksi Çağır",
+      taxi_dest_label: "Nereye:", taxi_time_label: "Alınış Saati:", taxi_passengers_label: "Yolcu Sayısı:", taxi_send: "Taksi İste",
       items: { 1: "Tavuk Çorbası", 2: "Balkabağı Çorbası", 3: "Mantar Çorbası", 4: "Ramen", 5: "Ribeye Biftek", 6: "Makarna Carbonara", 7: "Klasik Burger", 8: "Margarita Pizza", 9: "Taze Sıkılmış Meyve Suyu", 10: "Kappuçino", 11: "Yeşil Çay", 12: "Koka-Kola" }
     }
   };
 
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzODRrkoZzpK1a7qjRdvj31LPEgu158SypNWXS_vjBix7vyjPwgUrxDvvNnc3M2Vdr_2Q/exec";
   const WORKER_URL = "https://solitary-frog-ffbc.thetowerroomservice.workers.dev";
   const tg = window.Telegram?.WebApp;
   if (tg) tg.ready();
@@ -1615,7 +1370,6 @@
     { id: 12, cat: "drinks", price: 18000, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=400&auto=format&fit=crop" }
   ];
 
-  /* ЧТЕНИЕ HASH/QUERY ПАРАМЕТРОВ ДЛЯ НОМЕРА КОМНАТЫ */
   function getRoomFromUrl() {
     const searchParams = new URLSearchParams(window.location.search);
     if (searchParams.has('room')) return searchParams.get('room');
@@ -1624,13 +1378,16 @@
     const hashParams = new URLSearchParams(hash);
     if (hashParams.has('room')) return hashParams.get('room');
 
-    return "101"; // Дефолтный номер
+    return "101";
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     const roomNumber = getRoomFromUrl();
     const roomEl = document.querySelector('.room-number');
     if (roomEl) roomEl.innerText = roomNumber;
+
+    const headerTitle = document.getElementById('headerTitle');
+    if (headerTitle) headerTitle.innerText = `Room Service — Номер ${roomNumber}`;
 
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('alarmDate').value = today;
@@ -1646,7 +1403,6 @@
     renderMenu();
   });
 
-  /* СКРЫТИЕ ВЕРХНЕЙ ПАНЕЛИ ПРИ СКРОЛЛЕ */
   window.addEventListener('scroll', () => {
     if (document.body.classList.contains('modal-open')) return;
     const topPanel = document.getElementById('topPanel');
@@ -1661,7 +1417,6 @@
     lastScrollY = currentScrollY;
   });
 
-  /* УПРАВЛЕНИЕ ДРОПДАУНОМ ЯЗЫКОВ */
   function toggleLangDropdown(event) {
     event.stopPropagation();
     document.getElementById('langContainer').classList.toggle('open');
@@ -1932,31 +1687,56 @@
     document.getElementById('modalTotalSum').innerText = `${totalSum.toLocaleString('ru-RU')} ${langObj['price_uzs']}`;
   }
 
-  /* ОБЩАЯ ФУНКЦИЯ ОТПРАВКИ НА WORKER */
+  /* ОБЩАЯ ФУНКЦИЯ ОТПРАВКИ (СНАЧАЛА НА APP SCRIPT, ЗАТЕМ НА WORKER) */
   async function postData(reqText, username, modalId = null, onSuccessCallback = null, userComment = "") {
     const langObj = i18n[currentLang] || i18n['ru'];
+    const payload = JSON.stringify({
+      text: reqText, 
+      username: username,
+      user_comment: userComment,
+      comment: userComment
+    });
+
     try {
-      const response = await fetch(WORKER_URL, {
+      // 1. Попытка отправить напрямую на Apps Script Macro
+      await fetch(APPS_SCRIPT_URL, {
         method: "POST",
+        mode: "no-cors",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          text: reqText, 
-          username: username,
-          user_comment: userComment,
-          comment: userComment
-        })
+        body: payload
       });
 
-      const result = await response.json();
-      if (result.success || result.ok) {
-        showToast(langObj['order_success']);
-        if (modalId) closeModal(modalId);
-        if (onSuccessCallback) onSuccessCallback();
-      } else {
-        showToast("Ошибка отправки.");
-      }
+      // Исполняем onSuccessCallback и закрываем окно
+      showToast(langObj['order_success']);
+      if (modalId) closeModal(modalId);
+      if (onSuccessCallback) onSuccessCallback();
+
+      // Parallel/Backup запрос на Cloudflare Worker
+      fetch(WORKER_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload
+      }).catch(e => console.log('Worker backup error:', e));
+
     } catch (err) {
-      showToast("Ошибка сети.");
+      // Fallback на Worker если прямая отправка заблокирована
+      try {
+        const response = await fetch(WORKER_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: payload
+        });
+        const result = await response.json();
+        if (result.success || result.ok) {
+          showToast(langObj['order_success']);
+          if (modalId) closeModal(modalId);
+          if (onSuccessCallback) onSuccessCallback();
+        } else {
+          showToast("Ошибка отправки.");
+        }
+      } catch (workerErr) {
+        showToast("Ошибка сети.");
+      }
     }
   }
 
