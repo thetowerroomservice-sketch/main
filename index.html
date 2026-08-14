@@ -1379,7 +1379,7 @@
       service_reception: "Recepción",
       service_menu: "Menú",
       service_review: "Dejar una opinión",
-      service_problem: "Reportar un problema",
+      service_problem: "Reportar un проблема",
       hk_title: "Housekeeping",
       hk_call_maids: "Llamar a las camareras",
       hk_clean_room: "Limpiar mi habitación",
@@ -1578,7 +1578,7 @@
           id: item.id,
           name: item.name,
           cat: item.category || 'mains',
-          price: item.price,
+          price: Number(item.price) || 0,
           img: item.img || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop"
         }));
       }
@@ -1858,7 +1858,7 @@
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
 
-    // Названия блюд выводятся так, как занесены в базы данных Supabase
+    // Названия блюд выводятся так, как занесены в базу данных Supabase
     let orderList = cart.map(item => {
       return `• ${item.name} x${item.qty} — ${(item.price * item.qty).toLocaleString('ru-RU')} UZS`;
     }).join('\n');
