@@ -1399,7 +1399,7 @@
       review_rating_label: "Califique nuestro servicio:",
       review_comment_label: "Su comentario:",
       review_send: "Enviar opinión",
-      problem_title: "Reportar un problema",
+      problem_title: "Reportar un проблема",
       problem_comment_label: "Describa el problema:",
       problem_send: "Enviar reporte",
       select_stars_warn: "¡Por favor seleccione una calificación!",
@@ -1721,18 +1721,18 @@
     window.scrollTo(0, scrollPosition);
   }
 
+  // ОТПРАВКА СООБЩЕНИЙ В BOT ВСЕГДА НА РУССКОМ
   async function sendHousekeepingAction(actionType) {
-    const langObj = i18n[currentLang] || i18n['ru'];
     const actionText = actionType === 'call_maids' 
-      ? (langObj['hk_call_maids'] || 'Позвать горничных')
-      : (langObj['hk_clean_room'] || 'Убраться в моем номере');
+      ? 'Позвать горничных'
+      : 'Убраться в моем номере';
 
     const roomNumber = document.querySelector('.room-number').innerText;
     const username = tg?.initDataUnsafe?.user?.username 
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
 
-    const reqText = `🧹 <b>HOUSEKEEPING</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n📌 <b>Действие:</b> ${actionText}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+    const reqText = `🧹 <b>HOUSEKEEPING</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n📌 <b>Действие:</b> ${actionText}\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`;
 
     await postData(reqText, username, 'housekeepingModal');
   }
@@ -1743,7 +1743,7 @@
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
 
-    const reqText = `📞 <b>ВЫЗОВ РЕСЕПШЕНА</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n☎️ <b>Запрос на номер:</b> 1111\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+    const reqText = `📞 <b>ВЫЗОВ РЕСЕПШЕНА</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n☎️ <b>Запрос на номер:</b> 1111\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`;
 
     await postData(reqText, username, 'receptionModal');
   }
@@ -1767,7 +1767,7 @@
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
 
-    const reqText = `⏰ <b>ЗАПРОС БУДИЛЬНИКА</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n📅 <b>Дата:</b> ${date}\n🕒 <b>Время:</b> ${time}\n📝 <b>Заметка:</b> ${note || 'Без примечания'}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+    const reqText = `⏰ <b>ЗАПРОС БУДИЛЬНИКА</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n📅 <b>Дата:</b> ${date}\n🕒 <b>Время:</b> ${time}\n📝 <b>Заметка:</b> ${note || 'Без примечания'}\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`;
 
     await postData(reqText, username, 'alarmModal', null, note);
   }
@@ -1787,7 +1787,7 @@
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
 
-    const reqText = `🚖 <b>ЗАКАЗ ТАКСИ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n📍 <b>Направление:</b> ${dest || 'Не указано'}\n📅 <b>Дата:</b> ${date}\n🕒 <b>Время подачи:</b> ${time}\n👥 <b>Пассажиров:</b> ${passengers}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+    const reqText = `🚖 <b>ЗАКАЗ ТАКСИ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n📍 <b>Направление:</b> ${dest || 'Не указано'}\n📅 <b>Дата:</b> ${date}\n🕒 <b>Время подачи:</b> ${time}\n👥 <b>Пассажиров:</b> ${passengers}\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`;
 
     await postData(reqText, username, 'taxiModal', null, dest);
   }
@@ -1826,7 +1826,7 @@
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
 
     const starsStr = "★".repeat(selectedRating) + "☆".repeat(5 - selectedRating);
-    const reqText = `⭐ <b>НОВЫЙ ОТЗЫВ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n🌟 <b>Оценка:</b> ${starsStr} (${selectedRating}/5)\n💬 <b>Отзыв:</b> ${comment || 'Без комментария'}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+    const reqText = `⭐ <b>НОВЫЙ ОТЗЫВ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n🌟 <b>Оценка:</b> ${starsStr} (${selectedRating}/5)\n💬 <b>Отзыв:</b> ${comment || 'Без комментария'}\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`;
 
     await postData(reqText, username, 'reviewModal', null, comment);
   }
@@ -1843,7 +1843,7 @@
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
 
-    const reqText = `⚠️ <b>ЖАЛОБА / ПРОБЛЕМА</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n🚨 <b>Описание:</b> ${comment}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+    const reqText = `⚠️ <b>ЖАЛОБА / ПРОБЛЕМА</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n🚨 <b>Описание:</b> ${comment}\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`;
 
     await postData(reqText, username, 'problemModal', () => {
       document.getElementById('problemComment').value = '';
@@ -1853,18 +1853,18 @@
   async function sendOrder() {
     if (cart.length === 0) return;
 
-    const langObj = i18n[currentLang] || i18n['ru'];
     const roomNumber = document.querySelector('.room-number').innerText;
     const username = tg?.initDataUnsafe?.user?.username 
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
 
+    // Названия блюд выводятся так, как занесены в базы данных Supabase
     let orderList = cart.map(item => {
-      return `• ${item.name} x${item.qty} — ${(item.price * item.qty).toLocaleString('ru-RU')} ${langObj['price_uzs']}`;
+      return `• ${item.name} x${item.qty} — ${(item.price * item.qty).toLocaleString('ru-RU')} UZS`;
     }).join('\n');
 
     const totalSum = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-    const reqText = `🍽️ <b>ЗАКАЗ ЕДЫ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n\n<b>Состав заказа:</b>\n${orderList}\n\n💰 <b>Итого:</b> ${totalSum.toLocaleString('ru-RU')} ${langObj['price_uzs']}\n🌐 <b>Язык:</b> ${currentLang.toUpperCase()}`;
+    const reqText = `🍽️ <b>ЗАКАЗ ЕДЫ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n\n<b>Состав заказа:</b>\n${orderList}\n\n💰 <b>Итого:</b> ${totalSum.toLocaleString('ru-RU')} UZS\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`;
 
     await postData(reqText, username, 'orderModal', () => {
       cart = [];
