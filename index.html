@@ -1091,6 +1091,11 @@
         <span id="modalTotalSum" style="color: var(--accent-gold);">0 UZS</span>
       </div>
 
+      <div class="form-group" style="margin-top: 16px;">
+        <label data-i18n="order_note_label">Примечание к заказу (необязательно):</label>
+        <textarea id="orderNote" placeholder="Например: без лука, побольше специй..." style="min-height: 60px;"></textarea>
+      </div>
+
       <button class="action-btn" id="sendBtn" onclick="sendOrder()" data-i18n="modal_send">Отправить заказ</button>
       <button class="close-modal" onclick="closeModal('orderModal')" data-i18n="modal_close">Закрыть</button>
     </div>
@@ -1858,19 +1863,22 @@
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
 
+    const orderNote = document.getElementById('orderNote').value.trim();
+
     // Названия блюд выводятся так, как занесены в базу данных Supabase
     let orderList = cart.map(item => {
       return `• ${item.name} x${item.qty} — ${(item.price * item.qty).toLocaleString('ru-RU')} UZS`;
     }).join('\n');
 
     const totalSum = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-    const reqText = `🍽️ <b>ЗАКАЗ ЕДЫ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n\n<b>Состав заказа:</b>\n${orderList}\n\n💰 <b>Итого:</b> ${totalSum.toLocaleString('ru-RU')} UZS\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`;
+    const reqText = `🍽️ <b>ЗАКАЗ ЕДЫ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n\n<b>Состав заказа:</b>\n${orderList}\n\n💰 <b>Итого:</b> ${totalSum.toLocaleString('ru-RU')} UZS\n📝 <b>Примечание:</b> ${orderNote || 'Без примечания'}\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`;
 
     await postData(reqText, username, 'orderModal', () => {
       cart = [];
+      document.getElementById('orderNote').value = '';
       updateCartUI();
       renderMenu();
-    });
+    }, orderNote);
   }
 
   function renderOrderModal() {
