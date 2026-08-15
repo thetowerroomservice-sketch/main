@@ -294,6 +294,58 @@
       letter-spacing: -0.5px;
     }
 
+    /* --- КАРТОЧКА WI-FI --- */
+    .wifi-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 16px 18px;
+      margin: 0 14px 20px 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+    }
+
+    .wifi-card:hover {
+      border-color: var(--accent-gold);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(212, 175, 55, 0.15);
+    }
+
+    .wifi-card:active {
+      transform: scale(0.98);
+    }
+
+    .wifi-icon-wrapper {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      background: rgba(212, 175, 55, 0.12);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+    }
+
+    .wifi-icon-wrapper svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--accent-gold);
+    }
+
+    .wifi-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .wifi-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
     /* --- СЕТКА СЕРВИСОВ --- */
     .services-grid {
       display: grid;
@@ -872,6 +924,17 @@
     <h2>Room Service</h2>
   </div>
 
+  <!-- КАРТОЧКА WI-FI -->
+  <div class="wifi-card" onclick="openModal('wifiModal')">
+    <div class="wifi-icon-wrapper">
+      <svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 0 0-6 0zm-4-4l2 2a7.074 7.074 0 0 1 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
+    </div>
+    <div>
+      <div class="wifi-title">Бесплатный Wi-Fi</div>
+      <div class="wifi-subtitle">Нажмите, чтобы получить пароль</div>
+    </div>
+  </div>
+
   <!-- СЕТКА КАРТОЧЕК -->
   <div class="services-grid" id="mainServices">
     
@@ -883,39 +946,7 @@
       <span class="service-title" data-i18n="service_alarm">Будильник</span>
     </div>
 
-    <!-- 2. Housekeeping (Обслуга) -->
-    <div class="service-card" onclick="openModal('housekeepingModal')">
-      <div class="service-icon-wrapper">
-        <svg viewBox="0 0 24 24"><path d="M19 13c-1.1 0-2 .9-2 2v4H7v-4c0-1.1-.9-2-2-2s-2 .9-2 2v4c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2zm-7-3c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm8-7H4c-1.1 0-2 .9-2 2v4h20V5c0-1.1-.9-2-2-2z"/></svg>
-      </div>
-      <span class="service-title" data-i18n="service_hotel">Housekeeping</span>
-    </div>
-
-    <!-- 3. Вызвать такси -->
-    <div class="service-card" onclick="openTaxiModal()">
-      <div class="service-icon-wrapper">
-        <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
-      </div>
-      <span class="service-title" data-i18n="service_taxi">Вызвать такси</span>
-    </div>
-
-    <!-- 4. Ресепшн -->
-    <div class="service-card" onclick="openModal('receptionModal')">
-      <div class="service-icon-wrapper">
-        <svg viewBox="0 0 24 24"><path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57-.35-.11-.74-.03-1.02.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.21c.28-.26.36-.65.25-1C8.7 6.45 8.5 5.25 8.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1z"/></svg>
-      </div>
-      <span class="service-title" data-i18n="service_reception">Ресепшн</span>
-    </div>
-
-    <!-- 5. Сообщить о проблеме -->
-    <div class="service-card" onclick="openModal('problemModal')">
-      <div class="service-icon-wrapper">
-        <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.4-2.4c.4-.4.4-1 0-1.3z"/></svg>
-      </div>
-      <span class="service-title" data-i18n="service_problem">Сообщить о проблеме</span>
-    </div>
-
-    <!-- 6. Меню еды -->
+    <!-- 2. Меню еды -->
     <div class="service-card large-card" onclick="showMenu()">
       <div class="service-icon-wrapper" style="width: 60px; height: 60px;">
         <svg viewBox="0 0 24 24" style="width: 30px; height: 30px;"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.46 3.9 3.45 4.38l-.95 7.62h3l-.95-7.62C9.54 12.9 11 11.12 11 9zm5-7v12h2V9h3V2h-5z"/></svg>
@@ -923,12 +954,44 @@
       <span class="service-title" style="font-size: 15px;" data-i18n="service_menu">Меню еды</span>
     </div>
 
-    <!-- 7. Оставить отзыв -->
+    <!-- 3. Housekeeping (Обслуга) -->
+    <div class="service-card" onclick="openModal('housekeepingModal')">
+      <div class="service-icon-wrapper">
+        <svg viewBox="0 0 24 24"><path d="M19 13c-1.1 0-2 .9-2 2v4H7v-4c0-1.1-.9-2-2-2s-2 .9-2 2v4c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2zm-7-3c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm8-7H4c-1.1 0-2 .9-2 2v4h20V5c0-1.1-.9-2-2-2z"/></svg>
+      </div>
+      <span class="service-title" data-i18n="service_hotel">Housekeeping</span>
+    </div>
+
+    <!-- 4. Вызвать такси -->
+    <div class="service-card" onclick="openTaxiModal()">
+      <div class="service-icon-wrapper">
+        <svg viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+      </div>
+      <span class="service-title" data-i18n="service_taxi">Вызвать такси</span>
+    </div>
+
+    <!-- 5. Ресепшн -->
+    <div class="service-card" onclick="openModal('receptionModal')">
+      <div class="service-icon-wrapper">
+        <svg viewBox="0 0 24 24"><path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57-.35-.11-.74-.03-1.02.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.21c.28-.26.36-.65.25-1C8.7 6.45 8.5 5.25 8.5 4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1z"/></svg>
+      </div>
+      <span class="service-title" data-i18n="service_reception">Ресепшн</span>
+    </div>
+
+    <!-- 6. Оставить отзыв -->
     <div class="service-card" onclick="openReviewModal()">
       <div class="service-icon-wrapper">
         <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
       </div>
       <span class="service-title" data-i18n="service_review">Оставить отзыв</span>
+    </div>
+
+    <!-- 7. Сообщить о проблеме -->
+    <div class="service-card" onclick="openModal('problemModal')">
+      <div class="service-icon-wrapper">
+        <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.4-2.4c.4-.4.4-1 0-1.3z"/></svg>
+      </div>
+      <span class="service-title" data-i18n="service_problem">Сообщить о проблеме</span>
     </div>
 
   </div>
@@ -958,6 +1021,30 @@
       <div class="cart-total" id="cartTotalSum">0 UZS</div>
     </div>
     <div><span data-i18n="cart_view">Заказ</span> →</div>
+  </div>
+
+  <!-- МОДАЛКА: WI-FI -->
+  <div class="modal" id="wifiModal">
+    <div class="modal-body" style="text-align: center;">
+      <div class="modal-title">Wi-Fi</div>
+
+      <img src="./images/wifi-qr.png" alt="Wi-Fi QR" style="width: 200px; height: 200px; border-radius: 16px; margin: 8px auto 20px auto; display: block; border: 1px solid var(--card-border);">
+
+      <div style="margin-bottom: 16px;">
+        <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">Сеть:</div>
+        <div style="font-size: 17px; font-weight: 700;">The Tower Hotel</div>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 4px;">Пароль:</div>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+          <span id="wifiPasswordText" style="font-size: 18px; font-weight: 700; color: var(--accent-gold); letter-spacing: 0.5px;">Tower2023</span>
+          <button onclick="copyWifiPassword()" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 6px 10px; cursor: pointer; color: var(--text-main); font-size: 14px;">📋</button>
+        </div>
+      </div>
+
+      <button class="close-modal" onclick="closeModal('wifiModal')" data-i18n="modal_close">Закрыть</button>
+    </div>
   </div>
 
   <!-- МОДАЛКА: HOUSEKEEPING -->
@@ -1684,6 +1771,15 @@
     document.getElementById('toastMessage').innerText = msg;
     toast.classList.add('show');
     setTimeout(() => { toast.classList.remove('show'); }, 3000);
+  }
+
+  function copyWifiPassword() {
+    const password = document.getElementById('wifiPasswordText').innerText;
+    navigator.clipboard.writeText(password).then(() => {
+      showToast('Пароль скопирован!');
+    }).catch(() => {
+      showToast('Не удалось скопировать.');
+    });
   }
 
   function setLanguage(lang) {
