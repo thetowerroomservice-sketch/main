@@ -5,6 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>The Tower Hotel — Room Service</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+   <script>
+    // Жёсткая блокировка зума (страховка поверх meta viewport для Android/WebView)
+    document.addEventListener('gesturestart', function (e) { e.preventDefault(); }, { passive: false });
+    document.addEventListener('gesturechange', function (e) { e.preventDefault(); }, { passive: false });
+    document.addEventListener('touchmove', function (e) {
+      if (e.touches && e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+    (function () {
+      var lastTouchEnd = 0;
+      var lastX = 0, lastY = 0;
+      document.addEventListener('touchend', function (e) {
+        var now = Date.now();
+        var t = e.changedTouches && e.changedTouches[0];
+        var x = t ? t.clientX : 0;
+        var y = t ? t.clientY : 0;
+        var sameSpot = Math.abs(x - lastX) < 30 && Math.abs(y - lastY) < 30;
+        if (now - lastTouchEnd <= 350 && sameSpot) e.preventDefault();
+        lastTouchEnd = now;
+        lastX = x; lastY = y;
+      }, { passive: false });
+    })();
+  </script>
   <style>
     /* ПЕРЕМЕННЫЕ ТЕМЫ */
     :root {
@@ -1900,7 +1922,7 @@
           name: item.name,
           cat: item.category || 'mains',
           price: Number(item.price) || 0,
-          img: item.img || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop"
+          img: item.image_url || item.img || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop"
         }));
       }
       renderMenu();
