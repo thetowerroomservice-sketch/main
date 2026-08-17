@@ -26,6 +26,37 @@
         lastX = x; lastY = y;
       }, { passive: false });
     })();
+
+    // Блокировка зума колесом мыши с Ctrl (desktop) и клавиатурой (Ctrl +/-/0)
+    document.addEventListener('wheel', function (e) {
+      if (e.ctrlKey) e.preventDefault();
+    }, { passive: false });
+    document.addEventListener('keydown', function (e) {
+      if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].includes(e.key)) {
+        e.preventDefault();
+      }
+    });
+
+    // Блокировка копирования, выделения, контекстного меню и перетаскивания
+    // (кроме полей ввода — там всё должно работать как обычно)
+    function isEditableTarget(el) {
+      return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
+    }
+    document.addEventListener('contextmenu', function (e) {
+      if (!isEditableTarget(e.target)) e.preventDefault();
+    });
+    document.addEventListener('copy', function (e) {
+      if (!isEditableTarget(e.target)) e.preventDefault();
+    });
+    document.addEventListener('cut', function (e) {
+      if (!isEditableTarget(e.target)) e.preventDefault();
+    });
+    document.addEventListener('selectstart', function (e) {
+      if (!isEditableTarget(e.target)) e.preventDefault();
+    });
+    document.addEventListener('dragstart', function (e) {
+      if (e.target && e.target.tagName === 'IMG') e.preventDefault();
+    });
   </script>
   <style>
     /* ПЕРЕМЕННЫЕ ТЕМЫ */
@@ -65,10 +96,37 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-tap-highlight-color: transparent;
       transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      /* БЛОКИРОВКА ЗУМА ЖЕСТАМИ (pinch-zoom / double-tap) на уровне CSS */
+      touch-action: manipulation;
+      /* БЛОКИРОВКА ВЫДЕЛЕНИЯ / КОПИРОВАНИЯ ТЕКСТА */
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none; /* запрет меню "Копировать/Сохранить" по долгому тапу на iOS */
+    }
+
+    /* В полях ввода выделение и вставка текста должны работать как обычно */
+    input, textarea, [contenteditable="true"] {
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
+      -webkit-touch-callout: default;
+    }
+
+    img {
+      -webkit-user-drag: none;
+      user-drag: none;
+      -khtml-user-drag: none;
+      -moz-user-drag: none;
+      -o-user-drag: none;
+      pointer-events: auto;
     }
 
     html, body {
       overscroll-behavior: none;
+      touch-action: manipulation;
     }
 
     body {
@@ -1904,30 +1962,98 @@
     return text;
   }
 
+  // Совместимость со старыми/иными значениями category в Supabase,
+  // чтобы блюда не пропадали из меню, если категория написана не как ожидается.
+  const CATEGORY_ALIASES = {
+    'soups': 'soup',
+    'mains': 'main_course',
+    'main': 'main_course',
+    'drinks': 'soft_drinks',
+    'drink': 'soft_drinks',
+    'appetizer': 'hot_appetizers',
+    'appetizers': 'hot_appetizers',
+    'salads': 'salad',
+    'pastas': 'pasta',
+    'pizzas': 'pizza',
+    'side': 'side_dishes',
+    'sides': 'side_dishes',
+    'desserts': 'dessert',
+    'tea': 'althaus_tea',
+    'cocktail': 'cocktail_non_alcohol',
+    'cocktails': 'cocktail_non_alcohol',
+    'alcohol_cocktail': 'cocktail_alcohol',
+    'wines': 'wine',
+    'beers': 'beer'
+  };
+
+  const KNOWN_CATEGORIES = new Set([...FOOD_CATEGORIES, ...BAR_CATEGORIES]);
+
+  function normalizeCategory(rawCat) {
+    if (!rawCat) return 'main_course';
+    const cat = String(rawCat).trim().toLowerCase();
+    if (KNOWN_CATEGORIES.has(cat)) return cat;
+    if (CATEGORY_ALIASES[cat]) return CATEGORY_ALIASES[cat];
+    // Неизвестная категория — не прячем блюдо, показываем среди "Основные блюда"
+    return 'main_course';
+  }
+
+  // Прямой запрос к Supabase REST API через XMLHttpRequest.
+  // Используется вместо supabase-js .select(), потому что в некоторых
+  // окружениях предпросмотра (панели, перехватывающие window.fetch для
+  // логов в консоль) fetch падает с DataCloneError на Headers-объекте.
+  // XHR этот перехват не затрагивает и работает одинаково везде.
+  function supabaseRestGet(path) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', `${SUPABASE_URL}/rest/v1/${path}`, true);
+      xhr.setRequestHeader('apikey', SUPABASE_KEY);
+      xhr.setRequestHeader('Authorization', `Bearer ${SUPABASE_KEY}`);
+      xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            resolve(JSON.parse(xhr.responseText));
+          } catch (e) {
+            reject(new Error('Не удалось разобрать ответ Supabase: ' + e.message));
+          }
+        } else {
+          let msg = `Supabase HTTP ${xhr.status}`;
+          try {
+            const errJson = JSON.parse(xhr.responseText);
+            msg += ': ' + (errJson.message || errJson.hint || xhr.responseText);
+          } catch (e) {
+            msg += ': ' + xhr.responseText;
+          }
+          reject(new Error(msg));
+        }
+      };
+      xhr.onerror = function () {
+        reject(new Error('Сетевая ошибка при обращении к Supabase (XHR)'));
+      };
+      xhr.send();
+    });
+  }
+
   // ЗАГРУЗКА ДАННЫХ ИЗ SUPABASE
   async function fetchMenuFromSupabase() {
     try {
-      const { data, error } = await supabaseClient
-        .from('menu')
-        .select('*');
-
-      if (error) {
-        console.error('Ошибка получения данных из Supabase:', error);
-        return;
-      }
+      const data = await supabaseRestGet('menu?select=*');
 
       if (data && data.length > 0) {
         dbMenu = data.map(item => ({
           id: item.id,
           name: item.name,
-          cat: item.category || 'mains',
+          cat: normalizeCategory(item.category),
           price: Number(item.price) || 0,
           img: item.image_url || item.img || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop"
         }));
       }
       renderMenu();
     } catch (err) {
-      console.error('Сбой сети Supabase:', err);
+      console.error('Ошибка получения данных из Supabase:', err && err.message ? err.message : err);
+      const list = document.getElementById('menuList');
+      if (list) {
+        list.innerHTML = `<div class="menu-empty-msg" style="color:#ff453a;">Ошибка загрузки меню из Supabase:<br>${err && err.message ? err.message : err}</div>`;
+      }
     }
   }
 
