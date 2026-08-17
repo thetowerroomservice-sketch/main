@@ -2197,6 +2197,53 @@
     });
   }
 
+  // Запись (INSERT) в Supabase через тот же принцип, что и supabaseRestGet выше —
+  // используем XHR, а не fetch, чтобы не ловить DataCloneError в панелях предпросмотра.
+  function supabaseRestPost(path, body) {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', `${SUPABASE_URL}/rest/v1/${path}`, true);
+      xhr.setRequestHeader('apikey', SUPABASE_KEY);
+      xhr.setRequestHeader('Authorization', `Bearer ${SUPABASE_KEY}`);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.setRequestHeader('Prefer', 'return=minimal');
+      xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve(true);
+        } else {
+          let msg = `Supabase HTTP ${xhr.status}`;
+          try {
+            const errJson = JSON.parse(xhr.responseText);
+            msg += ': ' + (errJson.message || errJson.hint || xhr.responseText);
+          } catch (e) {
+            msg += ': ' + xhr.responseText;
+          }
+          reject(new Error(msg));
+        }
+      };
+      xhr.onerror = function () {
+        reject(new Error('Сетевая ошибка при обращении к Supabase (XHR)'));
+      };
+      xhr.send(JSON.stringify(body));
+    });
+  }
+
+  // Сохраняем заказ в таблицу "orders" для статистики (сумма за день/месяц и т.д.).
+  // Ошибка записи не должна мешать самой отправке заказа в бота — поэтому ловим
+  // её отдельно и просто пишем в консоль, не показывая юзеру.
+  function logOrderToSupabase(cartItems, totalSum, roomNumber, username, orderNote) {
+    const payload = {
+      room_number: roomNumber,
+      username: username,
+      total_sum: totalSum,
+      items: cartItems.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty })),
+      note: orderNote || null
+    };
+    supabaseRestPost('orders', payload).catch(err => {
+      console.error('Не удалось сохранить заказ в Supabase для статистики:', err && err.message ? err.message : err);
+    });
+  }
+
   // ЗАГРУЗКА ДАННЫХ ИЗ SUPABASE
   async function fetchMenuFromSupabase() {
     try {
@@ -2541,6 +2588,8 @@
 
     const totalSum = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
     const reqText = `🍽️ <b>ЗАКАЗ ЕДЫ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n\n<b>Состав заказа:</b>\n${orderList}\n\n💰 <b>Итого:</b> ${totalSum.toLocaleString('ru-RU')} UZS\n📝 <b>Примечание:</b> ${orderNote || 'Без примечания'}\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`;
+
+    logOrderToSupabase(cart, totalSum, roomNumber, username, orderNote);
 
     await postData(reqText, username, 'orderModal', () => {
       cart = [];
