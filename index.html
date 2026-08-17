@@ -1660,7 +1660,15 @@
 
   const WORKER_URL = "https://solitary-frog-ffbc.thetowerroomservice.workers.dev";
   const tg = window.Telegram?.WebApp;
-  if (tg) tg.ready();
+  if (tg) {
+    tg.ready();
+    tg.expand();
+    // Отключаем системный свайп вниз, которым Telegram сворачивает/закрывает мини-апп,
+    // чтобы случайное касание/свайп по интерфейсу не «выкидывало» из приложения на Android
+    if (typeof tg.disableVerticalSwipes === 'function') {
+      tg.disableVerticalSwipes();
+    }
+  }
 
   let currentLang = 'ru';
   let cart = [];
@@ -1689,7 +1697,7 @@
           name: item.name,
           cat: item.category || 'mains',
           price: Number(item.price) || 0,
-          img: item.image_url || item.img || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop"
+          img: item.img || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop"
         }));
       }
       renderMenu();
@@ -1817,28 +1825,55 @@
   }
 
   function showMenu() {
+    if (document.getElementById('foodMenuSection').style.display === 'block') return;
     document.getElementById('mainServices').style.display = 'none';
     document.getElementById('foodMenuSection').style.display = 'block';
+    history.pushState({ appLayer: 'foodMenu' }, '');
   }
 
-  function hideMenu() {
+  function hideMenu(fromPopState) {
+    const wasOpen = document.getElementById('foodMenuSection').style.display === 'block';
     document.getElementById('foodMenuSection').style.display = 'none';
     document.getElementById('mainServices').style.display = 'grid';
+    if (wasOpen && !fromPopState) {
+      history.back();
+    }
   }
 
   function openModal(modalId) {
+    const modalEl = document.getElementById(modalId);
+    if (modalEl && modalEl.classList.contains('show')) return;
     scrollPosition = window.pageYOffset;
     document.body.style.top = `-${scrollPosition}px`;
     document.body.classList.add('modal-open');
-    document.getElementById(modalId).classList.add('show');
+    if (modalEl) modalEl.classList.add('show');
+    history.pushState({ appLayer: 'modal', modalId: modalId }, '');
   }
 
-  function closeModal(modalId) {
-    document.getElementById(modalId).classList.remove('show');
+  function closeModal(modalId, fromPopState) {
+    const modalEl = document.getElementById(modalId);
+    const wasOpen = !!(modalEl && modalEl.classList.contains('show'));
+    if (modalEl) modalEl.classList.remove('show');
     document.body.classList.remove('modal-open');
     document.body.style.top = '';
     window.scrollTo(0, scrollPosition);
+    if (wasOpen && !fromPopState) {
+      history.back();
+    }
   }
+
+  // Кнопка/жест «назад» на Android: если открыта модалка или меню еды — закрываем их,
+  // а не выходим из мини-аппа целиком. Работает вместе с disableVerticalSwipes() выше.
+  window.addEventListener('popstate', () => {
+    const openModalEl = document.querySelector('.modal.show');
+    if (openModalEl) {
+      closeModal(openModalEl.id, true);
+      return;
+    }
+    if (document.getElementById('foodMenuSection').style.display === 'block') {
+      hideMenu(true);
+    }
+  });
 
   // ОТПРАВКА СООБЩЕНИЙ В BOT ВСЕГДА НА РУССКОМ
   async function sendHousekeepingAction(actionType) {
