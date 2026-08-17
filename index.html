@@ -607,10 +607,30 @@
       font-weight: 700;
       color: var(--accent-gold);
       margin: 18px 2px 2px 2px;
-      padding-bottom: 6px;
+      padding: 8px 2px 6px 2px;
       border-bottom: 1px solid var(--card-border);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--bg-color);
+    }
+
+    .menu-group-subheader {
+      grid-column: 1 / -1;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 12px 2px 0 2px;
+      padding: 6px 2px 6px 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      position: sticky;
+      top: 39px;
+      z-index: 4;
+      background: var(--bg-color);
+      opacity: 0.92;
     }
 
     .menu-group-header:first-child {
@@ -1363,6 +1383,17 @@
       menu_empty: "Пока нет позиций в этой категории",
       bar_group_non_alcohol: "Напитки",
       bar_group_alcohol: "Алкоголь",
+      bar_type_cocktail_alcohol: "Алкогольные коктейли",
+      bar_type_beer: "Пиво",
+      bar_type_whiskey: "Виски",
+      bar_type_cognac: "Коньяк",
+      bar_type_brandy: "Бренди",
+      bar_type_rum: "Ром",
+      bar_type_vodka: "Водка",
+      bar_type_tequila: "Текила",
+      bar_type_gin: "Джин",
+      bar_type_liqueur: "Ликёр",
+      bar_type_wine: "Вино",
       cart_items: "позиции",
       cart_view: "Заказ",
       modal_title: "Ваш заказ",
@@ -1421,6 +1452,17 @@
       menu_empty: "Bu bo'limda hozircha taomlar yo'q",
       bar_group_non_alcohol: "Ichimliklar",
       bar_group_alcohol: "Alkogol",
+      bar_type_cocktail_alcohol: "Alkogolli kokteyllar",
+      bar_type_beer: "Pivo",
+      bar_type_whiskey: "Viski",
+      bar_type_cognac: "Konyak",
+      bar_type_brandy: "Brendi",
+      bar_type_rum: "Rom",
+      bar_type_vodka: "Vodka",
+      bar_type_tequila: "Tekila",
+      bar_type_gin: "Jin",
+      bar_type_liqueur: "Liker",
+      bar_type_wine: "Vino",
       cart_items: "ta taom",
       cart_view: "Buyurtma",
       modal_title: "Buyurtmangiz",
@@ -1479,6 +1521,17 @@
       menu_empty: "No items in this category yet",
       bar_group_non_alcohol: "Drinks",
       bar_group_alcohol: "Alcohol",
+      bar_type_cocktail_alcohol: "Alcoholic Cocktails",
+      bar_type_beer: "Beer",
+      bar_type_whiskey: "Whiskey",
+      bar_type_cognac: "Cognac",
+      bar_type_brandy: "Brandy",
+      bar_type_rum: "Rum",
+      bar_type_vodka: "Vodka",
+      bar_type_tequila: "Tequila",
+      bar_type_gin: "Gin",
+      bar_type_liqueur: "Liqueur",
+      bar_type_wine: "Wine",
       cart_items: "items",
       cart_view: "View Cart",
       modal_title: "Your Order",
@@ -1537,6 +1590,17 @@
       menu_empty: "该分类暂无菜品",
       bar_group_non_alcohol: "饮品",
       bar_group_alcohol: "酒精饮品",
+      bar_type_cocktail_alcohol: "酒精鸡尾酒",
+      bar_type_beer: "啤酒",
+      bar_type_whiskey: "威士忌",
+      bar_type_cognac: "干邑",
+      bar_type_brandy: "白兰地",
+      bar_type_rum: "朗姆酒",
+      bar_type_vodka: "伏特加",
+      bar_type_tequila: "龙舌兰",
+      bar_type_gin: "金酒",
+      bar_type_liqueur: "利口酒",
+      bar_type_wine: "葡萄酒",
       cart_items: "件",
       cart_view: "查看订单",
       modal_title: "您的订单",
@@ -1595,6 +1659,17 @@
       menu_empty: "لا توجد عناصر في هذا القسم بعد",
       bar_group_non_alcohol: "المشروبات",
       bar_group_alcohol: "المشروبات الكحولية",
+      bar_type_cocktail_alcohol: "كوكتيلات كحولية",
+      bar_type_beer: "بيرة",
+      bar_type_whiskey: "ويسكي",
+      bar_type_cognac: "كونياك",
+      bar_type_brandy: "براندي",
+      bar_type_rum: "روم",
+      bar_type_vodka: "فودكا",
+      bar_type_tequila: "تكيلا",
+      bar_type_gin: "جن",
+      bar_type_liqueur: "ليكيور",
+      bar_type_wine: "نبيذ",
       cart_items: "عناصر",
       cart_view: "عرض الطلب",
       modal_title: "طلبك",
@@ -1653,6 +1728,17 @@
       menu_empty: "Aucun article dans cette catégorie pour le moment",
       bar_group_non_alcohol: "Boissons",
       bar_group_alcohol: "Alcool",
+      bar_type_cocktail_alcohol: "Cocktails alcoolisés",
+      bar_type_beer: "Bière",
+      bar_type_whiskey: "Whisky",
+      bar_type_cognac: "Cognac",
+      bar_type_brandy: "Brandy",
+      bar_type_rum: "Rhum",
+      bar_type_vodka: "Vodka",
+      bar_type_tequila: "Tequila",
+      bar_type_gin: "Gin",
+      bar_type_liqueur: "Liqueur",
+      bar_type_wine: "Vin",
       cart_items: "articles",
       cart_view: "Voir la commande",
       modal_title: "Votre commande",
@@ -1711,6 +1797,17 @@
       menu_empty: "Todavía no hay artículos en esta categoría",
       bar_group_non_alcohol: "Bebidas",
       bar_group_alcohol: "Alcohol",
+      bar_type_cocktail_alcohol: "Cócteles alcohólicos",
+      bar_type_beer: "Cerveza",
+      bar_type_whiskey: "Whisky",
+      bar_type_cognac: "Coñac",
+      bar_type_brandy: "Brandy",
+      bar_type_rum: "Ron",
+      bar_type_vodka: "Vodka",
+      bar_type_tequila: "Tequila",
+      bar_type_gin: "Ginebra",
+      bar_type_liqueur: "Licor",
+      bar_type_wine: "Vino",
       cart_items: "artículos",
       cart_view: "Ver pedido",
       modal_title: "Su pedido",
@@ -1769,6 +1866,17 @@
       menu_empty: "Noch keine Artikel in dieser Kategorie",
       bar_group_non_alcohol: "Getränke",
       bar_group_alcohol: "Alkohol",
+      bar_type_cocktail_alcohol: "Alkoholische Cocktails",
+      bar_type_beer: "Bier",
+      bar_type_whiskey: "Whisky",
+      bar_type_cognac: "Cognac",
+      bar_type_brandy: "Brandy",
+      bar_type_rum: "Rum",
+      bar_type_vodka: "Wodka",
+      bar_type_tequila: "Tequila",
+      bar_type_gin: "Gin",
+      bar_type_liqueur: "Likör",
+      bar_type_wine: "Wein",
       cart_items: "Artikel",
       cart_view: "Bestellung anzeigen",
       modal_title: "Ihre Bestellung",
@@ -1827,6 +1935,17 @@
       menu_empty: "Бұл санатта әзірге позициялар жоқ",
       bar_group_non_alcohol: "Сусындар",
       bar_group_alcohol: "Алкоголь",
+      bar_type_cocktail_alcohol: "Алкогольді коктейльдер",
+      bar_type_beer: "Сыра",
+      bar_type_whiskey: "Виски",
+      bar_type_cognac: "Коньяк",
+      bar_type_brandy: "Бренди",
+      bar_type_rum: "Ром",
+      bar_type_vodka: "Водка",
+      bar_type_tequila: "Текила",
+      bar_type_gin: "Джин",
+      bar_type_liqueur: "Ликер",
+      bar_type_wine: "Шарап",
       cart_items: "тағам",
       cart_view: "Тапсырыс",
       modal_title: "Сіздің тапсырысыңыз",
@@ -1885,6 +2004,17 @@
       menu_empty: "Bu kategoride henüz ürün yok",
       bar_group_non_alcohol: "İçecekler",
       bar_group_alcohol: "Alkol",
+      bar_type_cocktail_alcohol: "Alkollü Kokteyller",
+      bar_type_beer: "Bira",
+      bar_type_whiskey: "Viski",
+      bar_type_cognac: "Konyak",
+      bar_type_brandy: "Brendi",
+      bar_type_rum: "Rom",
+      bar_type_vodka: "Votka",
+      bar_type_tequila: "Tekila",
+      bar_type_gin: "Cin",
+      bar_type_liqueur: "Likör",
+      bar_type_wine: "Şarap",
       cart_items: "ürün",
       cart_view: "Siparişi Gör",
       modal_title: "Siparişiniz",
@@ -1925,6 +2055,14 @@
       tg.disableVerticalSwipes();
     }
   }
+
+  // «Страховочное» состояние истории: без него системный свайп-назад на Android
+  // (когда открыта только главная страница, без меню/модалок) может вывести
+  // пользователя из мини-аппа. Держим внизу истории лишний уровень — попадание
+  // в него ловится в обработчике popstate ниже и сразу восстанавливается,
+  // так что сам сайт никогда не закрывается свайпом.
+  history.replaceState({ appLayer: 'root' }, '');
+  history.pushState({ appLayer: 'root' }, '');
 
   let currentLang = 'ru';
   let cart = [];
@@ -2249,7 +2387,12 @@
     }
     if (document.getElementById('foodMenuSection').style.display === 'block') {
       hideMenu(true);
+      return;
     }
+    // Мы на корневом уровне (ничего не открыто) — сюда попадаем как раз когда
+    // юзер свайпнул назад на главном экране. Сразу восстанавливаем страховочное
+    // состояние, чтобы жест не «выкинул» со страницы, а просто ничего не сделал.
+    history.pushState({ appLayer: 'root' }, '');
   });
 
   // ОТПРАВКА СООБЩЕНИЙ В BOT ВСЕГДА НА РУССКОМ
@@ -2538,7 +2681,15 @@
       }
       if (alcoholItems.length > 0) {
         html += `<div class="menu-group-header">${langObj['bar_group_alcohol'] || 'Алкоголь'}</div>`;
-        html += alcoholItems.map(renderItemCard).join('');
+        // Внутри алкоголя — отдельный заголовок для каждого вида (вино, виски, водка и т.д.),
+        // сохраняем порядок из BAR_ALCOHOL_CATEGORIES и пропускаем пустые виды.
+        BAR_ALCOHOL_CATEGORIES.forEach(typeCat => {
+          const typeItems = alcoholItems.filter(item => item.cat === typeCat);
+          if (typeItems.length === 0) return;
+          const typeLabel = langObj['bar_type_' + typeCat] || typeCat;
+          html += `<div class="menu-group-subheader">${typeLabel}</div>`;
+          html += typeItems.map(renderItemCard).join('');
+        });
       }
       if (!html) {
         html = `<div class="menu-empty-msg">${langObj['menu_empty'] || 'Пока нет позиций'}</div>`;
