@@ -5,28 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>The Tower Hotel — Room Service</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <script>
-    // Жёсткая блокировка зума (страховка поверх meta viewport для Android/WebView)
-    document.addEventListener('gesturestart', function (e) { e.preventDefault(); }, { passive: false });
-    document.addEventListener('gesturechange', function (e) { e.preventDefault(); }, { passive: false });
-    document.addEventListener('touchmove', function (e) {
-      if (e.touches && e.touches.length > 1) e.preventDefault();
-    }, { passive: false });
-    (function () {
-      var lastTouchEnd = 0;
-      var lastX = 0, lastY = 0;
-      document.addEventListener('touchend', function (e) {
-        var now = Date.now();
-        var t = e.changedTouches && e.changedTouches[0];
-        var x = t ? t.clientX : 0;
-        var y = t ? t.clientY : 0;
-        var sameSpot = Math.abs(x - lastX) < 30 && Math.abs(y - lastY) < 30;
-        if (now - lastTouchEnd <= 350 && sameSpot) e.preventDefault();
-        lastTouchEnd = now;
-        lastX = x; lastY = y;
-      }, { passive: false });
-    })();
-  </script>
   <style>
     /* ПЕРЕМЕННЫЕ ТЕМЫ */
     :root {
@@ -64,20 +42,11 @@
       margin: 0; padding: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-tap-highlight-color: transparent;
-      transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     html, body {
-      overscroll-behavior-y: none;
-      overscroll-behavior-x: auto;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
-
-    html::-webkit-scrollbar, body::-webkit-scrollbar {
-      display: none;
-      width: 0;
-      height: 0;
+      overscroll-behavior: none;
     }
 
     body {
@@ -180,7 +149,6 @@
       min-width: 160px;
       max-height: 320px;
       overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
       -ms-overflow-style: none;
     }
@@ -486,7 +454,6 @@
       display: flex;
       gap: 8px;
       overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
       padding: 0 14px 12px 14px;
       scrollbar-width: none;
     }
@@ -527,6 +494,30 @@
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
       padding: 0 14px;
+    }
+
+    .menu-group-header {
+      grid-column: 1 / -1;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--accent-gold);
+      margin: 18px 2px 2px 2px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--card-border);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .menu-group-header:first-child {
+      margin-top: 2px;
+    }
+
+    .menu-empty-msg {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 30px 10px;
     }
 
     .item-card {
@@ -676,10 +667,9 @@
       z-index: 2000;
       align-items: flex-end;
       opacity: 0;
-      transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: opacity 0.25s ease-in-out;
       overflow: hidden;
       touch-action: none;
-      will-change: opacity;
     }
 
     .modal.show {
@@ -697,17 +687,15 @@
       overflow-y: auto;
       overflow-x: hidden;
       padding: 24px 20px;
-      transform: translateY(100%) translateZ(0);
+      transform: translateY(100%);
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       box-sizing: border-box;
       will-change: transform;
       touch-action: pan-y;
-      -webkit-overflow-scrolling: touch;
-      backface-visibility: hidden;
     }
 
     .modal.show .modal-body {
-      transform: translateY(0) translateZ(0);
+      transform: translateY(0);
     }
 
     .modal-title {
@@ -1042,9 +1030,15 @@
 
     <div class="categories">
       <button class="cat-btn active" onclick="filterCat('all', this)" data-i18n="cat_all">Все блюда</button>
-      <button class="cat-btn" onclick="filterCat('soups', this)" data-i18n="cat_soups">Супы</button>
-      <button class="cat-btn" onclick="filterCat('mains', this)" data-i18n="cat_mains">Главные блюда</button>
-      <button class="cat-btn" onclick="filterCat('drinks', this)" data-i18n="cat_drinks">Напитки</button>
+      <button class="cat-btn" onclick="filterCat('bar', this)" data-i18n="cat_bar_menu">Bar Menu</button>
+      <button class="cat-btn" onclick="filterCat('hot_appetizers', this)" data-i18n="cat_hot_appetizers">Hot appetizers</button>
+      <button class="cat-btn" onclick="filterCat('salad', this)" data-i18n="cat_salad">Salad</button>
+      <button class="cat-btn" onclick="filterCat('soup', this)" data-i18n="cat_soup">Soup</button>
+      <button class="cat-btn" onclick="filterCat('main_course', this)" data-i18n="cat_main_course">Main course</button>
+      <button class="cat-btn" onclick="filterCat('pasta', this)" data-i18n="cat_pasta">Pasta</button>
+      <button class="cat-btn" onclick="filterCat('pizza', this)" data-i18n="cat_pizza">Pizza</button>
+      <button class="cat-btn" onclick="filterCat('side_dishes', this)" data-i18n="cat_side_dishes">Side dishes</button>
+      <button class="cat-btn" onclick="filterCat('dessert', this)" data-i18n="cat_dessert">Dessert</button>
     </div>
 
     <div class="menu-grid" id="menuList"></div>
@@ -1251,6 +1245,18 @@
       cat_soups: "Супы",
       cat_mains: "Главные блюда",
       cat_drinks: "Напитки",
+      cat_bar_menu: "Бар меню",
+      cat_hot_appetizers: "Горячие закуски",
+      cat_salad: "Салаты",
+      cat_soup: "Супы",
+      cat_main_course: "Основные блюда",
+      cat_pasta: "Паста",
+      cat_pizza: "Пицца",
+      cat_side_dishes: "Гарниры",
+      cat_dessert: "Десерты",
+      menu_empty: "Пока нет позиций в этой категории",
+      bar_group_non_alcohol: "Напитки",
+      bar_group_alcohol: "Алкоголь",
       cart_items: "позиции",
       cart_view: "Заказ",
       modal_title: "Ваш заказ",
@@ -1297,6 +1303,18 @@
       cat_soups: "Sho'rvalar",
       cat_mains: "Asosiy taomlar",
       cat_drinks: "Ichimliklar",
+      cat_bar_menu: "Bar menyusi",
+      cat_hot_appetizers: "Issiq gazaklar",
+      cat_salad: "Salatlar",
+      cat_soup: "Sho'rvalar",
+      cat_main_course: "Asosiy taomlar",
+      cat_pasta: "Pasta",
+      cat_pizza: "Pitsa",
+      cat_side_dishes: "Garnirlar",
+      cat_dessert: "Desertlar",
+      menu_empty: "Bu bo'limda hozircha taomlar yo'q",
+      bar_group_non_alcohol: "Ichimliklar",
+      bar_group_alcohol: "Alkogol",
       cart_items: "ta taom",
       cart_view: "Buyurtma",
       modal_title: "Buyurtmangiz",
@@ -1343,6 +1361,18 @@
       cat_soups: "Soups",
       cat_mains: "Main Dishes",
       cat_drinks: "Drinks",
+      cat_bar_menu: "Bar Menu",
+      cat_hot_appetizers: "Hot Appetizers",
+      cat_salad: "Salads",
+      cat_soup: "Soup",
+      cat_main_course: "Main Course",
+      cat_pasta: "Pasta",
+      cat_pizza: "Pizza",
+      cat_side_dishes: "Side Dishes",
+      cat_dessert: "Dessert",
+      menu_empty: "No items in this category yet",
+      bar_group_non_alcohol: "Drinks",
+      bar_group_alcohol: "Alcohol",
       cart_items: "items",
       cart_view: "View Cart",
       modal_title: "Your Order",
@@ -1389,6 +1419,18 @@
       cat_soups: "汤类",
       cat_mains: "主菜",
       cat_drinks: "饮料",
+      cat_bar_menu: "酒吧菜单",
+      cat_hot_appetizers: "热开胃菜",
+      cat_salad: "沙拉",
+      cat_soup: "汤类",
+      cat_main_course: "主菜",
+      cat_pasta: "意面",
+      cat_pizza: "披萨",
+      cat_side_dishes: "配菜",
+      cat_dessert: "甜点",
+      menu_empty: "该分类暂无菜品",
+      bar_group_non_alcohol: "饮品",
+      bar_group_alcohol: "酒精饮品",
       cart_items: "件",
       cart_view: "查看订单",
       modal_title: "您的订单",
@@ -1435,6 +1477,18 @@
       cat_soups: "حساء",
       cat_mains: "الأطباق الرئيسية",
       cat_drinks: "مشروبات",
+      cat_bar_menu: "قائمة البار",
+      cat_hot_appetizers: "المقبلات الساخنة",
+      cat_salad: "السلطات",
+      cat_soup: "حساء",
+      cat_main_course: "الأطباق الرئيسية",
+      cat_pasta: "المعكرونة",
+      cat_pizza: "بيتزا",
+      cat_side_dishes: "أطباق جانبية",
+      cat_dessert: "الحلويات",
+      menu_empty: "لا توجد عناصر في هذا القسم بعد",
+      bar_group_non_alcohol: "المشروبات",
+      bar_group_alcohol: "المشروبات الكحولية",
       cart_items: "عناصر",
       cart_view: "عرض الطلب",
       modal_title: "طلبك",
@@ -1481,6 +1535,18 @@
       cat_soups: "Soupes",
       cat_mains: "Plats principaux",
       cat_drinks: "Boissons",
+      cat_bar_menu: "Menu du bar",
+      cat_hot_appetizers: "Entrées chaudes",
+      cat_salad: "Salades",
+      cat_soup: "Soupes",
+      cat_main_course: "Plats principaux",
+      cat_pasta: "Pâtes",
+      cat_pizza: "Pizza",
+      cat_side_dishes: "Accompagnements",
+      cat_dessert: "Desserts",
+      menu_empty: "Aucun article dans cette catégorie pour le moment",
+      bar_group_non_alcohol: "Boissons",
+      bar_group_alcohol: "Alcool",
       cart_items: "articles",
       cart_view: "Voir la commande",
       modal_title: "Votre commande",
@@ -1527,6 +1593,18 @@
       cat_soups: "Sopas",
       cat_mains: "Platos principales",
       cat_drinks: "Bebidas",
+      cat_bar_menu: "Menú del bar",
+      cat_hot_appetizers: "Entrantes calientes",
+      cat_salad: "Ensaladas",
+      cat_soup: "Sopas",
+      cat_main_course: "Platos principales",
+      cat_pasta: "Pasta",
+      cat_pizza: "Pizza",
+      cat_side_dishes: "Guarniciones",
+      cat_dessert: "Postres",
+      menu_empty: "Todavía no hay artículos en esta categoría",
+      bar_group_non_alcohol: "Bebidas",
+      bar_group_alcohol: "Alcohol",
       cart_items: "artículos",
       cart_view: "Ver pedido",
       modal_title: "Su pedido",
@@ -1573,6 +1651,18 @@
       cat_soups: "Suppen",
       cat_mains: "Hauptgerichte",
       cat_drinks: "Getränke",
+      cat_bar_menu: "Barmenü",
+      cat_hot_appetizers: "Warme Vorspeisen",
+      cat_salad: "Salate",
+      cat_soup: "Suppen",
+      cat_main_course: "Hauptgerichte",
+      cat_pasta: "Pasta",
+      cat_pizza: "Pizza",
+      cat_side_dishes: "Beilagen",
+      cat_dessert: "Desserts",
+      menu_empty: "Noch keine Artikel in dieser Kategorie",
+      bar_group_non_alcohol: "Getränke",
+      bar_group_alcohol: "Alkohol",
       cart_items: "Artikel",
       cart_view: "Bestellung anzeigen",
       modal_title: "Ihre Bestellung",
@@ -1619,6 +1709,18 @@
       cat_soups: "Сорпалар",
       cat_mains: "Негізгі тағамдар",
       cat_drinks: "Сусындар",
+      cat_bar_menu: "Бар мәзірі",
+      cat_hot_appetizers: "Ыстық закускалар",
+      cat_salad: "Салаттар",
+      cat_soup: "Сорпалар",
+      cat_main_course: "Негізгі тағамдар",
+      cat_pasta: "Паста",
+      cat_pizza: "Пицца",
+      cat_side_dishes: "Гарнирлер",
+      cat_dessert: "Десерттер",
+      menu_empty: "Бұл санатта әзірге позициялар жоқ",
+      bar_group_non_alcohol: "Сусындар",
+      bar_group_alcohol: "Алкоголь",
       cart_items: "тағам",
       cart_view: "Тапсырыс",
       modal_title: "Сіздің тапсырысыңыз",
@@ -1665,6 +1767,18 @@
       cat_soups: "Çorbalar",
       cat_mains: "Ana Yemekler",
       cat_drinks: "İçecekler",
+      cat_bar_menu: "Bar Menüsü",
+      cat_hot_appetizers: "Sıcak mezeler",
+      cat_salad: "Salatalar",
+      cat_soup: "Çorbalar",
+      cat_main_course: "Ana yemekler",
+      cat_pasta: "Makarna",
+      cat_pizza: "Pizza",
+      cat_side_dishes: "Garnitürler",
+      cat_dessert: "Tatlılar",
+      menu_empty: "Bu kategoride henüz ürün yok",
+      bar_group_non_alcohol: "İçecekler",
+      bar_group_alcohol: "Alkol",
       cart_items: "ürün",
       cart_view: "Siparişi Gör",
       modal_title: "Siparişiniz",
@@ -1715,6 +1829,59 @@
 
   let dbMenu = [];
 
+  // === КАТЕГОРИИ МЕНЮ ===
+  // Категория блюда (поле "category" в таблице Supabase "menu") должна
+  // содержать ОДНО из значений ниже (латиницей, без пробелов).
+  const FOOD_CATEGORIES = ['hot_appetizers', 'salad', 'soup', 'main_course', 'pasta', 'pizza', 'side_dishes', 'dessert'];
+  const BAR_NON_ALCOHOL_CATEGORIES = ['coffee', 'althaus_tea', 'soft_drinks', 'milkshake', 'mojito', 'cocktail_non_alcohol'];
+  const BAR_ALCOHOL_CATEGORIES = ['cocktail_alcohol', 'beer', 'whiskey', 'cognac', 'brandy', 'rum', 'vodka', 'tequila', 'gin', 'liqueur', 'wine'];
+  const BAR_CATEGORIES = [...BAR_NON_ALCOHOL_CATEGORIES, ...BAR_ALCOHOL_CATEGORIES];
+
+  // === ПЕРЕВОДЧИК НАЗВАНИЙ БЛЮД ===
+  // Названия блюд/напитков переводятся автоматически при смене языка.
+  // ИСКЛЮЧЕНИЕ: алкоголь (BAR_ALCOHOL_CATEGORIES) — названия НЕ переводятся
+  // и всегда показываются так, как записаны в Supabase (например "Jack Daniel's Whiskey").
+  const dishTranslationCache = {}; // ключ: "текст|язык" -> перевод
+  let menuRenderToken = 0;
+
+  async function translateDishName(text, targetLang) {
+    if (!text) return text;
+    if (targetLang === 'ru') return text; // база ведётся на русском
+
+    const cacheKey = text + '|' + targetLang;
+    if (dishTranslationCache[cacheKey]) return dishTranslationCache[cacheKey];
+
+    // Попытка 1: Google Translate (неофициальный публичный эндпоинт)
+    try {
+      const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=ru&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+      const res = await fetch(url);
+      if (res.ok) {
+        const json = await res.json();
+        const translated = json[0].map(seg => seg[0]).join('');
+        if (translated && translated.trim()) {
+          dishTranslationCache[cacheKey] = translated;
+          return translated;
+        }
+      }
+    } catch (e) {}
+
+    // Попытка 2: MyMemory (резервный вариант)
+    try {
+      const url2 = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=ru|${targetLang}`;
+      const res2 = await fetch(url2);
+      if (res2.ok) {
+        const json2 = await res2.json();
+        const translated2 = json2 && json2.responseData && json2.responseData.translatedText;
+        if (translated2 && translated2.trim()) {
+          dishTranslationCache[cacheKey] = translated2;
+          return translated2;
+        }
+      }
+    } catch (e) {}
+
+    return text;
+  }
+
   // ЗАГРУЗКА ДАННЫХ ИЗ SUPABASE
   async function fetchMenuFromSupabase() {
     try {
@@ -1733,7 +1900,7 @@
           name: item.name,
           cat: item.category || 'mains',
           price: Number(item.price) || 0,
-          img: item.image_url || item.img || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop"
+          img: item.img || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop"
         }));
       }
       renderMenu();
@@ -2125,36 +2292,98 @@
     renderMenu();
   }
 
+  function renderItemCard(item) {
+    const cartItem = cart.find(c => c.id === item.id);
+    const qty = cartItem ? cartItem.qty : 0;
+
+    let actionBlock = qty > 0 ? `
+      <div class="card-qty-control">
+        <button class="card-qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
+        <span class="card-qty-val">${qty}</span>
+        <button class="card-qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+      </div>` : `<button class="add-btn" onclick="addToCart(${item.id})">+</button>`;
+
+    const langObj = i18n[currentLang] || i18n['ru'];
+
+    return `
+      <div class="item-card">
+        <img src="${item.img}" class="item-img" alt="${item.name}">
+        <div class="item-details">
+          <div class="item-title" data-item-id="${item.id}">${item.name}</div>
+          <div class="item-bottom">
+            <div class="item-price">${item.price.toLocaleString('ru-RU')} ${langObj['price_uzs']}</div>
+            ${actionBlock}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Запускает перевод названий видимых блюд (кроме алкоголя) и точечно
+  // обновляет DOM, когда перевод придёт с сервера — без перерисовки всей сетки.
+  function translateVisibleItems(items, token) {
+    if (currentLang === 'ru') return;
+    items.forEach(item => {
+      if (BAR_ALCOHOL_CATEGORIES.includes(item.cat)) return; // алкоголь не переводим
+      translateDishName(item.name, currentLang).then(translated => {
+        if (token !== menuRenderToken) return; // пользователь уже переключил категорию/язык
+        if (!translated || translated === item.name) return;
+        const el = document.querySelector(`.item-title[data-item-id="${item.id}"]`);
+        if (el) el.innerText = translated;
+      });
+    });
+  }
+
   function renderMenu() {
     const langObj = i18n[currentLang] || i18n['ru'];
     const list = document.getElementById('menuList');
     list.innerHTML = '';
-    const itemsToDisplay = currentCategory === 'all' ? dbMenu : dbMenu.filter(item => item.cat === currentCategory);
 
-    itemsToDisplay.forEach(item => {
-      const cartItem = cart.find(c => c.id === item.id);
-      const qty = cartItem ? cartItem.qty : 0;
+    const token = ++menuRenderToken;
+    let visibleItems = [];
 
-      let actionBlock = qty > 0 ? `
-        <div class="card-qty-control">
-          <button class="card-qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
-          <span class="card-qty-val">${qty}</span>
-          <button class="card-qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
-        </div>` : `<button class="add-btn" onclick="addToCart(${item.id})">+</button>`;
+    if (currentCategory === 'all') {
+      // Все блюда кухни (без бара)
+      const items = dbMenu.filter(item => FOOD_CATEGORIES.includes(item.cat));
+      if (items.length === 0) {
+        list.innerHTML = `<div class="menu-empty-msg" data-i18n="menu_empty">${langObj['menu_empty'] || 'Пока нет блюд'}</div>`;
+      } else {
+        list.innerHTML = items.map(renderItemCard).join('');
+      }
+      visibleItems = items;
 
-      list.innerHTML += `
-        <div class="item-card">
-          <img src="${item.img}" class="item-img" alt="${item.name}">
-          <div class="item-details">
-            <div class="item-title">${item.name}</div>
-            <div class="item-bottom">
-              <div class="item-price">${item.price.toLocaleString('ru-RU')} ${langObj['price_uzs']}</div>
-              ${actionBlock}
-            </div>
-          </div>
-        </div>
-      `;
-    });
+    } else if (currentCategory === 'bar') {
+      // Бар меню: напитки и алкоголь — отдельными блоками на одной странице
+      const nonAlcoholItems = dbMenu.filter(item => BAR_NON_ALCOHOL_CATEGORIES.includes(item.cat));
+      const alcoholItems = dbMenu.filter(item => BAR_ALCOHOL_CATEGORIES.includes(item.cat));
+
+      let html = '';
+      if (nonAlcoholItems.length > 0) {
+        html += `<div class="menu-group-header">${langObj['bar_group_non_alcohol'] || 'Напитки'}</div>`;
+        html += nonAlcoholItems.map(renderItemCard).join('');
+      }
+      if (alcoholItems.length > 0) {
+        html += `<div class="menu-group-header">${langObj['bar_group_alcohol'] || 'Алкоголь'}</div>`;
+        html += alcoholItems.map(renderItemCard).join('');
+      }
+      if (!html) {
+        html = `<div class="menu-empty-msg">${langObj['menu_empty'] || 'Пока нет позиций'}</div>`;
+      }
+      list.innerHTML = html;
+      visibleItems = [...nonAlcoholItems, ...alcoholItems];
+
+    } else {
+      // Конкретная категория (например salad, pizza, soup...)
+      const items = dbMenu.filter(item => item.cat === currentCategory);
+      if (items.length === 0) {
+        list.innerHTML = `<div class="menu-empty-msg">${langObj['menu_empty'] || 'Пока нет блюд'}</div>`;
+      } else {
+        list.innerHTML = items.map(renderItemCard).join('');
+      }
+      visibleItems = items;
+    }
+
+    translateVisibleItems(visibleItems, token);
   }
 
   function addToCart(id) {
