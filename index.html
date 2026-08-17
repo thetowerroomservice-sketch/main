@@ -14,10 +14,16 @@
     }, { passive: false });
     (function () {
       var lastTouchEnd = 0;
+      var lastX = 0, lastY = 0;
       document.addEventListener('touchend', function (e) {
         var now = Date.now();
-        if (now - lastTouchEnd <= 350) e.preventDefault();
+        var t = e.changedTouches && e.changedTouches[0];
+        var x = t ? t.clientX : 0;
+        var y = t ? t.clientY : 0;
+        var sameSpot = Math.abs(x - lastX) < 30 && Math.abs(y - lastY) < 30;
+        if (now - lastTouchEnd <= 350 && sameSpot) e.preventDefault();
         lastTouchEnd = now;
+        lastX = x; lastY = y;
       }, { passive: false });
     })();
   </script>
@@ -64,7 +70,14 @@
     html, body {
       overscroll-behavior-y: none;
       overscroll-behavior-x: auto;
-      touch-action: pan-x pan-y;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    html::-webkit-scrollbar, body::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
     }
 
     body {
