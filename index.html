@@ -2448,7 +2448,7 @@
       ? 'Позвать горничных'
       : 'Убраться в моем номере';
 
-    const roomNumber = document.querySelector('.room-number').innerText;
+    const roomNumber = document.querySelector('.room-number').innerText;пицца
     const username = tg?.initDataUnsafe?.user?.username 
       ? `@${tg.initDataUnsafe.user.username}` 
       : (tg?.initDataUnsafe?.user?.first_name || 'Гость');
@@ -2700,6 +2700,18 @@
     });
   }
 
+  // Перемешивает массив в случайном порядке (используется только для раздела
+  // "Все блюда", чтобы позиции показывались не по порядку, а вразнобой,
+  // как будто рекомендации). Не трогает исходный массив dbMenu.
+  function shuffleArray(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
   function renderMenu() {
     const langObj = i18n[currentLang] || i18n['ru'];
     const list = document.getElementById('menuList');
@@ -2709,8 +2721,8 @@
     let visibleItems = [];
 
     if (currentCategory === 'all') {
-      // Все блюда кухни (без бара)
-      const items = dbMenu.filter(item => FOOD_CATEGORIES.includes(item.cat));
+      // Все блюда кухни (без бара) — показываем в случайном порядке (как рекомендации)
+      const items = shuffleArray(dbMenu.filter(item => FOOD_CATEGORIES.includes(item.cat)));
       if (items.length === 0) {
         list.innerHTML = `<div class="menu-empty-msg" data-i18n="menu_empty">${langObj['menu_empty'] || 'Пока нет блюд'}</div>`;
       } else {
