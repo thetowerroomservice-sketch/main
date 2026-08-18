@@ -2310,7 +2310,11 @@
       const data = await supabaseRestGet('menu?select=*');
 
       if (data && data.length > 0) {
-        dbMenu = data.map(item => ({
+        // Пропускаем блюда, которые сотрудник временно скрыл через галочку
+        // is_available в Supabase (false = скрыто). Если поля нет (старые
+        // строки/null) — считаем, что блюдо доступно, ничего не ломаем.
+        const availableData = data.filter(item => item.is_available !== false);
+        dbMenu = availableData.map(item => ({
           id: item.id,
           name: item.name,
           cat: normalizeCategory(item.category),
