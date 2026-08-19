@@ -1240,7 +1240,7 @@
       </button>
     </div>
 
-    <div class="categories">
+    <div class="categories" id="foodCategories">
       <button class="cat-btn active" onclick="filterCat('all', this)" data-i18n="cat_all">Все блюда</button>
       <button class="cat-btn" onclick="filterCat('bar', this)" data-i18n="cat_bar_menu">Bar Menu</button>
       <button class="cat-btn" onclick="filterCat('hot_appetizers', this)" data-i18n="cat_hot_appetizers">Hot appetizers</button>
@@ -1251,6 +1251,28 @@
       <button class="cat-btn" onclick="filterCat('pizza', this)" data-i18n="cat_pizza">Pizza</button>
       <button class="cat-btn" onclick="filterCat('side_dishes', this)" data-i18n="cat_side_dishes">Side dishes</button>
       <button class="cat-btn" onclick="filterCat('dessert', this)" data-i18n="cat_dessert">Dessert</button>
+    </div>
+
+    <!-- Вкладки для отдельного экрана "Бар" — выбор конкретного вида напитка -->
+    <div class="categories" id="barCategories" style="display: none;">
+      <button class="cat-btn active" onclick="filterCat('bar', this)" data-i18n="cat_bar_all">Все</button>
+      <button class="cat-btn" onclick="filterCat('coffee', this)" data-i18n="bar_type_coffee">Кофе</button>
+      <button class="cat-btn" onclick="filterCat('althaus_tea', this)" data-i18n="bar_type_althaus_tea">Чай Althaus</button>
+      <button class="cat-btn" onclick="filterCat('soft_drinks', this)" data-i18n="bar_type_soft_drinks">Безалкогольные напитки</button>
+      <button class="cat-btn" onclick="filterCat('milkshake', this)" data-i18n="bar_type_milkshake">Молочный коктейль</button>
+      <button class="cat-btn" onclick="filterCat('mojito', this)" data-i18n="bar_type_mojito">Мохито</button>
+      <button class="cat-btn" onclick="filterCat('cocktail_non_alcohol', this)" data-i18n="bar_type_cocktail_non_alcohol">Безалкогольные коктейли</button>
+      <button class="cat-btn" onclick="filterCat('cocktail_alcohol', this)" data-i18n="bar_type_cocktail_alcohol">Алкогольные коктейли</button>
+      <button class="cat-btn" onclick="filterCat('beer', this)" data-i18n="bar_type_beer">Пиво</button>
+      <button class="cat-btn" onclick="filterCat('whiskey', this)" data-i18n="bar_type_whiskey">Виски</button>
+      <button class="cat-btn" onclick="filterCat('cognac', this)" data-i18n="bar_type_cognac">Коньяк</button>
+      <button class="cat-btn" onclick="filterCat('brandy', this)" data-i18n="bar_type_brandy">Бренди</button>
+      <button class="cat-btn" onclick="filterCat('rum', this)" data-i18n="bar_type_rum">Ром</button>
+      <button class="cat-btn" onclick="filterCat('vodka', this)" data-i18n="bar_type_vodka">Водка</button>
+      <button class="cat-btn" onclick="filterCat('tequila', this)" data-i18n="bar_type_tequila">Текила</button>
+      <button class="cat-btn" onclick="filterCat('gin', this)" data-i18n="bar_type_gin">Джин</button>
+      <button class="cat-btn" onclick="filterCat('liqueur', this)" data-i18n="bar_type_liqueur">Ликёр</button>
+      <button class="cat-btn" onclick="filterCat('wine', this)" data-i18n="bar_type_wine">Вино</button>
     </div>
 
     <div class="menu-grid" id="menuList"></div>
@@ -1459,6 +1481,7 @@
       cat_mains: "Главные блюда",
       cat_drinks: "Напитки",
       cat_bar_menu: "Бар меню",
+      cat_bar_all: "Все",
       cat_hot_appetizers: "Горячие закуски",
       cat_salad: "Салаты",
       cat_soup: "Супы",
@@ -1535,6 +1558,7 @@
       cat_mains: "Asosiy taomlar",
       cat_drinks: "Ichimliklar",
       cat_bar_menu: "Bar menyusi",
+      cat_bar_all: "Barchasi",
       cat_hot_appetizers: "Issiq gazaklar",
       cat_salad: "Salatlar",
       cat_soup: "Sho'rvalar",
@@ -1611,6 +1635,7 @@
       cat_mains: "Main Dishes",
       cat_drinks: "Drinks",
       cat_bar_menu: "Bar Menu",
+      cat_bar_all: "All",
       cat_hot_appetizers: "Hot Appetizers",
       cat_salad: "Salads",
       cat_soup: "Soup",
@@ -1687,6 +1712,7 @@
       cat_mains: "主菜",
       cat_drinks: "饮料",
       cat_bar_menu: "酒吧菜单",
+      cat_bar_all: "全部",
       cat_hot_appetizers: "热开胃菜",
       cat_salad: "沙拉",
       cat_soup: "汤类",
@@ -1763,6 +1789,7 @@
       cat_mains: "الأطباق الرئيسية",
       cat_drinks: "مشروبات",
       cat_bar_menu: "قائمة البار",
+      cat_bar_all: "الكل",
       cat_hot_appetizers: "المقبلات الساخنة",
       cat_salad: "السلطات",
       cat_soup: "حساء",
@@ -1839,6 +1866,7 @@
       cat_mains: "Plats principaux",
       cat_drinks: "Boissons",
       cat_bar_menu: "Menu du bar",
+      cat_bar_all: "Tout",
       cat_hot_appetizers: "Entrées chaudes",
       cat_salad: "Salades",
       cat_soup: "Soupes",
@@ -1915,6 +1943,7 @@
       cat_mains: "Platos principales",
       cat_drinks: "Bebidas",
       cat_bar_menu: "Menú del bar",
+      cat_bar_all: "Todo",
       cat_hot_appetizers: "Entrantes calientes",
       cat_salad: "Ensaladas",
       cat_soup: "Sopas",
@@ -1991,6 +2020,7 @@
       cat_mains: "Hauptgerichte",
       cat_drinks: "Getränke",
       cat_bar_menu: "Barmenü",
+      cat_bar_all: "Alle",
       cat_hot_appetizers: "Warme Vorspeisen",
       cat_salad: "Salate",
       cat_soup: "Suppen",
@@ -2067,6 +2097,7 @@
       cat_mains: "Негізгі тағамдар",
       cat_drinks: "Сусындар",
       cat_bar_menu: "Бар мәзірі",
+      cat_bar_all: "Барлығы",
       cat_hot_appetizers: "Ыстық закускалар",
       cat_salad: "Салаттар",
       cat_soup: "Сорпалар",
@@ -2143,6 +2174,7 @@
       cat_mains: "Ana Yemekler",
       cat_drinks: "İçecekler",
       cat_bar_menu: "Bar Menüsü",
+      cat_bar_all: "Tümü",
       cat_hot_appetizers: "Sıcak mezeler",
       cat_salad: "Salatalar",
       cat_soup: "Çorbalar",
@@ -2661,8 +2693,11 @@
   function openBarMenu() {
     barOnlyMode = true;
     currentCategory = 'bar';
-    const categoriesEl = document.querySelector('.categories');
-    if (categoriesEl) categoriesEl.style.display = 'none';
+    document.getElementById('foodCategories').style.display = 'none';
+    document.getElementById('barCategories').style.display = 'flex';
+    document.querySelectorAll('#barCategories .cat-btn').forEach(b => b.classList.remove('active'));
+    const barAllBtn = document.querySelector('#barCategories .cat-btn');
+    if (barAllBtn) barAllBtn.classList.add('active');
     showMenu();
     renderMenu();
   }
@@ -2677,10 +2712,10 @@
     if (barOnlyMode) {
       barOnlyMode = false;
       currentCategory = 'all';
-      const categoriesEl = document.querySelector('.categories');
-      if (categoriesEl) categoriesEl.style.display = '';
-      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-      const allBtn = document.querySelector('.cat-btn');
+      document.getElementById('barCategories').style.display = 'none';
+      document.getElementById('foodCategories').style.display = '';
+      document.querySelectorAll('#foodCategories .cat-btn').forEach(b => b.classList.remove('active'));
+      const allBtn = document.querySelector('#foodCategories .cat-btn');
       if (allBtn) allBtn.classList.add('active');
     }
   }
