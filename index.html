@@ -527,6 +527,10 @@
       border-color: rgba(212, 175, 55, 0.3);
     }
 
+    .service-card.full-width-card {
+      grid-column: 1 / -1;
+    }
+
     .service-card.large-card:hover {
       box-shadow: 0 10px 25px rgba(212, 175, 55, 0.25);
     }
@@ -1162,12 +1166,12 @@
   <!-- СЕТКА КАРТОЧЕК -->
   <div class="services-grid" id="mainServices">
     
-    <!-- 1. Будильник -->
-    <div class="service-card" onclick="openAlarmModal()">
+    <!-- 1. Бар -->
+    <div class="service-card" onclick="openBarMenu()">
       <div class="service-icon-wrapper">
-        <svg viewBox="0 0 24 24"><path d="M12 22c4.97 0 9-4.03 9-9s-4.03-9-9-9-9 4.03-9 9 4.03 9 9 9zm0-16c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.14-7-7 3.14-7 7-7zm1 3h-2v5l4.25 2.52.77-1.28-3.52-2.09V9zM6 2L2.5 5.5l1.42 1.42L7.41 3.4 6 2zm12 0l-1.41 1.4 3.49 3.52 1.42-1.42L18 2z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M21 5V3H3v2l8 9v5H6v2h12v-2h-5v-5l8-9z"/></svg>
       </div>
-      <span class="service-title" data-i18n="service_alarm">Будильник</span>
+      <span class="service-title" data-i18n="service_bar">Бар</span>
     </div>
 
     <!-- 2. Меню еды -->
@@ -1202,20 +1206,28 @@
       <span class="service-title" data-i18n="service_reception">Ресепшн</span>
     </div>
 
-    <!-- 6. Оставить отзыв -->
-    <div class="service-card" onclick="openReviewModal()">
-      <div class="service-icon-wrapper">
-        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-      </div>
-      <span class="service-title" data-i18n="service_review">Оставить отзыв</span>
-    </div>
-
-    <!-- 7. Сообщить о проблеме -->
+    <!-- 6. Сообщить о проблеме -->
     <div class="service-card" onclick="openModal('problemModal')">
       <div class="service-icon-wrapper">
         <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.4-2.4c.4-.4.4-1 0-1.3z"/></svg>
       </div>
       <span class="service-title" data-i18n="service_problem">Сообщить о проблеме</span>
+    </div>
+
+    <!-- 7. Будильник -->
+    <div class="service-card" onclick="openAlarmModal()">
+      <div class="service-icon-wrapper">
+        <svg viewBox="0 0 24 24"><path d="M12 22c4.97 0 9-4.03 9-9s-4.03-9-9-9-9 4.03-9 9 4.03 9 9 9zm0-16c3.86 0 7 3.14 7 7s-3.14 7-7 7-7-3.14-7-7 3.14-7 7-7zm1 3h-2v5l4.25 2.52.77-1.28-3.52-2.09V9zM6 2L2.5 5.5l1.42 1.42L7.41 3.4 6 2zm12 0l-1.41 1.4 3.49 3.52 1.42-1.42L18 2z"/></svg>
+      </div>
+      <span class="service-title" data-i18n="service_alarm">Будильник</span>
+    </div>
+
+    <!-- 8. Оставить отзыв (большая кнопка на всю ширину) -->
+    <div class="service-card full-width-card" onclick="openReviewModal()">
+      <div class="service-icon-wrapper">
+        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+      </div>
+      <span class="service-title" data-i18n="service_review">Оставить отзыв</span>
     </div>
 
   </div>
@@ -1432,6 +1444,7 @@
       wifi_subtitle: "Нажмите, чтобы получить пароль",
       btn_back: "Назад",
       service_alarm: "Будильник",
+      service_bar: "Бар",
       service_hotel: "Housekeeping",
       service_taxi: "Вызвать такси",
       service_reception: "Ресепшн",
@@ -1507,6 +1520,7 @@
       wifi_subtitle: "Parolni olish uchun bosing",
       btn_back: "Orqaga",
       service_alarm: "Uyg'otgich",
+      service_bar: "Bar",
       service_hotel: "Housekeeping",
       service_taxi: "Taksi chaqirish",
       service_reception: "Resepshn",
@@ -1582,6 +1596,7 @@
       wifi_subtitle: "Tap to get the password",
       btn_back: "Back",
       service_alarm: "Alarm Clock",
+      service_bar: "Bar",
       service_hotel: "Housekeeping",
       service_taxi: "Call Taxi",
       service_reception: "Reception",
@@ -1657,6 +1672,7 @@
       wifi_subtitle: "点击获取密码",
       btn_back: "返回",
       service_alarm: "闹钟",
+      service_bar: "酒吧",
       service_hotel: "客房服务",
       service_taxi: "叫出租车",
       service_reception: "前台",
@@ -1732,6 +1748,7 @@
       wifi_subtitle: "اضغط للحصول على كلمة المرور",
       btn_back: "رجوع",
       service_alarm: "منبه",
+      service_bar: "بار",
       service_hotel: "تنظيف الغرف",
       service_taxi: "طلب سيارة أجرة",
       service_reception: "الاستقبال",
@@ -1807,6 +1824,7 @@
       wifi_subtitle: "Appuyez pour obtenir le mot de passe",
       btn_back: "Retour",
       service_alarm: "Réveil",
+      service_bar: "Bar",
       service_hotel: "Housekeeping",
       service_taxi: "Appeler un taxi",
       service_reception: "Réception",
@@ -1882,6 +1900,7 @@
       wifi_subtitle: "Toque para obtener la contraseña",
       btn_back: "Volver",
       service_alarm: "Despertador",
+      service_bar: "Bar",
       service_hotel: "Housekeeping",
       service_taxi: "Pedir taxi",
       service_reception: "Recepción",
@@ -1957,6 +1976,7 @@
       wifi_subtitle: "Tippen, um das Passwort zu erhalten",
       btn_back: "Zurück",
       service_alarm: "Wecker",
+      service_bar: "Bar",
       service_hotel: "Housekeeping",
       service_taxi: "Taxi rufen",
       service_reception: "Rezeption",
@@ -2032,6 +2052,7 @@
       wifi_subtitle: "Құпия сөзді алу үшін басыңыз",
       btn_back: "Артқа",
       service_alarm: "Оятқыш",
+      service_bar: "Бар",
       service_hotel: "Housekeeping",
       service_taxi: "Такси шақыру",
       service_reception: "Ресепшн",
@@ -2107,6 +2128,7 @@
       wifi_subtitle: "Şifreyi almak için dokunun",
       btn_back: "Geri",
       service_alarm: "Uyandırma Servisi",
+      service_bar: "Bar",
       service_hotel: "Housekeeping",
       service_taxi: "Taksi Çağır",
       service_reception: "Resepsiyon",
@@ -2201,6 +2223,9 @@
   let currentLang = 'ru';
   let cart = [];
   let currentCategory = 'all';
+  // Когда true — открыт отдельный экран "Бар" с главной страницы: вкладки категорий
+  // еды скрыты, показываются только напитки. Корзина и заказ при этом общие с едой.
+  let barOnlyMode = false;
   let selectedRating = 0;
   let scrollPosition = 0;
   let lastScrollY = window.scrollY;
@@ -2631,12 +2656,32 @@
     history.pushState({ appLayer: 'foodMenu' }, '');
   }
 
+  // Открывает тот же экран меню, но только с баром — без вкладок остальных категорий.
+  // Корзина и оформление заказа полностью общие с обычным меню еды.
+  function openBarMenu() {
+    barOnlyMode = true;
+    currentCategory = 'bar';
+    const categoriesEl = document.querySelector('.categories');
+    if (categoriesEl) categoriesEl.style.display = 'none';
+    showMenu();
+    renderMenu();
+  }
+
   function hideMenu(fromPopState) {
     const wasOpen = document.getElementById('foodMenuSection').style.display === 'block';
     document.getElementById('foodMenuSection').style.display = 'none';
     document.getElementById('mainServices').style.display = 'grid';
     if (wasOpen && !fromPopState) {
       history.back();
+    }
+    if (barOnlyMode) {
+      barOnlyMode = false;
+      currentCategory = 'all';
+      const categoriesEl = document.querySelector('.categories');
+      if (categoriesEl) categoriesEl.style.display = '';
+      document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+      const allBtn = document.querySelector('.cat-btn');
+      if (allBtn) allBtn.classList.add('active');
     }
   }
 
@@ -2825,7 +2870,16 @@
     }).join('\n');
 
     const totalSum = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-    const reqText = `🍽️ <b>ЗАКАЗ ЕДЫ</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n\n<b>Состав заказа:</b>\n${orderList}\n\n💰 <b>Итого:</b> ${totalSum.toLocaleString('ru-RU')} UZS\n📝 <b>Примечание:</b> ${orderNote || 'Без примечания'}\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`;
+
+    // Если в корзине только напитки из бара (без единого блюда кухни) — шапка
+    // заказа другая, чтобы бот в Telegram показал персоналу бара свою кнопку
+    // "Принять" вместо кухонной. Смешанный или полностью кухонный заказ —
+    // как и раньше, без изменений.
+    const isBarOnlyOrder = cart.every(item => BAR_NON_ALCOHOL_CATEGORIES.includes(item.cat) || BAR_ALCOHOL_CATEGORIES.includes(item.cat));
+    const orderHeaderEmoji = isBarOnlyOrder ? '🍸' : '🍽️';
+    const orderHeaderLabel = isBarOnlyOrder ? 'ЗАКАЗ БАРА' : 'ЗАКАЗ ЕДЫ';
+
+    const reqText = `${orderHeaderEmoji} <b>${orderHeaderLabel}</b>\n🏨 <b>Номер комнаты:</b> ${roomNumber}\n\n<b>Состав заказа:</b>\n${orderList}\n\n💰 <b>Итого:</b> ${totalSum.toLocaleString('ru-RU')} UZS\n📝 <b>Примечание:</b> ${orderNote || 'Без примечания'}\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`;
 
     logOrderToSupabase(cart, totalSum, roomNumber, username, orderNote);
 
