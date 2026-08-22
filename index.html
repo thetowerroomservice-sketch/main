@@ -1489,6 +1489,7 @@
       </div>
 
       <button class="action-btn" id="sendBtn" onclick="sendOrder()" data-i18n="modal_send">Отправить заказ</button>
+      <button class="close-modal" id="clearCartBtn" onclick="clearCart()" data-i18n="clear_cart" style="color: var(--accent-danger); border-color: var(--accent-danger);">Очистить корзину</button>
       <button class="close-modal" onclick="closeModal('orderModal')" data-i18n="modal_close">Закрыть</button>
     </div>
   </div>
@@ -1559,6 +1560,8 @@
       modal_total: "Итого:",
       modal_send: "Отправить заказ",
       modal_close: "Закрыть",
+      clear_cart: "Очистить корзину",
+      clear_cart_confirm: "Очистить корзину полностью?",
       order_success: "Отправлено успешно!",
       price_uzs: "UZS",
       review_title: "Оставить отзыв",
@@ -1636,6 +1639,8 @@
       modal_total: "Jami:",
       modal_send: "Yuborish",
       modal_close: "Yopish",
+      clear_cart: "Savatchani tozalash",
+      clear_cart_confirm: "Savatchani butunlay tozalaysizmi?",
       order_success: "Muvaffaqiyatli yuborildi!",
       price_uzs: "SO'M",
       review_title: "Sharh qoldirish",
@@ -1713,6 +1718,8 @@
       modal_total: "Total:",
       modal_send: "Place Order",
       modal_close: "Close",
+      clear_cart: "Clear cart",
+      clear_cart_confirm: "Clear the entire cart?",
       order_success: "Sent successfully!",
       price_uzs: "UZS",
       review_title: "Leave a Review",
@@ -1790,6 +1797,8 @@
       modal_total: "总计:",
       modal_send: "提交订单",
       modal_close: "关闭",
+      clear_cart: "清空购物车",
+      clear_cart_confirm: "确定要清空整个购物车吗？",
       order_success: "发送成功！",
       price_uzs: "UZS",
       review_title: "留下评价",
@@ -1867,6 +1876,8 @@
       modal_total: "المجموع:",
       modal_send: "إرسال الطلب",
       modal_close: "إغلاق",
+      clear_cart: "إفراغ السلة",
+      clear_cart_confirm: "هل تريد إفراغ السلة بالكامل؟",
       order_success: "تم الإرسال بنجاح!",
       price_uzs: "UZS",
       review_title: "ترك تقييم",
@@ -1944,6 +1955,8 @@
       modal_total: "Total:",
       modal_send: "Passer la commande",
       modal_close: "Fermer",
+      clear_cart: "Vider le panier",
+      clear_cart_confirm: "Vider entièrement le panier ?",
       order_success: "Envoyé avec succès!",
       price_uzs: "UZS",
       review_title: "Laisser un avis",
@@ -2021,6 +2034,8 @@
       modal_total: "Total:",
       modal_send: "Realizar pedido",
       modal_close: "Cerrar",
+      clear_cart: "Vaciar carrito",
+      clear_cart_confirm: "¿Vaciar todo el carrito?",
       order_success: "¡Enviado con éxito!",
       price_uzs: "UZS",
       review_title: "Dejar una opinión",
@@ -2098,6 +2113,8 @@
       modal_total: "Gesamt:",
       modal_send: "Bestellung abschicken",
       modal_close: "Schließen",
+      clear_cart: "Warenkorb leeren",
+      clear_cart_confirm: "Warenkorb vollständig leeren?",
       order_success: "Erfolgreich gesendet!",
       price_uzs: "UZS",
       review_title: "Bewertung abgeben",
@@ -2175,6 +2192,8 @@
       modal_total: "Жиыны:",
       modal_send: "Тапсырыс беру",
       modal_close: "Жабу",
+      clear_cart: "Себетті тазалау",
+      clear_cart_confirm: "Себетті толығымен тазалайсыз ба?",
       order_success: "Сәтті жіберілді!",
       price_uzs: "UZS",
       review_title: "Пікір қалдыру",
@@ -2252,6 +2271,8 @@
       modal_total: "Toplam:",
       modal_send: "Siparişi Gönder",
       modal_close: "Kapat",
+      clear_cart: "Sepeti temizle",
+      clear_cart_confirm: "Sepet tamamen boşaltılsın mı?",
       order_success: "Başarıyla gönderildi!",
       price_uzs: "UZS",
       review_title: "Değerlendirme Yap",
@@ -2306,6 +2327,10 @@
   let lastScrollY = window.scrollY;
 
   let dbMenu = [];
+  // Кэш перемешанного порядка для раздела "Все блюда" — считается один раз при
+  // загрузке меню, а не при каждой перерисовке (иначе при добавлении товара в
+  // корзину сетка перемешивалась заново и блюдо визуально «пропадало»/прыгало).
+  let shuffledAllCache = null;
 
   // === КАТЕГОРИИ МЕНЮ ===
   // Категория блюда (поле "category" в таблице Supabase "menu") должна
@@ -2511,6 +2536,9 @@
           price: Number(item.price) || 0,
           img: item.image_url || item.img || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop"
         }));
+        // Новые данные из базы — сбрасываем кэш перемешанного порядка, чтобы
+        // посчитать его заново один раз для актуального списка блюд.
+        shuffledAllCache = null;
       }
       renderMenu();
     } catch (err) {
@@ -3144,8 +3172,13 @@
     let visibleItems = [];
 
     if (currentCategory === 'all') {
-      // Все блюда кухни (без бара) — показываем в случайном порядке (как рекомендации)
-      const items = shuffleArray(dbMenu.filter(item => FOOD_CATEGORIES.includes(item.cat)));
+      // Все блюда кухни (без бара) — показываем в случайном порядке (как рекомендации),
+      // но перемешиваем только один раз и переиспользуем порядок между перерисовками
+      // (иначе при каждом добавлении в корзину сетка тасовалась заново и блюдо «пропадало»).
+      if (!shuffledAllCache) {
+        shuffledAllCache = shuffleArray(dbMenu.filter(item => FOOD_CATEGORIES.includes(item.cat)));
+      }
+      const items = shuffledAllCache;
       if (items.length === 0) {
         list.innerHTML = `<div class="menu-empty-msg" data-i18n="menu_empty">${langObj['menu_empty'] || 'Пока нет блюд'}</div>`;
       } else {
@@ -3219,6 +3252,17 @@
       item.qty += delta;
       if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
     }
+    updateCartUI();
+    renderMenu();
+  }
+
+  // Полностью очищает корзину (кнопка "Очистить корзину" в модалке заказа)
+  function clearCart() {
+    const langObj = i18n[currentLang] || i18n['ru'];
+    if (cart.length === 0) return;
+    const confirmMsg = langObj['clear_cart_confirm'] || 'Очистить корзину полностью?';
+    if (!window.confirm(confirmMsg)) return;
+    cart = [];
     updateCartUI();
     renderMenu();
   }
