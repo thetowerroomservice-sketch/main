@@ -979,6 +979,26 @@
       border-color: var(--accent-gold);
     }
 
+    /* Маленькая кнопка "Очистить корзину" — не на всю ширину, скромнее основных кнопок */
+    .clear-cart-link {
+      display: block;
+      width: fit-content;
+      margin: 10px auto 0;
+      background: none;
+      border: none;
+      color: var(--accent-danger);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 10px;
+      cursor: pointer;
+      opacity: 0.85;
+    }
+
+    .clear-cart-link:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+
     .toast {
       position: fixed;
       top: -70px;
@@ -1489,8 +1509,8 @@
       </div>
 
       <button class="action-btn" id="sendBtn" onclick="sendOrder()" data-i18n="modal_send">Отправить заказ</button>
-      <button class="close-modal" id="clearCartBtn" onclick="clearCart()" data-i18n="clear_cart" style="color: var(--accent-danger); border-color: var(--accent-danger);">Очистить корзину</button>
       <button class="close-modal" onclick="closeModal('orderModal')" data-i18n="modal_close">Закрыть</button>
+      <button class="clear-cart-link" id="clearCartBtn" onclick="clearCart()" data-i18n="clear_cart">Очистить корзину</button>
     </div>
   </div>
 
@@ -2862,6 +2882,59 @@
       history.back();
     }
   }
+
+  // ЖЕСТ «ПОТЯНУТЬ ВНИЗ — ЗАКРЫТЬ» для модалок (bottom-sheet).
+  // Срабатывает только когда содержимое модалки проскроллено до самого верха —
+  // иначе просто листаем список внутри модалки как обычно.
+  function attachSwipeToClose(modalBody) {
+    const modalEl = modalBody.closest('.modal');
+    if (!modalEl) return;
+    let startY = 0;
+    let currentY = 0;
+    let dragging = false;
+    const CLOSE_THRESHOLD = 110;
+
+    modalBody.addEventListener('touchstart', (e) => {
+      if (modalBody.scrollTop > 0) { dragging = false; return; }
+      startY = e.touches[0].clientY;
+      currentY = startY;
+      dragging = true;
+      modalBody.style.transition = 'none';
+    }, { passive: true });
+
+    modalBody.addEventListener('touchmove', (e) => {
+      if (!dragging) return;
+      currentY = e.touches[0].clientY;
+      const delta = currentY - startY;
+      if (delta <= 0) return;
+      if (modalBody.scrollTop > 0) {
+        dragging = false;
+        modalBody.style.transition = '';
+        modalBody.style.transform = '';
+        return;
+      }
+      e.preventDefault();
+      modalBody.style.transform = `translateY(${delta}px)`;
+    }, { passive: false });
+
+    const endDrag = () => {
+      if (!dragging) return;
+      dragging = false;
+      const delta = currentY - startY;
+      modalBody.style.transition = '';
+      modalBody.style.transform = '';
+      if (delta > CLOSE_THRESHOLD) {
+        closeModal(modalEl.id);
+      }
+    };
+
+    modalBody.addEventListener('touchend', endDrag);
+    modalBody.addEventListener('touchcancel', endDrag);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.modal-body').forEach(attachSwipeToClose);
+  });
 
   // Кнопка/жест «назад» на Android: если открыта модалка или меню еды — закрываем их,
   // а не выходим из мини-аппа целиком. Работает вместе с disableVerticalSwipes() выше.
