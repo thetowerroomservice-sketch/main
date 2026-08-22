@@ -1001,6 +1001,43 @@
 
     .toast.show { top: 16px; }
 
+    /* ПОЛНОЭКРАННЫЙ ЛОАДЕР (перекрывает интерфейс, чтобы нельзя было тапнуть повторно, пока идёт запрос) */
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--panel-bg);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 6000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .loading-overlay.show { display: flex; }
+
+    .loading-spinner {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 3px solid var(--accent-gray);
+      border-top-color: var(--accent-gold);
+      animation: loadingSpin 0.8s linear infinite;
+    }
+
+    .loading-text {
+      color: var(--text-main);
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    @keyframes loadingSpin {
+      to { transform: rotate(360deg); }
+    }
+
     @keyframes fadeInUp {
       from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
@@ -1060,6 +1097,12 @@
   <div class="toast" id="toastNotification">
     <span style="color: var(--accent-gold);">✓</span>
     <span id="toastMessage"></span>
+  </div>
+
+  <!-- ПОЛНОЭКРАННЫЙ ЛОАДЕР НА ВРЕМЯ ОТПРАВКИ ЗАПРОСА -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text" id="loadingText">Отправка запроса...</div>
   </div>
 
   <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
@@ -2435,10 +2478,26 @@
     });
   }
 
+  // Повторяет асинхронную функцию несколько раз с паузой между попытками —
+  // спасает от «холодного старта» Supabase/сервера без участия гостя.
+  async function withRetry(fn, retries = 3, delayMs = 1500) {
+    let lastErr;
+    for (let i = 0; i <= retries; i++) {
+      try {
+        return await fn();
+      } catch (err) {
+        lastErr = err;
+        if (i < retries) await new Promise(r => setTimeout(r, delayMs));
+      }
+    }
+    throw lastErr;
+  }
+
   // ЗАГРУЗКА ДАННЫХ ИЗ SUPABASE
   async function fetchMenuFromSupabase() {
+    showLoading('Загрузка меню...');
     try {
-      const data = await supabaseRestGet('menu?select=*');
+      const data = await withRetry(() => supabaseRestGet('menu?select=*'), 3, 1500);
 
       if (data && data.length > 0) {
         // Пропускаем блюда, которые сотрудник временно скрыл через галочку
@@ -2460,6 +2519,8 @@
       if (list) {
         list.innerHTML = `<div class="menu-empty-msg" style="color:#ff453a;">Ошибка загрузки меню из Supabase:<br>${err && err.message ? err.message : err}</div>`;
       }
+    } finally {
+      hideLoading();
     }
   }
 
@@ -2654,6 +2715,38 @@
     document.getElementById('toastMessage').innerText = msg;
     toast.classList.add('show');
     setTimeout(() => { toast.classList.remove('show'); }, 3000);
+  }
+
+  // ЛОАДЕР НА ВРЕМЯ ЗАПРОСА (перекрывает интерфейс, чтобы нельзя было тапнуть повторно)
+  function showLoading(text) {
+    const overlay = document.getElementById('loadingOverlay');
+    document.getElementById('loadingText').innerText = text || 'Отправка запроса...';
+    overlay.classList.add('show');
+  }
+
+  function hideLoading() {
+    document.getElementById('loadingOverlay').classList.remove('show');
+  }
+
+  // fetch с таймаутом и автоповтором — если сервер «спал» и не ответил вовремя,
+  // сами повторяем запрос ещё пару раз, пока крутится лоадер, без участия гостя.
+  async function fetchWithRetry(url, options, retries = 2, timeoutMs = 12000) {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const res = await fetch(url, { ...options, signal: controller.signal });
+        clearTimeout(timer);
+        if (res.ok) return res;
+        // сервер ответил, но с ошибкой — если это не последняя попытка, пробуем ещё раз
+        if (attempt === retries) return res;
+      } catch (err) {
+        clearTimeout(timer);
+        if (attempt === retries) throw err;
+      }
+      // короткая пауза перед повтором — даёт «холодному» серверу время проснуться
+      await new Promise(r => setTimeout(r, 1200));
+    }
   }
 
   function copyWifiPassword() {
@@ -2953,8 +3046,9 @@
 
   async function postData(reqText, username, modalId = null, onSuccessCallback = null, userComment = "") {
     const langObj = i18n[currentLang] || i18n['ru'];
+    showLoading('Отправка запроса...');
     try {
-      const response = await fetch(WORKER_URL, {
+      const response = await fetchWithRetry(WORKER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
@@ -2975,6 +3069,8 @@
       }
     } catch (err) {
       showToast("Ошибка сети.");
+    } finally {
+      hideLoading();
     }
   }
 
