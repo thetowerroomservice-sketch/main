@@ -232,9 +232,25 @@ document.addEventListener('keydown', function (e) {
     .dial { font-family: var(--display); font-size: 36px; margin-bottom: 16px; }
     .empty { text-align: center; color: var(--muted); padding: 48px 16px; }
     .clear { width: 100%; padding: 12px; color: var(--muted); font-size: 14px; }
-    .date-picker-wrap { position: relative; }
-    .date-hidden { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; top: 0; left: 0; }
-    .date-display { font-family: inherit; color: var(--fg); background: var(--elevated); border: 1px solid var(--border); border-radius: var(--r-md); min-height: 44px; width: 100%; padding: 10px 12px; font-size: 16px; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+   .date-picker-wrap { position: relative; }
+.date-hidden { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; top: 0; left: 0; }
+.date-display { 
+  font-family: inherit; 
+  color: var(--fg); 
+  background: var(--elevated); 
+  border: 1px solid var(--border); 
+  border-radius: var(--r-md); 
+  min-height: 44px; 
+  width: 100%; 
+  padding: 10px 12px; 
+  font-size: 16px; 
+  text-align: center; 
+  cursor: pointer; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  box-sizing: border-box; /* <--- Вот оно, спасение от лишних отступов */
+}n: center; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
   </style>
 </head>
