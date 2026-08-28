@@ -6,42 +6,6 @@
   <title>The Tower Hotel — Room Service</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
-
-    // Блокировка зума колесом мыши с Ctrl (desktop) и клавиатурой (Ctrl +/-/0)
-document.addEventListener('wheel', function (e) {
-  if (e.ctrlKey) e.preventDefault();
-}, { passive: false });
-document.addEventListener('keydown', function (e) {
-  if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].includes(e.key)) {
-    e.preventDefault();
-  }
-});
-
-// iOS Safari баг: после фокуса на <input type="date">, <input type="time"> или <select>
-// страница иногда "залипает" в увеличенном масштабе, даже если в meta viewport стоит
-// maximum-scale=1 и user-scalable=no. Фикс: при потере фокуса полем принудительно
-// пересобираем meta viewport, это заставляет Safari сбросить масштаб обратно к 1.
-(function () {
-  var VP_BASE = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
-  function resetIOSZoom() {
-    var vp = document.querySelector('meta[name="viewport"]');
-    if (!vp) return;
-    vp.setAttribute('content', VP_BASE + ', maximum-scale=0.999');
-    setTimeout(function () {
-      vp.setAttribute('content', VP_BASE);
-    }, 300);
-  }
-  document.addEventListener('focusout', function (e) {
-    var tag = e.target && e.target.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
-      setTimeout(resetIOSZoom, 60);
-    }
-  }, true);
-  window.addEventListener('pageshow', resetIOSZoom);
-  document.addEventListener('visibilitychange', function () {
-    if (!document.hidden) resetIOSZoom();
-  });
-})();
     // Жёсткая блокировка зума (страховка поверх meta viewport для Android/WebView)
     document.addEventListener('gesturestart', function (e) { e.preventDefault(); }, { passive: false });
     document.addEventListener('gesturechange', function (e) { e.preventDefault(); }, { passive: false });
@@ -232,26 +196,35 @@ document.addEventListener('keydown', function (e) {
     .dial { font-family: var(--display); font-size: 36px; margin-bottom: 16px; }
     .empty { text-align: center; color: var(--muted); padding: 48px 16px; }
     .clear { width: 100%; padding: 12px; color: var(--muted); font-size: 14px; }
-   .date-picker-wrap { position: relative; }
-.date-hidden { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; top: 0; left: 0; }
-.date-display { 
-  font-family: inherit; 
-  color: var(--fg); 
-  background: var(--elevated); 
-  border: 1px solid var(--border); 
-  border-radius: var(--r-md); 
-  min-height: 44px; 
-  width: 100%; 
-  padding: 10px 12px; 
-  font-size: 16px; 
-  text-align: center; 
-  cursor: pointer; 
-  display: flex; 
-  align-items: center; 
-  justify-content: center;
-  box-sizing: border-box; /* <--- Вот оно, спасение от лишних отступов */
-}n: center; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .date-picker-wrap { position: relative; }
+    .date-hidden { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; top: 0; left: 0; }
+    .date-display { font-family: inherit; color: var(--fg); background: var(--elevated); border: 1px solid var(--border); border-radius: var(--r-md); min-height: 44px; width: 100%; padding: 10px 12px; font-size: 16px; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+    /* ---- МАЛЕНЬКИЕ ЭКРАНЫ (iPhone SE, компактные Android ~360px и уже) ----
+       Плотнее отступы и чуть меньше шрифты, чтобы карточки и текст не сжимались
+       в кашу. Дефолтные значения выше рассчитаны на экраны от ~380px и шире. */
+    @media (max-width: 380px) {
+      .pad { padding: 16px 12px 130px; }
+      .list { padding: 12px 12px 130px; }
+      .menu-head { padding-left: 10px; padding-right: 10px; }
+      .grid { gap: 8px; }
+      .cats { gap: 6px; }
+      .hero { height: 260px; }
+      h1 { font-size: 40px; }
+      .feat.wide { min-height: 140px; }
+      .feat { min-height: 130px; }
+      .svc { min-height: 100px; padding: 12px; }
+      .item { padding: 8px; gap: 10px; }
+      .item img, .ph { width: 80px; height: 80px; }
+      .sheet .box { padding: 12px 14px max(20px, env(safe-area-inset-bottom)); }
+      .cart { bottom: 76px; width: min(398px, calc(100% - 20px)); padding: 0 14px; }
+    }
+
+    /* Длинные названия блюд (особенно на немецком/арабском/китайском без пробелов)
+       не должны вылезать за рамки карточки — переносим по словам/символам. */
+    .item h3, .nm { overflow-wrap: anywhere; }
+    .item > div { min-width: 0; }
   </style>
 </head>
 <body>
@@ -358,6 +331,126 @@ const BAR_SOFT = ["coffee","althaus_tea","soft_drinks","milkshake","mojito","coc
 const BAR_ALC = ["cocktail_alcohol","beer","whiskey","cognac","brandy","rum","vodka","tequila","gin","liqueur","wine"];
 const BAR = BAR_SOFT.concat(BAR_ALC);
 const ALIAS = {soups:"soup",mains:"main_course",main:"main_course",drinks:"soft_drinks",appetizer:"hot_appetizers",appetizers:"hot_appetizers",salads:"salad",desserts:"dessert",tea:"althaus_tea",wines:"wine",beers:"beer",mocktail:"cocktail_non_alcohol",mocktails:"cocktail_non_alcohol",nonalcoholcocktail:"cocktail_non_alcohol",nonalcoholiccocktail:"cocktail_non_alcohol",softcocktail:"cocktail_non_alcohol",cocktail:"cocktail_alcohol",cocktails:"cocktail_alcohol",alcoholcocktail:"cocktail_alcohol"};
+
+// ============================================================================
+// СЛОВАРЬ ПЕРЕВОДОВ БЛЮД И НАПИТКОВ
+// ----------------------------------------------------------------------------
+// Названия блюд приходят из Supabase только на русском (поле "name"), поэтому
+// их нужно переводить отдельно от интерфейса (I18N выше).
+//
+// Здесь можно вручную прописать точный перевод для любого блюда — такие
+// переводы показываются МГНОВЕННО и без интернета, в отличие от «живого»
+// перевода через внешний сервис (он медленнее и может не сработать вовсе,
+// например если сервис заблокирован в сети гостя).
+//
+// КАК ДОБАВИТЬ БЛЮДО:
+// Ключ — ТОЧНОЕ название блюда на русском, ровно как оно записано в Supabase
+// (в таблице menu, поле name — включая заглавные буквы и знаки препинания).
+// Значение — объект с переводами по кодам языков ниже. Языковой код можно
+// пропустить — тогда для него сработает автоматический живой перевод.
+//
+// Коды языков: en, uz, zh, ar, fr, es, de, kk, tr
+//
+// Пример (замените/удалите и впишите свои реальные блюда):
+const DISH_TRANSLATIONS = {
+  "Борщ": {
+    en: "Borscht", uz: "Bo'rsh", zh: "罗宋汤", ar: "بورش",
+    fr: "Bortsch", es: "Borsch", de: "Borschtsch", kk: "Борщ", tr: "Borç"
+  },
+  "Плов": {
+    en: "Plov (Uzbek Pilaf)", uz: "Osh", zh: "手抓饭", ar: "بلوف الأرز الأوزبكي",
+    fr: "Plov (riz pilaf ouzbek)", es: "Plov (pilaf uzbeko)", de: "Plow (usbekischer Pilaw)",
+    kk: "Палау", tr: "Özbek Pilavı"
+  },
+  "Салат Цезарь с курицей": {
+    en: "Chicken Caesar Salad", uz: "Tovuqli Sezar salati", zh: "鸡肉凯撒沙拉", ar: "سلطة سيزر بالدجاج",
+    fr: "Salade César au poulet", es: "Ensalada César con pollo", de: "Chicken Caesar Salat",
+    kk: "Тауық етті Цезарь салаты", tr: "Tavuklu Sezar Salatası"
+  }
+  // Добавляйте новые строки по этому же образцу. Порядок ключей значения не важен.
+};
+
+// Кэш «живых» переводов (заполняется автоматически на лету) и счётчик перерисовок
+// меню — нужен, чтобы устаревший ответ сервера не перезаписал уже другую категорию.
+const dishTranslationCache = {};
+let menuRenderToken = 0;
+
+// Возвращает перевод из ручного словаря, если он есть для этого блюда и языка.
+function dictTranslation(name, lang) {
+  const entry = DISH_TRANSLATIONS[name];
+  return (entry && entry[lang]) ? entry[lang] : null;
+}
+
+// Имя блюда для текущего языка — синхронно, без сети:
+// 1) словарь выше, 2) то, что уже перевели и закэшировали ранее, 3) оригинал на русском.
+function getDishName(item) {
+  if (currentLang === "ru" || !item) return item ? item.name : "";
+  return dictTranslation(item.name, currentLang) || dishTranslationCache[item.name + "|" + currentLang] || item.name;
+}
+
+// «Живой» перевод как запасной вариант для блюд, которых ещё нет в словаре выше.
+// Пробует два независимых бесплатных сервиса по очереди — если один заблокирован
+// или недоступен в сети гостя, используется второй. Если оба не ответили —
+// молча остаёмся на русском названии (без ошибок на экране у гостя).
+async function translateDishName(text, targetLang) {
+  if (!text) return text;
+  const cacheKey = text + "|" + targetLang;
+  if (dishTranslationCache[cacheKey]) return dishTranslationCache[cacheKey];
+
+  const withTimeout = (url, ms) => {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), ms);
+    return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(timer));
+  };
+
+  // Попытка 1: Google Translate (неофициальный публичный эндпоинт)
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=ru&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+    const res = await withTimeout(url, 6000);
+    if (res.ok) {
+      const json = await res.json();
+      const translated = json[0].map(seg => seg[0]).join("");
+      if (translated && translated.trim()) {
+        dishTranslationCache[cacheKey] = translated;
+        return translated;
+      }
+    }
+  } catch (e) {}
+
+  // Попытка 2: MyMemory (резервный вариант)
+  try {
+    const url2 = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=ru|${targetLang}`;
+    const res2 = await withTimeout(url2, 6000);
+    if (res2.ok) {
+      const json2 = await res2.json();
+      const translated2 = json2 && json2.responseData && json2.responseData.translatedText;
+      if (translated2 && translated2.trim()) {
+        dishTranslationCache[cacheKey] = translated2;
+        return translated2;
+      }
+    }
+  } catch (e) {}
+
+  return text;
+}
+
+// Догоняет переводом позиции, которых нет в словаре и ещё нет в кэше,
+// и точечно обновляет DOM, когда перевод придёт — без перерисовки всей сетки.
+// Алкоголь (бренды/названия напитков) сознательно не трогаем — переводить нечего.
+function translateVisibleItems(items, token) {
+  if (currentLang === "ru") return;
+  items.forEach(item => {
+    if (BAR_ALC.includes(item.cat)) return;
+    if (dictTranslation(item.name, currentLang)) return;
+    if (dishTranslationCache[item.name + "|" + currentLang]) return;
+    translateDishName(item.name, currentLang).then(translated => {
+      if (token !== menuRenderToken) return; // категория/язык уже переключились
+      if (!translated || translated === item.name) return;
+      document.querySelectorAll(`[data-item-id="${item.id}"]`).forEach(el => { el.textContent = translated; });
+    });
+  });
+}
+// ============================================================================
 
 const tg = window.Telegram && window.Telegram.WebApp;
 if (tg) {
@@ -529,7 +622,7 @@ function qtyBlock(id, qty) {
 function itemCard(item) {
   const q = (cart.find(c => c.id === item.id) || {}).qty || 0;
   const img = item.img ? `<img src="${item.img}" alt="" onerror="this.style.opacity=0">` : `<div class="ph"></div>`;
-  return `<article class="item">${img}<div style="flex:1;display:flex;flex-direction:column"><h3>${item.name}</h3><div class="bot"><span class="price">${money(item.price)}</span>${qtyBlock(item.id,q)}</div></div></article>`;
+  return `<article class="item">${img}<div style="flex:1;display:flex;flex-direction:column"><h3 data-item-id="${item.id}">${getDishName(item)}</h3><div class="bot"><span class="price">${money(item.price)}</span>${qtyBlock(item.id,q)}</div></div></article>`;
 }
 function bindQty(root) {
   root.querySelectorAll("[data-add]").forEach(b => b.onclick = () => addToCart(+b.dataset.add));
@@ -538,28 +631,36 @@ function bindQty(root) {
 function renderMenu() {
   const list = document.getElementById("menuList");
   let html = "";
+  let visibleItems = [];
   if (barOnly && (currentCategory === "bar" || currentCategory === "all")) {
     html += `<div class="group">${t("bar_group_non_alcohol")}</div>`;
     BAR_SOFT.forEach(cat => {
       const items = dbMenu.filter(i => i.cat === cat);
       if (!items.length) return;
       html += `<div class="sub">${t("bar_type_"+cat)}</div>` + items.map(itemCard).join("");
+      visibleItems = visibleItems.concat(items);
     });
     html += `<div class="group">${t("bar_group_alcohol")}</div>`;
     BAR_ALC.forEach(cat => {
       const items = dbMenu.filter(i => i.cat === cat);
       if (!items.length) return;
       html += `<div class="sub">${t("bar_type_"+cat)}</div>` + items.map(itemCard).join("");
+      visibleItems = visibleItems.concat(items);
     });
   } else if (!barOnly && currentCategory === "all") {
-    html = dbMenu.filter(i => FOOD.includes(i.cat)).map(itemCard).join("");
+    visibleItems = dbMenu.filter(i => FOOD.includes(i.cat));
+    html = visibleItems.map(itemCard).join("");
   } else if (!barOnly && currentCategory === "bar") {
-    html = dbMenu.filter(i => BAR.includes(i.cat)).map(itemCard).join("");
+    visibleItems = dbMenu.filter(i => BAR.includes(i.cat));
+    html = visibleItems.map(itemCard).join("");
   } else {
-    html = dbMenu.filter(i => i.cat === currentCategory).map(itemCard).join("");
+    visibleItems = dbMenu.filter(i => i.cat === currentCategory);
+    html = visibleItems.map(itemCard).join("");
   }
   list.innerHTML = html || `<p class="empty">${t("menu_empty")}</p>`;
   bindQty(list);
+  const token = ++menuRenderToken;
+  translateVisibleItems(visibleItems, token);
 }
 function addToCart(id) {
   const item = dbMenu.find(i => i.id === id);
@@ -589,7 +690,7 @@ function updateCart() {
 function renderCart() {
   const box = document.getElementById("cartItems");
   if (!cart.length) { box.innerHTML = `<p class="empty">${t("empty_cart")}</p>`; document.getElementById("modalTotal").textContent = money(0); return; }
-  box.innerHTML = cart.map(i => `<div class="line">${i.img?`<img src="${i.img}" alt="">`:`<div class="ph" style="width:56px;height:56px"></div>`}<div style="flex:1"><div class="nm">${i.name}</div><div class="price">${money(i.price*i.qty)}</div></div>${qtyBlock(i.id,i.qty)}</div>`).join("");
+  box.innerHTML = cart.map(i => `<div class="line">${i.img?`<img src="${i.img}" alt="">`:`<div class="ph" style="width:56px;height:56px"></div>`}<div style="flex:1"><div class="nm" data-item-id="${i.id}">${getDishName(i)}</div><div class="price">${money(i.price*i.qty)}</div></div>${qtyBlock(i.id,i.qty)}</div>`).join("");
   document.getElementById("modalTotal").textContent = money(cart.reduce((s,i)=>s+i.price*i.qty,0));
   bindQty(box);
 }
