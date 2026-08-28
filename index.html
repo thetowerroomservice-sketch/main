@@ -2,9 +2,41 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>The Tower Hotel — Room Service</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    // Жёсткая блокировка зума (страховка поверх meta viewport для Android/WebView)
+    document.addEventListener('gesturestart', function (e) { e.preventDefault(); }, { passive: false });
+    document.addEventListener('gesturechange', function (e) { e.preventDefault(); }, { passive: false });
+    document.addEventListener('touchmove', function (e) {
+      if (e.touches && e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+    (function () {
+      var lastTouchEnd = 0;
+      var lastX = 0, lastY = 0;
+      document.addEventListener('touchend', function (e) {
+        var now = Date.now();
+        var t = e.changedTouches && e.changedTouches[0];
+        var x = t ? t.clientX : 0;
+        var y = t ? t.clientY : 0;
+        var sameSpot = Math.abs(x - lastX) < 30 && Math.abs(y - lastY) < 30;
+        if (now - lastTouchEnd <= 350 && sameSpot) e.preventDefault();
+        lastTouchEnd = now;
+        lastX = x; lastY = y;
+      }, { passive: false });
+    })();
+
+    // Блокировка зума колесом мыши с Ctrl (desktop) и клавиатурой (Ctrl +/-/0)
+    document.addEventListener('wheel', function (e) {
+      if (e.ctrlKey) e.preventDefault();
+    }, { passive: false });
+    document.addEventListener('keydown', function (e) {
+      if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].includes(e.key)) {
+        e.preventDefault();
+      }
+    });
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
