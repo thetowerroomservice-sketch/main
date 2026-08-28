@@ -6,6 +6,42 @@
   <title>The Tower Hotel — Room Service</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
+
+    // Блокировка зума колесом мыши с Ctrl (desktop) и клавиатурой (Ctrl +/-/0)
+document.addEventListener('wheel', function (e) {
+  if (e.ctrlKey) e.preventDefault();
+}, { passive: false });
+document.addEventListener('keydown', function (e) {
+  if ((e.ctrlKey || e.metaKey) && ['+', '-', '=', '0'].includes(e.key)) {
+    e.preventDefault();
+  }
+});
+
+// iOS Safari баг: после фокуса на <input type="date">, <input type="time"> или <select>
+// страница иногда "залипает" в увеличенном масштабе, даже если в meta viewport стоит
+// maximum-scale=1 и user-scalable=no. Фикс: при потере фокуса полем принудительно
+// пересобираем meta viewport, это заставляет Safari сбросить масштаб обратно к 1.
+(function () {
+  var VP_BASE = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover';
+  function resetIOSZoom() {
+    var vp = document.querySelector('meta[name="viewport"]');
+    if (!vp) return;
+    vp.setAttribute('content', VP_BASE + ', maximum-scale=0.999');
+    setTimeout(function () {
+      vp.setAttribute('content', VP_BASE);
+    }, 300);
+  }
+  document.addEventListener('focusout', function (e) {
+    var tag = e.target && e.target.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') {
+      setTimeout(resetIOSZoom, 60);
+    }
+  }, true);
+  window.addEventListener('pageshow', resetIOSZoom);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) resetIOSZoom();
+  });
+})();
     // Жёсткая блокировка зума (страховка поверх meta viewport для Android/WebView)
     document.addEventListener('gesturestart', function (e) { e.preventDefault(); }, { passive: false });
     document.addEventListener('gesturechange', function (e) { e.preventDefault(); }, { passive: false });
