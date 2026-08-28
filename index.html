@@ -139,10 +139,8 @@
     .feat .shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(11,13,17,.92), rgba(11,13,17,.2), transparent); }
     .feat .lbl { position: absolute; left: 12px; bottom: 12px; display: flex; align-items: center; gap: 8px; font-family: var(--display); font-size: 26px; line-height: 1; }
     .svc { min-height: 112px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; text-align: start; padding: 16px; background: var(--surface); border-radius: var(--r-lg); }
-    .svc.wide { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 16px; min-height: 72px; }
+    .svc.wide { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 12px; }
     .svc span { font-size: 14px; font-weight: 500; line-height: 1.3; }
-    .svc.review-card .ico { background: color-mix(in oklab, var(--accent) 15%, var(--elevated)); flex-shrink: 0; }
-    .svc.review-card { font-size: 15px; font-weight: 600; }
     .hidden { display: none !important; }
     .menu-head { position: sticky; top: 0; z-index: 20; padding: max(.75rem, env(safe-area-inset-top)) 12px 12px; background: color-mix(in oklab, var(--bg) 90%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
     .menu-head .row { display: flex; align-items: center; gap: 4px; }
@@ -198,6 +196,9 @@
     .dial { font-family: var(--display); font-size: 36px; margin-bottom: 16px; }
     .empty { text-align: center; color: var(--muted); padding: 48px 16px; }
     .clear { width: 100%; padding: 12px; color: var(--muted); font-size: 14px; }
+    .date-picker-wrap { position: relative; }
+    .date-hidden { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; top: 0; left: 0; }
+    .date-display { font-family: inherit; color: var(--fg); background: var(--elevated); border: 1px solid var(--border); border-radius: var(--r-md); min-height: 44px; width: 100%; padding: 10px 12px; font-size: 16px; text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
   </style>
 </head>
@@ -247,7 +248,7 @@
           <button class="svc" data-open="reception"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><span data-i18n="service_reception">Ресепшн</span></button>
           <button class="svc" data-open="problem"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span><span data-i18n="service_problem">Проблема</span></button>
           <button class="svc" data-open="alarm"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M5 3 2 6M22 6l-3-3"/></svg></span><span data-i18n="service_alarm">Будильник</span></button>
-          <button class="svc wide review-card" data-open="review"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span><span data-i18n="service_review">Оставить отзыв</span></button>
+          <button class="svc wide" data-open="review"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span><span data-i18n="service_review">Отзыв</span></button>
         </div>
       </div>
     </section>
@@ -276,8 +277,8 @@
   <div class="sheet" id="sheet-wifi"><div class="ov"></div><div class="box"><div class="handle"></div><h2>Wi-Fi</h2><div class="wifi-box"><small data-i18n="wifi_network">Сеть</small><p>The Tower Hotel</p><small data-i18n="wifi_password">Пароль</small><div class="pw" id="wifiPass">Tower2023</div></div><button class="btn" id="copyWifi" data-i18n="wifi_copy">Скопировать</button></div></div>
   <div class="sheet" id="sheet-housekeeping"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="hk_title">Housekeeping</h2><button class="btn" id="hkMaids" data-i18n="hk_call_maids">Позвать горничных</button><button class="btn ghost" id="hkClean" data-i18n="hk_clean_room">Убраться</button></div></div>
   <div class="sheet" id="sheet-reception"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="service_reception">Ресепшн</h2><p class="muted" data-i18n="reception_hint">Стойка ответит на 1111.</p><div class="dial" data-i18n="reception_number">Ресепшн · 1111</div><button class="btn" id="callReception" data-i18n="reception_call">Вызвать ресепшн</button></div></div>
-  <div class="sheet" id="sheet-alarm"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="alarm_title">Будильник</h2><label class="field"><span data-i18n="alarm_time_label">Время</span><input type="time" id="alarmTime" value="08:00"></label><label class="field"><span data-i18n="alarm_date_label">Дата</span><input type="date" id="alarmDate"></label><label class="field"><span data-i18n="alarm_note_label">Примечание</span><textarea id="alarmNote"></textarea></label><button class="btn" id="sendAlarm" data-i18n="alarm_send">Установить</button></div></div>
-  <div class="sheet" id="sheet-taxi"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="taxi_title">Такси</h2><label class="field"><span data-i18n="taxi_dest_label">Куда</span><input id="taxiDest"></label><label class="field"><span data-i18n="alarm_date_label">Дата</span><input type="date" id="taxiDate"></label><label class="field"><span data-i18n="taxi_time_label">Время</span><input type="time" id="taxiTime" value="12:00"></label><label class="field"><span data-i18n="taxi_passengers_label">Пассажиры</span><select id="taxiPassengers"><option>1</option><option>2</option><option>3</option><option>4+</option></select></label><button class="btn" id="sendTaxi" data-i18n="taxi_send">Заказать такси</button></div></div>
+  <div class="sheet" id="sheet-alarm"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="alarm_title">Будильник</h2><label class="field"><span data-i18n="alarm_time_label">Время</span><input type="time" id="alarmTime" value="08:00"></label><label class="field"><span data-i18n="alarm_date_label">Дата</span><div class="date-picker-wrap"><input type="date" id="alarmDate" class="date-hidden"><div class="date-display" id="alarmDateDisplay" ></div></div></label><label class="field"><span data-i18n="alarm_note_label">Примечание</span><textarea id="alarmNote"></textarea></label><button class="btn" id="sendAlarm" data-i18n="alarm_send">Установить</button></div></div>
+  <div class="sheet" id="sheet-taxi"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="taxi_title">Такси</h2><label class="field"><span data-i18n="taxi_dest_label">Куда</span><input id="taxiDest"></label><label class="field"><span data-i18n="alarm_date_label">Дата</span><div class="date-picker-wrap"><input type="date" id="taxiDate" class="date-hidden"><div class="date-display" id="taxiDateDisplay" ></div></div></label><label class="field"><span data-i18n="taxi_time_label">Время</span><input type="time" id="taxiTime" value="12:00"></label><label class="field"><span data-i18n="taxi_passengers_label">Пассажиры</span><select id="taxiPassengers"><option>1</option><option>2</option><option>3</option><option>4+</option></select></label><button class="btn" id="sendTaxi" data-i18n="taxi_send">Заказать такси</button></div></div>
   <div class="sheet" id="sheet-review"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="review_title">Отзыв</h2><p class="muted" data-i18n="review_rating_label">Оценка</p><div class="stars" id="stars"></div><label class="field"><span data-i18n="review_comment_label">Комментарий</span><textarea id="reviewComment"></textarea></label><button class="btn" id="sendReview" data-i18n="review_send">Отправить отзыв</button></div></div>
   <div class="sheet" id="sheet-problem"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="problem_title">Проблема</h2><label class="field"><span data-i18n="problem_comment_label">Описание</span><textarea id="problemComment"></textarea></label><button class="btn" id="sendProblem" data-i18n="problem_send">Отправить</button></div></div>
   <div class="sheet" id="sheet-room"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="set_room">Номер комнаты</h2><label class="field"><span data-i18n="set_room">Номер</span><input id="roomInput"></label><button class="btn" id="saveRoom" data-i18n="room_save">Сохранить</button></div></div>
@@ -341,6 +342,35 @@ function toast(msg) {
 }
 function loading(on) { document.getElementById("load").classList.toggle("on", !!on); }
 
+// Маппинг языков приложения -> BCP-47 локали для Intl.DateTimeFormat
+const LANG_LOCALE = {
+  ru: "ru-RU", en: "en-US", uz: "uz-UZ", kk: "kk-KZ",
+  tr: "tr-TR", zh: "zh-CN", ar: "ar-SA", fr: "fr-FR",
+  es: "es-ES", de: "de-DE"
+};
+
+// Форматирует YYYY-MM-DD строку в красивую локализованную дату
+function formatDateLocalized(isoStr, lang) {
+  if (!isoStr) return "";
+  // isoStr = "2026-08-28", Date.parse трактует как UTC — берём части вручную
+  const [y, m, d] = isoStr.split("-").map(Number);
+  const locale = LANG_LOCALE[lang] || "ru-RU";
+  try {
+    return new Intl.DateTimeFormat(locale, { day: "numeric", month: "long", year: "numeric" })
+      .format(new Date(y, m - 1, d));
+  } catch (e) {
+    return isoStr;
+  }
+}
+
+// Обновляет оба display-блока при смене даты или языка
+function updateDateDisplays() {
+  const aDate = document.getElementById("alarmDate").value;
+  const tDate = document.getElementById("taxiDate").value;
+  document.getElementById("alarmDateDisplay").textContent = formatDateLocalized(aDate, currentLang);
+  document.getElementById("taxiDateDisplay").textContent = formatDateLocalized(tDate, currentLang);
+}
+
 function applyI18n() {
   document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = t(el.getAttribute("data-i18n")); });
   document.getElementById("langBtn").textContent = (LANGS.find(l => l.id === currentLang) || LANGS[0]).code;
@@ -349,6 +379,7 @@ function applyI18n() {
   document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
   document.getElementById("menuTitle").textContent = barOnly ? t("service_bar") : t("service_menu");
   updateCart();
+  updateDateDisplays();
   if (!document.getElementById("menuScreen").classList.contains("hidden")) renderCats();
 }
 
@@ -446,7 +477,7 @@ function qtyBlock(id, qty) {
 function itemCard(item) {
   const q = (cart.find(c => c.id === item.id) || {}).qty || 0;
   const img = item.img ? `<img src="${item.img}" alt="" onerror="this.style.opacity=0">` : `<div class="ph"></div>`;
-  return `<article class="item">${img}<div style="flex:1;display:flex;flex-direction:column"><h3 class="item-name" data-item-id="${item.id}">${item.name}</h3><div class="bot"><span class="price">${money(item.price)}</span>${qtyBlock(item.id,q)}</div></div></article>`;
+  return `<article class="item">${img}<div style="flex:1;display:flex;flex-direction:column"><h3>${item.name}</h3><div class="bot"><span class="price">${money(item.price)}</span>${qtyBlock(item.id,q)}</div></div></article>`;
 }
 function bindQty(root) {
   root.querySelectorAll("[data-add]").forEach(b => b.onclick = () => addToCart(+b.dataset.add));
@@ -454,41 +485,29 @@ function bindQty(root) {
 }
 function renderMenu() {
   const list = document.getElementById("menuList");
-  const token = ++menuRenderToken;
   let html = "";
-  let visibleItems = [];
-
   if (barOnly && (currentCategory === "bar" || currentCategory === "all")) {
     html += `<div class="group">${t("bar_group_non_alcohol")}</div>`;
     BAR_SOFT.forEach(cat => {
       const items = dbMenu.filter(i => i.cat === cat);
       if (!items.length) return;
       html += `<div class="sub">${t("bar_type_"+cat)}</div>` + items.map(itemCard).join("");
-      visibleItems = visibleItems.concat(items);
     });
     html += `<div class="group">${t("bar_group_alcohol")}</div>`;
     BAR_ALC.forEach(cat => {
       const items = dbMenu.filter(i => i.cat === cat);
       if (!items.length) return;
       html += `<div class="sub">${t("bar_type_"+cat)}</div>` + items.map(itemCard).join("");
-      // алкоголь в visibleItems не добавляем — не переводим
     });
   } else if (!barOnly && currentCategory === "all") {
-    const items = dbMenu.filter(i => FOOD.includes(i.cat));
-    html = items.map(itemCard).join("");
-    visibleItems = items;
+    html = dbMenu.filter(i => FOOD.includes(i.cat)).map(itemCard).join("");
   } else if (!barOnly && currentCategory === "bar") {
-    const items = dbMenu.filter(i => BAR.includes(i.cat));
-    html = items.map(itemCard).join("");
-    visibleItems = items.filter(i => !BAR_ALC.includes(i.cat));
+    html = dbMenu.filter(i => BAR.includes(i.cat)).map(itemCard).join("");
   } else {
-    const items = dbMenu.filter(i => i.cat === currentCategory);
-    html = items.map(itemCard).join("");
-    visibleItems = BAR_ALC.includes(currentCategory) ? [] : items;
+    html = dbMenu.filter(i => i.cat === currentCategory).map(itemCard).join("");
   }
   list.innerHTML = html || `<p class="empty">${t("menu_empty")}</p>`;
   bindQty(list);
-  translateVisibleItems(visibleItems, token);
 }
 function addToCart(id) {
   const item = dbMenu.find(i => i.id === id);
@@ -535,59 +554,6 @@ function normalizeCat(raw) {
   const hit = known.find(k => k.replace(/_/g,"") === stripped);
   if (hit) return hit;
   return ALIAS[c] || ALIAS[stripped] || "main_course";
-}
-
-// === ПЕРЕВОД НАЗВАНИЙ БЛЮД ===
-// Алкоголь не переводим — названия фирменные (Jack Daniel's, Johnnie Walker и т.д.)
-const dishTranslationCache = {};
-let menuRenderToken = 0;
-
-async function translateDishName(text, targetLang) {
-  if (!text) return text;
-  if (targetLang === "ru") return text;
-  const cacheKey = text + "|" + targetLang;
-  if (dishTranslationCache[cacheKey]) return dishTranslationCache[cacheKey];
-  // Попытка 1: Google Translate (публичный)
-  try {
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=ru&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
-    const res = await fetch(url);
-    if (res.ok) {
-      const json = await res.json();
-      const translated = json[0].map(seg => seg[0]).join("");
-      if (translated && translated.trim()) {
-        dishTranslationCache[cacheKey] = translated;
-        return translated;
-      }
-    }
-  } catch (e) {}
-  // Попытка 2: MyMemory (резерв)
-  try {
-    const url2 = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=ru|${targetLang}`;
-    const res2 = await fetch(url2);
-    if (res2.ok) {
-      const json2 = await res2.json();
-      const translated2 = json2 && json2.responseData && json2.responseData.translatedText;
-      if (translated2 && translated2.trim()) {
-        dishTranslationCache[cacheKey] = translated2;
-        return translated2;
-      }
-    }
-  } catch (e) {}
-  return text;
-}
-
-// Переводит названия видимых блюд без перерисовки всей сетки
-function translateVisibleItems(items, token) {
-  if (currentLang === "ru") return;
-  items.forEach(item => {
-    if (BAR_ALC.includes(item.cat)) return; // алкоголь не переводим
-    translateDishName(item.name, currentLang).then(translated => {
-      if (token !== menuRenderToken) return; // язык/категория уже сменились
-      if (!translated || translated === item.name) return;
-      const el = document.querySelector(`.item-name[data-item-id="${item.id}"]`);
-      if (el) el.textContent = translated;
-    });
-  });
 }
 
 async function fetchMenu() {
@@ -702,9 +668,35 @@ function getRoomFromUrl() {
 const today = new Date().toISOString().slice(0,10);
 document.getElementById("alarmDate").value = today;
 document.getElementById("taxiDate").value = today;
+// При выборе даты через нативный пикер — обновляем display
+document.getElementById("alarmDate").addEventListener("change", updateDateDisplays);
+document.getElementById("taxiDate").addEventListener("change", updateDateDisplays);
+// Тап по display открывает нативный пикер (iOS Safari совместимость)
+function openDatePicker(inputId) {
+  var inp = document.getElementById(inputId);
+  inp.style.position = "fixed";
+  inp.style.opacity = "0";
+  inp.style.width = "100%";
+  inp.style.height = "100%";
+  inp.style.top = "0";
+  inp.style.left = "0";
+  inp.style.zIndex = "9999";
+  inp.style.pointerEvents = "auto";
+  inp.focus();
+  try { if (inp.showPicker) inp.showPicker(); } catch(e) {}
+  setTimeout(function() {
+    inp.style.position = "absolute";
+    inp.style.width = "1px";
+    inp.style.height = "1px";
+    inp.style.zIndex = "";
+    inp.style.pointerEvents = "none";
+  }, 800);
+}
+document.getElementById("alarmDateDisplay").addEventListener("click", function() { openDatePicker("alarmDate"); });
+document.getElementById("taxiDateDisplay").addEventListener("click", function() { openDatePicker("taxiDate"); });
 document.querySelectorAll(".room-number").forEach(n => n.textContent = getRoomFromUrl());
 document.documentElement.setAttribute("data-theme", "dark");
-applyI18n();
+applyI18n(); // вызывает updateDateDisplays внутри
 fetchMenu();
 history.replaceState({appLayer:"root"}, "");
 history.pushState({appLayer:"root"}, "");
