@@ -232,6 +232,67 @@
        не должны вылезать за рамки карточки — переносим по словам/символам. */
     .item h3, .nm { overflow-wrap: anywhere; }
     .item > div { min-width: 0; }
+
+    /* iPad / tablet — только раскладка, без смены контента */
+    @media (min-width: 768px) {
+      html, body { background: var(--bg); }
+      .app { max-width: none; width: 100%; box-shadow: none; }
+      .hero { height: 420px; }
+      h1 { font-size: 72px; }
+      .pad { padding: 28px 28px 140px; }
+      .grid { grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+      .feat { min-height: 220px; }
+      .feat.wide { grid-column: span 2; min-height: 220px; }
+      .feat .lbl { font-size: 32px; left: 16px; bottom: 16px; }
+      .svc { min-height: 128px; padding: 18px; }
+      .svc.wide { grid-column: auto; flex-direction: column; align-items: flex-start; }
+      .wifi { padding: 18px 20px; }
+      .menu-head { padding-left: 24px; padding-right: 24px; }
+      .menu-head h2 { font-size: 34px; }
+      .list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 20px 24px 140px; }
+      .list .group, .list .sub, .list .empty { grid-column: 1 / -1; }
+      .item { padding: 12px; }
+      .item img, .ph { width: 108px; height: 108px; }
+      .sheet .box {
+        top: 50%;
+        bottom: auto;
+        transform: translate(-50%, -50%);
+        width: min(460px, 86vw);
+        max-height: 78dvh;
+        border-radius: var(--r-xl);
+        border-bottom: 1px solid var(--border);
+        padding: 20px 24px 24px;
+      }
+      .handle { display: none; }
+      .cart { bottom: max(24px, env(safe-area-inset-bottom)); width: min(420px, 70%); }
+      .top-chrome { inset: max(1rem, env(safe-area-inset-top)) 20px auto; }
+      .lang-menu { top: 64px; left: 20px; }
+    }
+
+    /* iPad landscape */
+    @media (min-width: 900px) and (orientation: landscape) {
+      #home {
+        display: grid;
+        grid-template-columns: minmax(340px, 0.9fr) minmax(0, 1.1fr);
+        min-height: 100dvh;
+      }
+      .hero {
+        height: 100dvh;
+        position: sticky;
+        top: 0;
+        border-radius: 0;
+      }
+      .pad {
+        padding: 72px 32px 120px;
+        max-height: 100dvh;
+        overflow: auto;
+      }
+      .grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+      .feat.wide { grid-column: auto; min-height: 200px; }
+      .feat { min-height: 200px; }
+      .list { padding: 20px 32px 140px; }
+      h1 { font-size: 64px; }
+    }
   </style>
 </head>
 <body>
