@@ -6,54 +6,6 @@
   <title>The Tower Hotel — Room Service</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
-    <script>
-document.addEventListener("DOMContentLoaded", async () => {
-    // 1. Достаем номер комнаты из ссылки (поддерживает и ?room=42 и ?id=42)
-    const urlParams = new URLSearchParams(window.location.search);
-    const roomNumber = urlParams.get('room') || urlParams.get('id'); 
-    
-    // ВНИМАНИЕ: Замени '.header-logo-text' на класс или ID твоего элемента, где написано "The Tower"
-    const titleElement = document.querySelector('.header-logo-text'); 
-    
-    if (!titleElement) return;
-
-    if (!roomNumber) {
-        titleElement.innerText = "The Tower";
-        return;
-    }
-
-    // Твои ключи от Supabase
-    const SUPABASE_URL = "https://zohutvrmjqplhchbgius.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_nCtUJolNbQTP7ozzWrXryQ_fACTAfRf";
-
-    try {
-        // 2. Делаем прямой запрос в таблицу rooms
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/rooms?room_number=eq.${encodeURIComponent(roomNumber)}&select=guest_name`, {
-            headers: {
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`
-            }
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            // 3. Если имя есть — ставим его
-            if (data && data.length > 0 && data[0].guest_name) {
-                titleElement.innerText = data[0].guest_name;
-                return;
-            }
-        }
-        // Если база пустая или имени нет — оставляем The Tower
-        titleElement.innerText = "The Tower";
-    } catch (error) {
-        console.error("Ошибка при получении имени гостя:", error);
-        titleElement.innerText = "The Tower";
-    }
-});
-</script>
-
-
-    
     // Жёсткая блокировка зума (страховка поверх meta viewport для Android/WebView)
     document.addEventListener('gesturestart', function (e) { e.preventDefault(); }, { passive: false });
     document.addEventListener('gesturechange', function (e) { e.preventDefault(); }, { passive: false });
