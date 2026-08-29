@@ -314,7 +314,7 @@
         <div class="hero-grad"></div>
         <div class="hero-copy">
           <p class="eyebrow">The Tower Hotel</p>
-          <h1>The Tower</h1>
+          <h1 id="heroTitle">The Tower</h1>
           <p class="tagline" data-i18n="tagline">Сервис в номер</p>
           <button class="room-chip" id="roomChip"><span data-i18n="room_key">Номер:</span> <b class="room-number">1208</b></button>
         </div>
@@ -547,6 +547,24 @@ function guestName() {
   return "Гость";
 }
 function room() { return document.querySelector(".room-number").textContent.trim(); }
+
+// Подтягивает имя гостя из Supabase (таблица rooms) по номеру комнаты из QR-ссылки
+// и подставляет его вместо "The Tower" в заголовке. Если имени нет — заголовок
+// остаётся как есть ("The Tower"). Имя пишут сами сотрудники через Telegram-бота
+// командой /setguest — см. final.js (Worker).
+async function applyGuestName() {
+  const heroTitle = document.getElementById("heroTitle");
+  const roomNum = room();
+  if (!heroTitle || !roomNum) return;
+  try {
+    const url = `${SUPABASE_URL}/rest/v1/rooms?room_number=eq.${encodeURIComponent(roomNum)}&select=guest_name`;
+    const res = await fetch(url, { headers: { apikey: SUPABASE_KEY, Authorization: "Bearer " + SUPABASE_KEY } });
+    if (!res.ok) return;
+    const rows = await res.json();
+    const name = rows && rows[0] && rows[0].guest_name;
+    if (name && String(name).trim()) heroTitle.textContent = String(name).trim();
+  } catch (e) {}
+}
 function toast(msg) {
   const el = document.getElementById("toast");
   el.textContent = msg;
@@ -916,6 +934,7 @@ function openDatePicker(inputId) {
 document.getElementById("alarmDateDisplay").addEventListener("click", function() { openDatePicker("alarmDate"); });
 document.getElementById("taxiDateDisplay").addEventListener("click", function() { openDatePicker("taxiDate"); });
 document.querySelectorAll(".room-number").forEach(n => n.textContent = getRoomFromUrl());
+applyGuestName();
 document.documentElement.setAttribute("data-theme", "dark");
 applyI18n(); // вызывает updateDateDisplays внутри
 fetchMenu();
