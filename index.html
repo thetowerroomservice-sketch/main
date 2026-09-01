@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>The Tower Hotel — Room Service</title><!-- 🔧 ДЛЯ НОВОГО ПРОЕКТА: название отеля -->
+  <meta name="theme-color" content="#0b0d11">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="The Tower"><!-- 🔧 короткое имя на иконке Домой; лого: ./images/apple-touch-icon.png (180×180 PNG) -->
+  <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./images/icon-192.png">
+  <link rel="manifest" href="./site.webmanifest">
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script>
     // Жёсткая блокировка зума (страховка поверх meta viewport для Android/WebView)
@@ -148,6 +156,7 @@
     .svc.wide { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 12px; }
     .svc span { font-size: 14px; font-weight: 500; line-height: 1.3; }
     .hidden { display: none !important; }
+    #nearbyScreen, #menuScreen { min-height: 100dvh; }
     .menu-head { position: sticky; top: 0; z-index: 20; padding: max(.75rem, env(safe-area-inset-top)) 12px 12px; background: color-mix(in oklab, var(--bg) 90%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
     .menu-head .row { display: flex; align-items: center; gap: 4px; }
     .menu-head h2 { font-family: var(--display); font-size: 26px; font-weight: 500; }
@@ -546,6 +555,12 @@
       - В Supabase: таблица nearby (slug, type, name jsonb, lat, lng, images text[4],
         sort_order, is_available). Fetch как меню. Расстояние в таблицу не класть.
       - Фото: ./images/nearby-cover.jpg и ./images/nearby/<slug>-1.jpg … -4.jpg
+
+   7) ИКОНКА «НА ЭКРАН ДОМОЙ» (Safari / iOS):
+      - Положи свой логотип 180×180 PNG → ./images/apple-touch-icon.png
+        (сейчас там башня The Tower). Для Android ещё
+        ./images/icon-192.png и ./images/icon-512.png + ./site.webmanifest
+      - Гость: Safari → Поделиться → На экран «Домой».
 
    5) НЕ ТРЕБУЕТ ОБЯЗАТЕЛЬНОЙ ЗАМЕНЫ, но можно кастомизировать по вкусу:
       - Список языков LANGS и переводы внутри I18N — можно оставить
@@ -971,6 +986,19 @@ function renderNearby() {
     };
   });
 }
+function scrollToTop() {
+  const jump = function () {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    document.querySelectorAll(".app, .pad, #nearbyScreen, #menuScreen, #home").forEach(function (el) {
+      el.scrollTop = 0;
+    });
+  };
+  jump();
+  requestAnimationFrame(jump);
+  setTimeout(jump, 50);
+}
 function showNearby() {
   barOnly = false;
   document.getElementById("home").classList.add("hidden");
@@ -978,6 +1006,7 @@ function showNearby() {
   document.getElementById("menuScreen").classList.add("hidden");
   document.getElementById("nearbyScreen").classList.remove("hidden");
   renderNearby();
+  scrollToTop();
 }
 
 function showHome() {
@@ -987,6 +1016,7 @@ function showHome() {
   document.getElementById("menuScreen").classList.add("hidden");
   document.getElementById("nearbyScreen").classList.add("hidden");
   stopNearbyCarousels();
+  scrollToTop();
 }
 function showMenu(bar) {
   barOnly = !!bar;
@@ -999,6 +1029,7 @@ function showMenu(bar) {
   document.getElementById("menuTitle").textContent = barOnly ? t("service_bar") : t("service_menu");
   renderCats();
   renderMenu();
+  scrollToTop();
 }
 document.getElementById("openMenu").onclick = () => showMenu(false);
 document.getElementById("openBar").onclick = () => showMenu(true);
