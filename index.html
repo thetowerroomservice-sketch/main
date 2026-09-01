@@ -293,6 +293,102 @@
       .list { padding: 20px 32px 140px; }
       h1 { font-size: 64px; }
     }
+
+    /* What's Nearby — mock UI. Swap NEARBY_PLACES for Supabase later. */
+    .place-list {
+      padding: 16px 16px 140px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .place-card {
+      background: var(--surface);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+    }
+    .place-carousel {
+      position: relative;
+      height: 210px;
+      overflow: hidden;
+      background: var(--elevated);
+      touch-action: pan-y;
+    }
+    .place-carousel img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity .55s ease;
+    }
+    .place-carousel img.on { opacity: 1; }
+    .place-dots {
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      display: flex;
+      gap: 6px;
+      z-index: 2;
+    }
+    .place-dots b {
+      width: 6px;
+      height: 6px;
+      border-radius: 99px;
+      background: color-mix(in oklab, #f3eee6 40%, transparent);
+      display: block;
+      cursor: pointer;
+    }
+    .place-dots b.on { width: 18px; background: #f3eee6; }
+    .place-body { padding: 14px 16px 16px; }
+    .place-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .place-type {
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .place-dist {
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .place-name {
+      font-family: var(--display);
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1.05;
+      letter-spacing: -.02em;
+      margin: 6px 0 14px;
+      overflow-wrap: anywhere;
+    }
+    .place-card .btn { min-height: 44px; font-size: 14px; }
+    @media (max-width: 380px) {
+      .place-carousel { height: 176px; }
+      .place-name { font-size: 24px; }
+      .place-list { padding: 12px 12px 130px; }
+    }
+    @media (min-width: 768px) {
+      .place-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        padding: 20px 24px 140px;
+      }
+      .place-carousel { height: 240px; }
+      .place-name { font-size: 32px; }
+    }
   </style>
 </head>
 <body>
@@ -337,6 +433,11 @@
             <span class="shade"></span>
             <span class="lbl" data-i18n="service_bar">Бар</span>
           </button>
+          <button class="feat" id="openNearby">
+            <img src="./images/nearby-cover.jpg" alt="">
+            <span class="shade"></span>
+            <span class="lbl" data-i18n="service_nearby">Что рядом</span>
+          </button>
           <button class="svc" data-open="housekeeping"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 20v-6M12 20V10M19 20V4"/></svg></span><span data-i18n="service_hotel">Housekeeping</span></button>
           <button class="svc" data-open="taxi"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11h18l-1.5 6.5a2 2 0 0 1-2 1.5H6.5a2 2 0 0 1-2-1.5Z"/><path d="M5 11 7 6h10l2 5"/><circle cx="7.5" cy="18" r="1.5"/><circle cx="16.5" cy="18" r="1.5"/></svg></span><span data-i18n="service_taxi">Такси</span></button>
           <button class="svc" data-open="reception"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><span data-i18n="service_reception">Ресепшн</span></button>
@@ -361,6 +462,20 @@
         <div class="cats" id="cats"></div>
       </div>
       <div class="list" id="menuList"></div>
+    </section>
+    <section id="nearbyScreen" class="hidden">
+      <div class="menu-head">
+        <div class="row">
+          <button class="icon-btn" id="backBtnNearby" aria-label="back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+          <div style="flex:1">
+            <h2 data-i18n="nearby_title">Рядом</h2>
+            <p class="tagline" data-i18n="nearby_tagline">Вокруг отеля</p>
+          </div>
+          <button class="chip" id="langBtn3">RU</button>
+          <button class="icon-btn" id="themeBtn3">◐</button>
+        </div>
+      </div>
+      <div class="place-list" id="placeList"></div>
     </section>
   </div>
 
@@ -424,6 +539,14 @@
       файлов, чтобы не менять пути в коде, а просто подменить сами
       картинки).
 
+
+   6) ЧТО РЯДОМ (мок, без бота):
+      - Кнопка #openNearby, экран #nearbyScreen, массив NEARBY_PLACES.
+      - Расстояние считается от HOTEL_ORIGIN (41.286404, 69.263019).
+      - В Supabase: таблица nearby (slug, type, name jsonb, lat, lng, images text[4],
+        sort_order, is_available). Fetch как меню. Расстояние в таблицу не класть.
+      - Фото: ./images/nearby-cover.jpg и ./images/nearby/<slug>-1.jpg … -4.jpg
+
    5) НЕ ТРЕБУЕТ ОБЯЗАТЕЛЬНОЙ ЗАМЕНЫ, но можно кастомизировать по вкусу:
       - Список языков LANGS и переводы внутри I18N — можно оставить
         как есть, если новый отель тоже ориентируется на эти языки.
@@ -433,6 +556,22 @@
    ============================================================================ */
 
 const I18N = {"ru": {"err_menu_load": "Меню не загрузилось", "err_send": "Ошибка отправки.", "err_network": "Ошибка сети.", "err_alarm_fields": "Укажите время и дату.", "err_problem_comment": "Заполните описание проблемы.", "room_key": "Номер:", "wifi_title": "Бесплатный Wi-Fi", "wifi_subtitle": "Нажмите, чтобы получить пароль", "btn_back": "Назад", "service_alarm": "Будильник", "service_bar": "Бар", "service_hotel": "Housekeeping", "service_taxi": "Вызвать такси", "service_reception": "Ресепшн", "service_menu": "Меню", "service_review": "Оставить отзыв", "service_problem": "Сообщить о проблеме", "hk_title": "Housekeeping", "hk_call_maids": "Позвать горничных", "hk_clean_room": "Убраться в моем номере", "cat_all": "Все блюда", "cat_soups": "Супы", "cat_mains": "Главные блюда", "cat_drinks": "Напитки", "cat_bar_menu": "Бар меню", "cat_bar_all": "Все", "cat_hot_appetizers": "Горячие закуски", "cat_salad": "Салаты", "cat_soup": "Супы", "cat_main_course": "Основные блюда", "cat_pasta": "Паста", "cat_pizza": "Пицца", "cat_side_dishes": "Гарниры", "cat_dessert": "Десерты", "menu_empty": "Пока нет позиций в этой категории", "bar_group_non_alcohol": "Напитки", "bar_group_alcohol": "Алкоголь", "bar_type_cocktail_alcohol": "Алкогольные коктейли", "bar_type_beer": "Пиво", "bar_type_whiskey": "Виски", "bar_type_cognac": "Коньяк", "bar_type_brandy": "Бренди", "bar_type_rum": "Ром", "bar_type_vodka": "Водка", "bar_type_tequila": "Текила", "bar_type_gin": "Джин", "bar_type_liqueur": "Ликёр", "bar_type_wine": "Вино", "bar_type_coffee": "Кофе", "bar_type_althaus_tea": "Чай Althaus", "bar_type_soft_drinks": "Безалкогольные напитки", "bar_type_milkshake": "Молочный коктейль", "bar_type_mojito": "Мохито", "bar_type_cocktail_non_alcohol": "Безалкогольные коктейли", "cart_items": "позиции", "cart_view": "Заказ", "modal_title": "Ваш заказ", "modal_total": "Итого:", "modal_send": "Отправить заказ", "modal_close": "Закрыть", "clear_cart": "Очистить корзину", "clear_cart_confirm": "Очистить корзину полностью?", "order_success": "Отправлено успешно!", "price_uzs": "UZS", "review_title": "Оставить отзыв", "review_rating_label": "Оцените качество обслуживания:", "review_comment_label": "Ваш комментарий:", "review_send": "Отправить отзыв", "problem_title": "Сообщить о проблеме", "problem_comment_label": "Опишите проблему:", "problem_send": "Отправить жалобу", "select_stars_warn": "Пожалуйста, выберите рейтинг!", "alarm_title": "Заказать будильник", "alarm_time_label": "Время звонка:", "alarm_date_label": "Дата:", "alarm_note_label": "Примечание:", "alarm_send": "Установить будильник", "taxi_title": "Заказать такси", "taxi_dest_label": "Куда едем:", "taxi_time_label": "Время подачи:", "taxi_passengers_label": "Количество пассажиров:", "taxi_send": "Заказать такси", "tagline": "Сервис в номер", "guest": "Гость", "wifi_network": "Сеть", "wifi_password": "Пароль", "wifi_copy": "Скопировать", "wifi_copied": "Пароль скопирован", "order_note_label": "Примечание к заказу", "order_note_placeholder": "Например: без лука, поострее", "sending": "Отправляем…", "reception_number": "Ресепшн · 1111", "reception_call": "Вызвать ресепшн", "reception_hint": "Стойка ответит на внутренний 1111. Нажмите, чтобы отправить вызов.", "set_room": "Номер комнаты", "room_placeholder": "Например, 1208", "room_save": "Сохранить", "empty_cart": "Корзина пуста", "optional": "необязательно", "theme_light": "Светлая", "theme_dark": "Тёмная", "language": "Язык", "dining": "Кухня", "in_room": "В номер", "confirm": "Подтвердить", "request_sent": "Запрос принят", "wifi_hint": "The Tower Hotel"}, "uz": {"err_menu_load": "Menyu yuklanmadi", "err_send": "Yuborishda xatolik.", "err_network": "Tarmoq xatosi.", "err_alarm_fields": "Vaqt va sanani kiriting.", "err_problem_comment": "Muammo tavsifini kiriting.", "room_key": "Xona:", "wifi_title": "Bepul Wi-Fi", "wifi_subtitle": "Parolni olish uchun bosing", "btn_back": "Orqaga", "service_alarm": "Uyg'otgich", "service_bar": "Bar", "service_hotel": "Housekeeping", "service_taxi": "Taksi chaqirish", "service_reception": "Resepshn", "service_menu": "Taomlar", "service_review": "Sharh qoldirish", "service_problem": "Muammo haqida xabar", "hk_title": "Housekeeping", "hk_call_maids": "Xizmatchilarni chaqirish", "hk_clean_room": "Xonani tozalash", "cat_all": "Barchasi", "cat_soups": "Sho'rvalar", "cat_mains": "Asosiy taomlar", "cat_drinks": "Ichimliklar", "cat_bar_menu": "Bar menyusi", "cat_bar_all": "Barchasi", "cat_hot_appetizers": "Issiq gazaklar", "cat_salad": "Salatlar", "cat_soup": "Sho'rvalar", "cat_main_course": "Asosiy taomlar", "cat_pasta": "Pasta", "cat_pizza": "Pitsa", "cat_side_dishes": "Garnirlar", "cat_dessert": "Desertlar", "menu_empty": "Bu bo'limda hozircha taomlar yo'q", "bar_group_non_alcohol": "Ichimliklar", "bar_group_alcohol": "Alkogol", "bar_type_cocktail_alcohol": "Alkogolli kokteyllar", "bar_type_beer": "Pivo", "bar_type_whiskey": "Viski", "bar_type_cognac": "Konyak", "bar_type_brandy": "Brendi", "bar_type_rum": "Rom", "bar_type_vodka": "Vodka", "bar_type_tequila": "Tekila", "bar_type_gin": "Jin", "bar_type_liqueur": "Liker", "bar_type_wine": "Vino", "bar_type_coffee": "Kofe", "bar_type_althaus_tea": "Althaus choyi", "bar_type_soft_drinks": "Alkogolsiz ichimliklar", "bar_type_milkshake": "Milkshake", "bar_type_mojito": "Mohito", "bar_type_cocktail_non_alcohol": "Alkogolsiz kokteyllar", "cart_items": "ta taom", "cart_view": "Buyurtma", "modal_title": "Buyurtmangiz", "modal_total": "Jami:", "modal_send": "Yuborish", "modal_close": "Yopish", "clear_cart": "Savatchani tozalash", "clear_cart_confirm": "Savatchani butunlay tozalaysizmi?", "order_success": "Muvaffaqiyatli yuborildi!", "price_uzs": "SO'M", "review_title": "Sharh qoldirish", "review_rating_label": "Xizmat sifatini baholang:", "review_comment_label": "Izohingiz:", "review_send": "Yuborish", "problem_title": "Muammo haqida xabar", "problem_comment_label": "Muammoni tasvirlang:", "problem_send": "Shikoyatni yuborish", "select_stars_warn": "Iltimos, bahoni tanlang!", "alarm_title": "Uyg'otgichni sozlash", "alarm_time_label": "Uyg'otish vaqti:", "alarm_date_label": "Sana:", "alarm_note_label": "Izoh:", "alarm_send": "O'rnatish", "taxi_title": "Taksi chaqirish", "taxi_dest_label": "Qayerga:", "taxi_time_label": "Kelish vaqti:", "taxi_passengers_label": "Yo'lovchilar soni:", "taxi_send": "Taksi chaqirish", "tagline": "Xonaga xizmat", "guest": "Mehmon", "wifi_network": "Tarmoq", "wifi_password": "Parol", "wifi_copy": "Nusxa", "wifi_copied": "Parol nusxalandi", "order_note_label": "Buyurtma izohi", "order_note_placeholder": "Masalan: piyozsiz", "sending": "Yuborilmoqda…", "reception_number": "Resepshn · 1111", "reception_call": "Resepshnni chaqirish", "reception_hint": "Stol 1111 raqamida javob beradi.", "set_room": "Xona raqami", "room_placeholder": "Masalan, 1208", "room_save": "Saqlash", "empty_cart": "Savatcha bo‘sh", "optional": "ixtiyoriy", "theme_light": "Yorug‘", "theme_dark": "Qorong‘i", "language": "Til", "dining": "Oshxona", "in_room": "Xonaga", "confirm": "Tasdiqlash", "request_sent": "So‘rov qabul qilindi", "wifi_hint": "The Tower Hotel"}, "en": {"err_menu_load": "Menu failed to load", "err_send": "Failed to send.", "err_network": "Network error.", "err_alarm_fields": "Please specify a time and date.", "err_problem_comment": "Please describe the problem.", "room_key": "Room:", "wifi_title": "Free Wi-Fi", "wifi_subtitle": "Tap to get the password", "btn_back": "Back", "service_alarm": "Alarm Clock", "service_bar": "Bar", "service_hotel": "Housekeeping", "service_taxi": "Call Taxi", "service_reception": "Reception", "service_menu": "Food Menu", "service_review": "Leave a Review", "service_problem": "Report a Problem", "hk_title": "Housekeeping", "hk_call_maids": "Call Housekeeper", "hk_clean_room": "Clean My Room", "cat_all": "All Dishes", "cat_soups": "Soups", "cat_mains": "Main Dishes", "cat_drinks": "Drinks", "cat_bar_menu": "Bar Menu", "cat_bar_all": "All", "cat_hot_appetizers": "Hot Appetizers", "cat_salad": "Salads", "cat_soup": "Soup", "cat_main_course": "Main Course", "cat_pasta": "Pasta", "cat_pizza": "Pizza", "cat_side_dishes": "Side Dishes", "cat_dessert": "Dessert", "menu_empty": "No items in this category yet", "bar_group_non_alcohol": "Drinks", "bar_group_alcohol": "Alcohol", "bar_type_cocktail_alcohol": "Alcoholic Cocktails", "bar_type_beer": "Beer", "bar_type_whiskey": "Whiskey", "bar_type_cognac": "Cognac", "bar_type_brandy": "Brandy", "bar_type_rum": "Rum", "bar_type_vodka": "Vodka", "bar_type_tequila": "Tequila", "bar_type_gin": "Gin", "bar_type_liqueur": "Liqueur", "bar_type_wine": "Wine", "bar_type_coffee": "Coffee", "bar_type_althaus_tea": "Althaus Tea", "bar_type_soft_drinks": "Soft Drinks", "bar_type_milkshake": "Milkshake", "bar_type_mojito": "Mojito", "bar_type_cocktail_non_alcohol": "Non-Alcoholic Cocktails", "cart_items": "items", "cart_view": "View Cart", "modal_title": "Your Order", "modal_total": "Total:", "modal_send": "Place Order", "modal_close": "Close", "clear_cart": "Clear cart", "clear_cart_confirm": "Clear the entire cart?", "order_success": "Sent successfully!", "price_uzs": "UZS", "review_title": "Leave a Review", "review_rating_label": "Rate our service:", "review_comment_label": "Your comment:", "review_send": "Submit Review", "problem_title": "Report a Problem", "problem_comment_label": "Describe the issue:", "problem_send": "Submit Report", "select_stars_warn": "Please select a star rating!", "alarm_title": "Set Wake-Up Call", "alarm_time_label": "Time:", "alarm_date_label": "Date:", "alarm_note_label": "Note:", "alarm_send": "Set Alarm", "taxi_title": "Call a Taxi", "taxi_dest_label": "Destination:", "taxi_time_label": "Pickup Time:", "taxi_passengers_label": "Passengers:", "taxi_send": "Order Taxi", "tagline": "In-room dining", "guest": "Guest", "wifi_network": "Network", "wifi_password": "Password", "wifi_copy": "Copy", "wifi_copied": "Password copied", "order_note_label": "Order note", "order_note_placeholder": "e.g. no onion, extra spice", "sending": "Sending…", "reception_number": "Reception · 1111", "reception_call": "Call reception", "reception_hint": "The desk answers on 1111. Tap to send a call request.", "set_room": "Room number", "room_placeholder": "e.g. 1208", "room_save": "Save", "empty_cart": "Your cart is empty", "optional": "optional", "theme_light": "Light", "theme_dark": "Dark", "language": "Language", "dining": "Kitchen", "in_room": "To the room", "confirm": "Confirm", "request_sent": "Request received", "wifi_hint": "The Tower Hotel"}, "zh": {"err_menu_load": "菜单加载失败", "err_send": "发送失败。", "err_network": "网络错误。", "err_alarm_fields": "请填写时间和日期。", "err_problem_comment": "请描述问题。", "room_key": "房间:", "wifi_title": "免费 Wi-Fi", "wifi_subtitle": "点击获取密码", "btn_back": "返回", "service_alarm": "闹钟", "service_bar": "酒吧", "service_hotel": "客房服务", "service_taxi": "叫出租车", "service_reception": "前台", "service_menu": "菜谱", "service_review": "留下评价", "service_problem": "报告问题", "hk_title": "客房服务", "hk_call_maids": "呼叫服务员", "hk_clean_room": "打扫房间", "cat_all": "全部", "cat_soups": "汤类", "cat_mains": "主菜", "cat_drinks": "饮料", "cat_bar_menu": "酒吧菜单", "cat_bar_all": "全部", "cat_hot_appetizers": "热开胃菜", "cat_salad": "沙拉", "cat_soup": "汤类", "cat_main_course": "主菜", "cat_pasta": "意面", "cat_pizza": "披萨", "cat_side_dishes": "配菜", "cat_dessert": "甜点", "menu_empty": "该分类暂无菜品", "bar_group_non_alcohol": "饮品", "bar_group_alcohol": "酒精饮品", "bar_type_cocktail_alcohol": "酒精鸡尾酒", "bar_type_beer": "啤酒", "bar_type_whiskey": "威士忌", "bar_type_cognac": "干邑", "bar_type_brandy": "白兰地", "bar_type_rum": "朗姆酒", "bar_type_vodka": "伏特加", "bar_type_tequila": "龙舌兰", "bar_type_gin": "金酒", "bar_type_liqueur": "利口酒", "bar_type_wine": "葡萄酒", "bar_type_coffee": "咖啡", "bar_type_althaus_tea": "Althaus 茶", "bar_type_soft_drinks": "软饮料", "bar_type_milkshake": "奶昔", "bar_type_mojito": "莫吉托", "bar_type_cocktail_non_alcohol": "无酒精鸡尾酒", "cart_items": "件", "cart_view": "查看订单", "modal_title": "您的订单", "modal_total": "总计:", "modal_send": "提交订单", "modal_close": "关闭", "clear_cart": "清空购物车", "clear_cart_confirm": "确定要清空整个购物车吗？", "order_success": "发送成功！", "price_uzs": "UZS", "review_title": "留下评价", "review_rating_label": "评估我们的服务:", "review_comment_label": "您的评论:", "review_send": "提交评价", "problem_title": "报告问题", "problem_comment_label": "描述问题:", "problem_send": "提交报告", "select_stars_warn": "请选择星级评分！", "alarm_title": "设置叫醒服务", "alarm_time_label": "叫醒时间:", "alarm_date_label": "日期:", "alarm_note_label": "备注:", "alarm_send": "设置闹钟", "taxi_title": "预约出租车", "taxi_dest_label": "目的地:", "taxi_time_label": "用车时间:", "taxi_passengers_label": "乘客人数:", "taxi_send": "叫车", "tagline": "客房送餐", "guest": "客人", "wifi_network": "网络", "wifi_password": "密码", "wifi_copy": "复制", "wifi_copied": "已复制密码", "order_note_label": "订单备注", "order_note_placeholder": "例如：不要洋葱", "sending": "发送中…", "reception_number": "前台 · 1111", "reception_call": "呼叫前台", "reception_hint": "前台分机 1111。", "set_room": "房间号", "room_placeholder": "例如 1208", "room_save": "保存", "empty_cart": "购物车为空", "optional": "选填", "theme_light": "浅色", "theme_dark": "深色", "language": "语言", "dining": "厨房", "in_room": "送至客房", "confirm": "确认", "request_sent": "已收到请求", "wifi_hint": "The Tower Hotel"}, "ar": {"err_menu_load": "فشل تحميل القائمة", "err_send": "فشل الإرسال.", "err_network": "خطأ في الشبكة.", "err_alarm_fields": "يرجى تحديد الوقت والتاريخ.", "err_problem_comment": "يرجى وصف المشكلة.", "room_key": "غرفة:", "wifi_title": "واي فاي مجاني", "wifi_subtitle": "اضغط للحصول على كلمة المرور", "btn_back": "رجوع", "service_alarm": "منبه", "service_bar": "بار", "service_hotel": "تنظيف الغرف", "service_taxi": "طلب سيارة أجرة", "service_reception": "الاستقبال", "service_menu": "قائمة الطعام", "service_review": "ترك تقييم", "service_problem": "الإبلاغ عن مشكلة", "hk_title": "تنظيف الغرف", "hk_call_maids": "استدعاء العاملة", "hk_clean_room": "تنظيف غرفتي", "cat_all": "الكل", "cat_soups": "حساء", "cat_mains": "الأطباق الرئيسية", "cat_drinks": "مشروبات", "cat_bar_menu": "قائمة البار", "cat_bar_all": "الكل", "cat_hot_appetizers": "المقبلات الساخنة", "cat_salad": "السلطات", "cat_soup": "حساء", "cat_main_course": "الأطباق الرئيسية", "cat_pasta": "المعكرونة", "cat_pizza": "بيتزا", "cat_side_dishes": "أطباق جانبية", "cat_dessert": "الحلويات", "menu_empty": "لا توجد عناصر في هذا القسم بعد", "bar_group_non_alcohol": "المشروبات", "bar_group_alcohol": "المشروبات الكحولية", "bar_type_cocktail_alcohol": "كوكتيلات كحولية", "bar_type_beer": "بيرة", "bar_type_whiskey": "ويسكي", "bar_type_cognac": "كونياك", "bar_type_brandy": "براندي", "bar_type_rum": "روم", "bar_type_vodka": "فودكا", "bar_type_tequila": "تكيلا", "bar_type_gin": "جن", "bar_type_liqueur": "ليكيور", "bar_type_wine": "نبيذ", "bar_type_coffee": "قهوة", "bar_type_althaus_tea": "شاي ألتهاوس", "bar_type_soft_drinks": "مشروبات غازية", "bar_type_milkshake": "ميلك شيك", "bar_type_mojito": "موخيتو", "bar_type_cocktail_non_alcohol": "كوكتيلات خالية من الكحول", "cart_items": "عناصر", "cart_view": "عرض الطلب", "modal_title": "طلبك", "modal_total": "المجموع:", "modal_send": "إرسال الطلب", "modal_close": "إغلاق", "clear_cart": "إفراغ السلة", "clear_cart_confirm": "هل تريد إفراغ السلة بالكامل؟", "order_success": "تم الإرسال بنجاح!", "price_uzs": "UZS", "review_title": "ترك تقييم", "review_rating_label": "قيم خدمتنا:", "review_comment_label": "تعليقك:", "review_send": "إرسال التقييم", "problem_title": "الإبلاغ عن مشكلة", "problem_comment_label": "صف المشكلة:", "problem_send": "إرسال البلاغ", "select_stars_warn": "يرجى تحديد التقييم!", "alarm_title": "ضبط المنبه", "alarm_time_label": "الوقت:", "alarm_date_label": "التاريخ:", "alarm_note_label": "ملاحظة:", "alarm_send": "ضبط المنبه", "taxi_title": "طلب سيارة أجرة", "taxi_dest_label": "الوجهة:", "taxi_time_label": "وقت الوصول:", "taxi_passengers_label": "عدد الركاب:", "taxi_send": "طلب تاكسي", "tagline": "خدمة الغرف", "guest": "ضيف", "wifi_network": "الشبكة", "wifi_password": "كلمة المرور", "wifi_copy": "نسخ", "wifi_copied": "تم نسخ كلمة المرور", "order_note_label": "ملاحظة الطلب", "order_note_placeholder": "مثلاً: بدون بصل", "sending": "جارٍ الإرسال…", "reception_number": "الاستقبال · 1111", "reception_call": "طلب الاستقبال", "reception_hint": "المكتب يرد على 1111.", "set_room": "رقم الغرفة", "room_placeholder": "مثلاً 1208", "room_save": "حفظ", "empty_cart": "السلة فارغة", "optional": "اختياري", "theme_light": "فاتح", "theme_dark": "داكن", "language": "اللغة", "dining": "المطبخ", "in_room": "إلى الغرفة", "confirm": "تأكيد", "request_sent": "تم استلام الطلب", "wifi_hint": "The Tower Hotel"}, "fr": {"err_menu_load": "Échec du chargement du menu", "err_send": "Échec de l'envoi.", "err_network": "Erreur réseau.", "err_alarm_fields": "Veuillez indiquer l'heure et la date.", "err_problem_comment": "Veuillez décrire le problème.", "room_key": "Chambre:", "wifi_title": "Wi-Fi gratuit", "wifi_subtitle": "Appuyez pour obtenir le mot de passe", "btn_back": "Retour", "service_alarm": "Réveil", "service_bar": "Bar", "service_hotel": "Housekeeping", "service_taxi": "Appeler un taxi", "service_reception": "Réception", "service_menu": "Menu", "service_review": "Laisser un avis", "service_problem": "Signaler un problème", "hk_title": "Housekeeping", "hk_call_maids": "Appeler la femme de chambre", "hk_clean_room": "Nettoyer ma chambre", "cat_all": "Tous", "cat_soups": "Soupes", "cat_mains": "Plats principaux", "cat_drinks": "Boissons", "cat_bar_menu": "Menu du bar", "cat_bar_all": "Tout", "cat_hot_appetizers": "Entrées chaudes", "cat_salad": "Salades", "cat_soup": "Soupes", "cat_main_course": "Plats principaux", "cat_pasta": "Pâtes", "cat_pizza": "Pizza", "cat_side_dishes": "Accompagnements", "cat_dessert": "Desserts", "menu_empty": "Aucun article dans cette catégorie pour le moment", "bar_group_non_alcohol": "Boissons", "bar_group_alcohol": "Alcool", "bar_type_cocktail_alcohol": "Cocktails alcoolisés", "bar_type_beer": "Bière", "bar_type_whiskey": "Whisky", "bar_type_cognac": "Cognac", "bar_type_brandy": "Brandy", "bar_type_rum": "Rhum", "bar_type_vodka": "Vodka", "bar_type_tequila": "Tequila", "bar_type_gin": "Gin", "bar_type_liqueur": "Liqueur", "bar_type_wine": "Vin", "bar_type_coffee": "Café", "bar_type_althaus_tea": "Thé Althaus", "bar_type_soft_drinks": "Boissons non alcoolisées", "bar_type_milkshake": "Milkshake", "bar_type_mojito": "Mojito", "bar_type_cocktail_non_alcohol": "Cocktails sans alcool", "cart_items": "articles", "cart_view": "Voir la commande", "modal_title": "Votre commande", "modal_total": "Total:", "modal_send": "Passer la commande", "modal_close": "Fermer", "clear_cart": "Vider le panier", "clear_cart_confirm": "Vider entièrement le panier ?", "order_success": "Envoyé avec succès!", "price_uzs": "UZS", "review_title": "Laisser un avis", "review_rating_label": "Évaluez notre service:", "review_comment_label": "Votre commentaire:", "review_send": "Soumettre", "problem_title": "Signaler un problème", "problem_comment_label": "Décrivez le problème:", "problem_send": "Envoyer le rapport", "select_stars_warn": "Veuillez sélectionner une note!", "alarm_title": "Régler le réveil", "alarm_time_label": "Heure:", "alarm_date_label": "Date:", "alarm_note_label": "Note:", "alarm_send": "Régler", "taxi_title": "Commander un taxi", "taxi_dest_label": "Destination:", "taxi_time_label": "Heure de prise en charge:", "taxi_passengers_label": "Passagers:", "taxi_send": "Commander", "tagline": "Service en chambre", "guest": "Invité", "wifi_network": "Réseau", "wifi_password": "Mot de passe", "wifi_copy": "Copier", "wifi_copied": "Mot de passe copié", "order_note_label": "Note de commande", "order_note_placeholder": "ex. sans oignon", "sending": "Envoi…", "reception_number": "Réception · 1111", "reception_call": "Appeler la réception", "reception_hint": "Le desk répond au 1111.", "set_room": "Numéro de chambre", "room_placeholder": "ex. 1208", "room_save": "Enregistrer", "empty_cart": "Panier vide", "optional": "facultatif", "theme_light": "Clair", "theme_dark": "Sombre", "language": "Langue", "dining": "Cuisine", "in_room": "En chambre", "confirm": "Confirmer", "request_sent": "Demande reçue", "wifi_hint": "The Tower Hotel"}, "es": {"err_menu_load": "No se pudo cargar el menú", "err_send": "Error al enviar.", "err_network": "Error de red.", "err_alarm_fields": "Indique la hora y la fecha.", "err_problem_comment": "Describa el problema.", "room_key": "Habitación:", "wifi_title": "Wi-Fi gratis", "wifi_subtitle": "Toque para obtener la contraseña", "btn_back": "Volver", "service_alarm": "Despertador", "service_bar": "Bar", "service_hotel": "Housekeeping", "service_taxi": "Pedir taxi", "service_reception": "Recepción", "service_menu": "Menú", "service_review": "Dejar una opinión", "service_problem": "Reportar un problema", "hk_title": "Housekeeping", "hk_call_maids": "Llamar a las camareras", "hk_clean_room": "Limpiar mi habitación", "cat_all": "Todos", "cat_soups": "Sopas", "cat_mains": "Platos principales", "cat_drinks": "Bebidas", "cat_bar_menu": "Menú del bar", "cat_bar_all": "Todo", "cat_hot_appetizers": "Entrantes calientes", "cat_salad": "Ensaladas", "cat_soup": "Sopas", "cat_main_course": "Platos principales", "cat_pasta": "Pasta", "cat_pizza": "Pizza", "cat_side_dishes": "Guarniciones", "cat_dessert": "Postres", "menu_empty": "Todavía no hay artículos en esta categoría", "bar_group_non_alcohol": "Bebidas", "bar_group_alcohol": "Alcohol", "bar_type_cocktail_alcohol": "Cócteles alcohólicos", "bar_type_beer": "Cerveza", "bar_type_whiskey": "Whisky", "bar_type_cognac": "Coñac", "bar_type_brandy": "Brandy", "bar_type_rum": "Ron", "bar_type_vodka": "Vodka", "bar_type_tequila": "Tequila", "bar_type_gin": "Ginebra", "bar_type_liqueur": "Licor", "bar_type_wine": "Vino", "bar_type_coffee": "Café", "bar_type_althaus_tea": "Té Althaus", "bar_type_soft_drinks": "Refrescos", "bar_type_milkshake": "Batido", "bar_type_mojito": "Mojito", "bar_type_cocktail_non_alcohol": "Cócteles sin alcohol", "cart_items": "artículos", "cart_view": "Ver pedido", "modal_title": "Su pedido", "modal_total": "Total:", "modal_send": "Realizar pedido", "modal_close": "Cerrar", "clear_cart": "Vaciar carrito", "clear_cart_confirm": "¿Vaciar todo el carrito?", "order_success": "¡Enviado con éxito!", "price_uzs": "UZS", "review_title": "Dejar una opinión", "review_rating_label": "Califique nuestro servicio:", "review_comment_label": "Su comentario:", "review_send": "Enviar opinión", "problem_title": "Reportar un problema", "problem_comment_label": "Describa el problema:", "problem_send": "Enviar reporte", "select_stars_warn": "¡Por favor seleccione una calificación!", "alarm_title": "Configurar despertador", "alarm_time_label": "Hora:", "alarm_date_label": "Fecha:", "alarm_note_label": "Nota:", "alarm_send": "Configurar", "taxi_title": "Pedir un taxi", "taxi_dest_label": "Destino:", "taxi_time_label": "Hora de recogida:", "taxi_passengers_label": "Pasajeros:", "taxi_send": "Pedir taxi", "tagline": "Servicio a la habitación", "guest": "Huésped", "wifi_network": "Red", "wifi_password": "Contraseña", "wifi_copy": "Copiar", "wifi_copied": "Contraseña copiada", "order_note_label": "Nota del pedido", "order_note_placeholder": "p. ej. sin cebolla", "sending": "Enviando…", "reception_number": "Recepción · 1111", "reception_call": "Llamar a recepción", "reception_hint": "El escritorio responde al 1111.", "set_room": "Número de habitación", "room_placeholder": "p. ej. 1208", "room_save": "Guardar", "empty_cart": "Carrito vacío", "optional": "opcional", "theme_light": "Claro", "theme_dark": "Oscuro", "language": "Idioma", "dining": "Cocina", "in_room": "A la habitación", "confirm": "Confirmar", "request_sent": "Solicitud recibida", "wifi_hint": "The Tower Hotel"}, "de": {"err_menu_load": "Menü konnte nicht geladen werden", "err_send": "Senden fehlgeschlagen.", "err_network": "Netzwerkfehler.", "err_alarm_fields": "Bitte Uhrzeit und Datum angeben.", "err_problem_comment": "Bitte beschreiben Sie das Problem.", "room_key": "Zimmer:", "wifi_title": "Kostenloses Wi-Fi", "wifi_subtitle": "Tippen, um das Passwort zu erhalten", "btn_back": "Zurück", "service_alarm": "Wecker", "service_bar": "Bar", "service_hotel": "Housekeeping", "service_taxi": "Taxi rufen", "service_reception": "Rezeption", "service_menu": "Speisekarte", "service_review": "Bewertung abgeben", "service_problem": "Problem melden", "hk_title": "Housekeeping", "hk_call_maids": "Zimmermädchen rufen", "hk_clean_room": "Zimmer reinigen", "cat_all": "Alle", "cat_soups": "Suppen", "cat_mains": "Hauptgerichte", "cat_drinks": "Getränke", "cat_bar_menu": "Barmenü", "cat_bar_all": "Alle", "cat_hot_appetizers": "Warme Vorspeisen", "cat_salad": "Salate", "cat_soup": "Suppen", "cat_main_course": "Hauptgerichte", "cat_pasta": "Pasta", "cat_pizza": "Pizza", "cat_side_dishes": "Beilagen", "cat_dessert": "Desserts", "menu_empty": "Noch keine Artikel in dieser Kategorie", "bar_group_non_alcohol": "Getränke", "bar_group_alcohol": "Alkohol", "bar_type_cocktail_alcohol": "Alkoholische Cocktails", "bar_type_beer": "Bier", "bar_type_whiskey": "Whisky", "bar_type_cognac": "Cognac", "bar_type_brandy": "Brandy", "bar_type_rum": "Rum", "bar_type_vodka": "Wodka", "bar_type_tequila": "Tequila", "bar_type_gin": "Gin", "bar_type_liqueur": "Likör", "bar_type_wine": "Wein", "bar_type_coffee": "Kaffee", "bar_type_althaus_tea": "Althaus Tee", "bar_type_soft_drinks": "Softdrinks", "bar_type_milkshake": "Milchshake", "bar_type_mojito": "Mojito", "bar_type_cocktail_non_alcohol": "Alkoholfreie Cocktails", "cart_items": "Artikel", "cart_view": "Bestellung anzeigen", "modal_title": "Ihre Bestellung", "modal_total": "Gesamt:", "modal_send": "Bestellung abschicken", "modal_close": "Schließen", "clear_cart": "Warenkorb leeren", "clear_cart_confirm": "Warenkorb vollständig leeren?", "order_success": "Erfolgreich gesendet!", "price_uzs": "UZS", "review_title": "Bewertung abgeben", "review_rating_label": "Bewerten Sie unseren Service:", "review_comment_label": "Ihr Kommentar:", "review_send": "Absenden", "problem_title": "Problem melden", "problem_comment_label": "Beschreiben Sie das Problem:", "problem_send": "Bericht senden", "select_stars_warn": "Bitte wählen Sie eine Bewertung!", "alarm_title": "Weckruf einstellen", "alarm_time_label": "Uhrzeit:", "alarm_date_label": "Datum:", "alarm_note_label": "Notiz:", "alarm_send": "Einstellen", "taxi_title": "Taxi bestellen", "taxi_dest_label": "Ziel:", "taxi_time_label": "Abholzeit:", "taxi_passengers_label": "Fahrgäste:", "taxi_send": "Taxi bestellen", "tagline": "Zimmerservice", "guest": "Gast", "wifi_network": "Netzwerk", "wifi_password": "Passwort", "wifi_copy": "Kopieren", "wifi_copied": "Passwort kopiert", "order_note_label": "Bestellnotiz", "order_note_placeholder": "z. B. ohne Zwiebeln", "sending": "Senden…", "reception_number": "Rezeption · 1111", "reception_call": "Rezeption rufen", "reception_hint": "Die Rezeption antwortet unter 1111.", "set_room": "Zimmernummer", "room_placeholder": "z. B. 1208", "room_save": "Speichern", "empty_cart": "Warenkorb leer", "optional": "optional", "theme_light": "Hell", "theme_dark": "Dunkel", "language": "Sprache", "dining": "Küche", "in_room": "Aufs Zimmer", "confirm": "Bestätigen", "request_sent": "Anfrage erhalten", "wifi_hint": "The Tower Hotel"}, "kk": {"err_menu_load": "Мәзір жүктелмеді", "err_send": "Жіберу қатесі.", "err_network": "Желі қатесі.", "err_alarm_fields": "Уақыты мен күнін көрсетіңіз.", "err_problem_comment": "Мәселе сипаттамасын толтырыңыз.", "room_key": "Бөлме:", "wifi_title": "Тегін Wi-Fi", "wifi_subtitle": "Құпия сөзді алу үшін басыңыз", "btn_back": "Артқа", "service_alarm": "Оятқыш", "service_bar": "Бар", "service_hotel": "Housekeeping", "service_taxi": "Такси шақыру", "service_reception": "Ресепшн", "service_menu": "Тағам мәзірі", "service_review": "Пікір қалдыру", "service_problem": "Мәселе туралы хабарлау", "hk_title": "Housekeeping", "hk_call_maids": "Тазалықшыны шақыру", "hk_clean_room": "Бөлмені тазалау", "cat_all": "Барлығы", "cat_soups": "Сорпалар", "cat_mains": "Негізгі тағамдар", "cat_drinks": "Сусындар", "cat_bar_menu": "Бар мәзірі", "cat_bar_all": "Барлығы", "cat_hot_appetizers": "Ыстық закускалар", "cat_salad": "Салаттар", "cat_soup": "Сорпалар", "cat_main_course": "Негізгі тағамдар", "cat_pasta": "Паста", "cat_pizza": "Пицца", "cat_side_dishes": "Гарнирлер", "cat_dessert": "Десерттер", "menu_empty": "Бұл санатта әзірге позициялар жоқ", "bar_group_non_alcohol": "Сусындар", "bar_group_alcohol": "Алкоголь", "bar_type_cocktail_alcohol": "Алкогольді коктейльдер", "bar_type_beer": "Сыра", "bar_type_whiskey": "Виски", "bar_type_cognac": "Коньяк", "bar_type_brandy": "Бренди", "bar_type_rum": "Ром", "bar_type_vodka": "Водка", "bar_type_tequila": "Текила", "bar_type_gin": "Джин", "bar_type_liqueur": "Ликер", "bar_type_wine": "Шарап", "bar_type_coffee": "Кофе", "bar_type_althaus_tea": "Althaus шайы", "bar_type_soft_drinks": "Алкогольсіз сусындар", "bar_type_milkshake": "Милкшейк", "bar_type_mojito": "Мохито", "bar_type_cocktail_non_alcohol": "Алкогольсіз коктейльдер", "cart_items": "тағам", "cart_view": "Тапсырыс", "modal_title": "Сіздің тапсырысыңыз", "modal_total": "Жиыны:", "modal_send": "Тапсырыс беру", "modal_close": "Жабу", "clear_cart": "Себетті тазалау", "clear_cart_confirm": "Себетті толығымен тазалайсыз ба?", "order_success": "Сәтті жіберілді!", "price_uzs": "UZS", "review_title": "Пікір қалдыру", "review_rating_label": "Қызмет сапасын бағалаңыз:", "review_comment_label": "Сіздің пікіріңіз:", "review_send": "Жіберу", "problem_title": "Шағым жіберу", "problem_comment_label": "Мәселені сипаттаңыз:", "problem_send": "Шағымды жіберу", "select_stars_warn": "Бағалауды таңдаңыз!", "alarm_title": "Оятқышты орнату", "alarm_time_label": "Уақыты:", "alarm_date_label": "Күні:", "alarm_note_label": "Ескертпе:", "alarm_send": "Орнату", "taxi_title": "Такси шақыру", "taxi_dest_label": "Қайда:", "taxi_time_label": "Келу уақыты:", "taxi_passengers_label": "Жолаушылар саны:", "taxi_send": "Шақыру", "tagline": "Бөлмеге қызмет", "guest": "Қонақ", "wifi_network": "Желі", "wifi_password": "Құпия сөз", "wifi_copy": "Көшіру", "wifi_copied": "Құпия сөз көшірілді", "order_note_label": "Тапсырыс ескертпесі", "order_note_placeholder": "Мысалы: пиязсыз", "sending": "Жіберілуде…", "reception_number": "Ресепшн · 1111", "reception_call": "Ресепшнді шақыру", "reception_hint": "Үстел 1111 нөміріне жауап береді.", "set_room": "Бөлме нөмірі", "room_placeholder": "Мысалы, 1208", "room_save": "Сақтау", "empty_cart": "Себет бос", "optional": "міндетті емес", "theme_light": "Жарық", "theme_dark": "Қараңғы", "language": "Тіл", "dining": "Асхана", "in_room": "Бөлмеге", "confirm": "Растау", "request_sent": "Сұрау қабылданды", "wifi_hint": "The Tower Hotel"}, "tr": {"err_menu_load": "Menü yüklenemedi", "err_send": "Gönderme hatası.", "err_network": "Ağ hatası.", "err_alarm_fields": "Lütfen saat ve tarih belirtin.", "err_problem_comment": "Lütfen sorunu açıklayın.", "room_key": "Oda:", "wifi_title": "Ücretsiz Wi-Fi", "wifi_subtitle": "Şifreyi almak için dokunun", "btn_back": "Geri", "service_alarm": "Uyandırma Servisi", "service_bar": "Bar", "service_hotel": "Housekeeping", "service_taxi": "Taksi Çağır", "service_reception": "Resepsiyon", "service_menu": "Yemek Menüsü", "service_review": "Değerlendirme Yap", "service_problem": "Sorun Bildir", "hk_title": "Housekeeping", "hk_call_maids": "Kat Hizmetlisini Çağır", "hk_clean_room": "Odamı Temizleyin", "cat_all": "Tümü", "cat_soups": "Çorbalar", "cat_mains": "Ana Yemekler", "cat_drinks": "İçecekler", "cat_bar_menu": "Bar Menüsü", "cat_bar_all": "Tümü", "cat_hot_appetizers": "Sıcak mezeler", "cat_salad": "Salatalar", "cat_soup": "Çorbalar", "cat_main_course": "Ana yemekler", "cat_pasta": "Makarna", "cat_pizza": "Pizza", "cat_side_dishes": "Garnitürler", "cat_dessert": "Tatlılar", "menu_empty": "Bu kategoride henüz ürün yok", "bar_group_non_alcohol": "İçecekler", "bar_group_alcohol": "Alkol", "bar_type_cocktail_alcohol": "Alkollü Kokteyller", "bar_type_beer": "Bira", "bar_type_whiskey": "Viski", "bar_type_cognac": "Konyak", "bar_type_brandy": "Brendi", "bar_type_rum": "Rom", "bar_type_vodka": "Votka", "bar_type_tequila": "Tekila", "bar_type_gin": "Cin", "bar_type_liqueur": "Likör", "bar_type_wine": "Şarap", "bar_type_coffee": "Kahve", "bar_type_althaus_tea": "Althaus Çayı", "bar_type_soft_drinks": "Alkolsüz İçecekler", "bar_type_milkshake": "Milkshake", "bar_type_mojito": "Mojito", "bar_type_cocktail_non_alcohol": "Alkolsüz Kokteyller", "cart_items": "ürün", "cart_view": "Siparişi Gör", "modal_title": "Siparişiniz", "modal_total": "Toplam:", "modal_send": "Siparişi Gönder", "modal_close": "Kapat", "clear_cart": "Sepeti temizle", "clear_cart_confirm": "Sepet tamamen boşaltılsın mı?", "order_success": "Başarıyla gönderildi!", "price_uzs": "UZS", "review_title": "Değerlendirme Yap", "review_rating_label": "Hizmetimizi değerlendirin:", "review_comment_label": "Yorumunuz:", "review_send": "Gönder", "problem_title": "Sorun Bildir", "problem_comment_label": "Sorunu açıklayın:", "problem_send": "Raporu Gönder", "select_stars_warn": "Lütfen bir puan seçin!", "alarm_title": "Alarm Kur", "alarm_time_label": "Saat:", "alarm_date_label": "Tarih:", "alarm_note_label": "Not:", "alarm_send": "Alarmı Kur", "taxi_title": "Taksi Çağır", "taxi_dest_label": "Nereye:", "taxi_time_label": "Alınış Saati:", "taxi_passengers_label": "Yolcu Sayısı:", "taxi_send": "Taksi İste", "tagline": "Oda servisi", "guest": "Misafir", "wifi_network": "Ağ", "wifi_password": "Şifre", "wifi_copy": "Kopyala", "wifi_copied": "Şifre kopyalandı", "order_note_label": "Sipariş notu", "order_note_placeholder": "örn. soğansız", "sending": "Gönderiliyor…", "reception_number": "Resepsiyon · 1111", "reception_call": "Resepsiyonu çağır", "reception_hint": "Banko 1111 numarasına cevap verir.", "set_room": "Oda numarası", "room_placeholder": "örn. 1208", "room_save": "Kaydet", "empty_cart": "Sepet boş", "optional": "isteğe bağlı", "theme_light": "Açık", "theme_dark": "Koyu", "language": "Dil", "dining": "Mutfak", "in_room": "Odaya", "confirm": "Onayla", "request_sent": "Talep alındı", "wifi_hint": "The Tower Hotel"}};
+
+/* 📌 ЧТО РЯДОМ — переводы кнопки, типов, единиц расстояния (10 языков). */
+const NEARBY_I18N = {
+  ru: {service_nearby:"Что рядом",nearby_title:"Рядом",nearby_tagline:"Вокруг отеля",nearby_directions:"Составить маршрут",nearby_type_restaurant:"Ресторан",nearby_type_cafe:"Кафе",nearby_type_museum:"Музей",nearby_type_park:"Парк",place_afsona:"Afsona",place_bon:"Bon",place_museum:"Музей прикладного искусства",place_park:"Парк мира",nearby_m:"м",nearby_km:"км",nearby_min:"мин"},
+  uz: {service_nearby:"Yaqin-atrofda",nearby_title:"Yaqin-atrof",nearby_tagline:"Mehmonxona atrofida",nearby_directions:"Marshrut tuzish",nearby_type_restaurant:"Restoran",nearby_type_cafe:"Kafe",nearby_type_museum:"Muzey",nearby_type_park:"Bog‘",place_afsona:"Afsona",place_bon:"Bon",place_museum:"Amaliy san’at muzeyi",place_park:"Tinchlik bog‘i",nearby_m:"m",nearby_km:"km",nearby_min:"daq"},
+  en: {service_nearby:"What's Nearby",nearby_title:"Nearby",nearby_tagline:"Around the hotel",nearby_directions:"Get directions",nearby_type_restaurant:"Restaurant",nearby_type_cafe:"Café",nearby_type_museum:"Museum",nearby_type_park:"Park",place_afsona:"Afsona",place_bon:"Bon",place_museum:"Museum of Applied Arts",place_park:"Seattle Peace Park",nearby_m:"m",nearby_km:"km",nearby_min:"min"},
+  zh: {service_nearby:"附近",nearby_title:"附近",nearby_tagline:"酒店周边",nearby_directions:"规划路线",nearby_type_restaurant:"餐厅",nearby_type_cafe:"咖啡馆",nearby_type_museum:"博物馆",nearby_type_park:"公园",place_afsona:"Afsona",place_bon:"Bon",place_museum:"应用艺术博物馆",place_park:"西雅图和平公园",nearby_m:"米",nearby_km:"公里",nearby_min:"分钟"},
+  ar: {service_nearby:"ماذا في الجوار",nearby_title:"بالجوار",nearby_tagline:"حول الفندق",nearby_directions:"إنشاء مسار",nearby_type_restaurant:"مطعم",nearby_type_cafe:"مقهى",nearby_type_museum:"متحف",nearby_type_park:"حديقة",place_afsona:"Afsona",place_bon:"Bon",place_museum:"متحف الفنون التطبيقية",place_park:"حديقة السلام",nearby_m:"م",nearby_km:"كم",nearby_min:"د"},
+  fr: {service_nearby:"À proximité",nearby_title:"À proximité",nearby_tagline:"Autour de l'hôtel",nearby_directions:"Itinéraire",nearby_type_restaurant:"Restaurant",nearby_type_cafe:"Café",nearby_type_museum:"Musée",nearby_type_park:"Parc",place_afsona:"Afsona",place_bon:"Bon",place_museum:"Musée des arts appliqués",place_park:"Parc de la Paix",nearby_m:"m",nearby_km:"km",nearby_min:"min"},
+  es: {service_nearby:"Qué hay cerca",nearby_title:"Cerca",nearby_tagline:"Alrededor del hotel",nearby_directions:"Cómo llegar",nearby_type_restaurant:"Restaurante",nearby_type_cafe:"Café",nearby_type_museum:"Museo",nearby_type_park:"Parque",place_afsona:"Afsona",place_bon:"Bon",place_museum:"Museo de artes aplicadas",place_park:"Parque de la Paz",nearby_m:"m",nearby_km:"km",nearby_min:"min"},
+  de: {service_nearby:"In der Nähe",nearby_title:"In der Nähe",nearby_tagline:"Rund ums Hotel",nearby_directions:"Route planen",nearby_type_restaurant:"Restaurant",nearby_type_cafe:"Café",nearby_type_museum:"Museum",nearby_type_park:"Park",place_afsona:"Afsona",place_bon:"Bon",place_museum:"Museum für angewandte Kunst",place_park:"Friedenspark",nearby_m:"m",nearby_km:"km",nearby_min:"Min."},
+  kk: {service_nearby:"Жақын жерде",nearby_title:"Жақын жерде",nearby_tagline:"Қонақүй маңында",nearby_directions:"Бағыт құру",nearby_type_restaurant:"Мейрамхана",nearby_type_cafe:"Кафе",nearby_type_museum:"Мұражай",nearby_type_park:"Саябақ",place_afsona:"Afsona",place_bon:"Bon",place_museum:"Қолданбалы өнер мұражайы",place_park:"Бейбітшілік саябағы",nearby_m:"м",nearby_km:"км",nearby_min:"мин"},
+  tr: {service_nearby:"Yakınlarda ne var",nearby_title:"Yakınlar",nearby_tagline:"Otelin çevresi",nearby_directions:"Yol tarifi",nearby_type_restaurant:"Restoran",nearby_type_cafe:"Kafe",nearby_type_museum:"Müze",nearby_type_park:"Park",place_afsona:"Afsona",place_bon:"Bon",place_museum:"Uygulamalı Sanatlar Müzesi",place_park:"Barış Parkı",nearby_m:"m",nearby_km:"km",nearby_min:"dk"}
+};
+Object.keys(NEARBY_I18N).forEach(function (lang) { if (I18N[lang]) Object.assign(I18N[lang], NEARBY_I18N[lang]); });
+
 const LANGS = [
   {id:"ru", code:"RU", native:"Русский"},
   {id:"en", code:"EN", native:"English"},
@@ -660,6 +799,9 @@ function applyI18n() {
   document.querySelectorAll("[data-i18n]").forEach(el => { el.textContent = t(el.getAttribute("data-i18n")); });
   document.getElementById("langBtn").textContent = (LANGS.find(l => l.id === currentLang) || LANGS[0]).code;
   document.getElementById("langBtn2").textContent = document.getElementById("langBtn").textContent;
+  const langBtn3 = document.getElementById("langBtn3");
+  if (langBtn3) langBtn3.textContent = document.getElementById("langBtn").textContent;
+  if (!document.getElementById("nearbyScreen").classList.contains("hidden")) renderNearby();
   document.documentElement.lang = currentLang;
   document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
   document.getElementById("menuTitle").textContent = barOnly ? t("service_bar") : t("service_menu");
@@ -723,17 +865,136 @@ document.getElementById("copyWifi").onclick = async () => {
 };
 document.getElementById("cartBar").onclick = () => { renderCart(); openSheet("cart"); };
 
+
+/* ============================================================================
+   📌 ЧТО РЯДОМ / WHAT'S NEARBY — мок интерфейса.
+   В бот ничего не уходит. Когда будешь переносить в Supabase:
+   1) SQL таблицы — ищи в этом файле «create table if not exists public.nearby»
+      или файл NEARBY-SUPABASE.md
+   2) Оставь HOTEL_ORIGIN / distanceMeters / directionsUrl
+   3) Вместо NEARBY_PLACES грузи rest/v1/nearby?is_available=eq.true&order=sort_order.asc
+      тем же fetch, что меню (SUPABASE_URL + SUPABASE_KEY).
+   4) Расстояние НЕ хранить — считается от отеля по lat/lng.
+   Hotel: 41.286404, 69.263019 — Кичик Бешёгоч 40
+   ========================================================================== */
+const HOTEL_ORIGIN = { lat: 41.286404, lng: 69.263019 };
+const NEARBY_PLACES = [
+  { id:"afsona", type:"restaurant", nameKey:"place_afsona", lat:41.3038, lng:69.2782, images:["./images/nearby/afsona-1.jpg","./images/nearby/afsona-2.jpg","./images/nearby/afsona-3.jpg","./images/nearby/afsona-4.jpg"] },
+  { id:"bon", type:"cafe", nameKey:"place_bon", lat:41.2892, lng:69.2608, images:["./images/nearby/bon-1.jpg","./images/nearby/bon-2.jpg","./images/nearby/bon-3.jpg","./images/nearby/bon-4.jpg"] },
+  { id:"museum", type:"museum", nameKey:"place_museum", lat:41.297, lng:69.27, images:["./images/nearby/museum-1.jpg","./images/nearby/museum-2.jpg","./images/nearby/museum-3.jpg","./images/nearby/museum-4.jpg"] },
+  { id:"park", type:"park", nameKey:"place_park", lat:41.289531, lng:69.254229, images:["./images/nearby/park-1.jpg","./images/nearby/park-2.jpg","./images/nearby/park-3.jpg","./images/nearby/park-4.jpg"] }
+];
+let nearbyTimers = [];
+function distanceMeters(place) {
+  const R = 6371000;
+  const toRad = function (d) { return d * Math.PI / 180; };
+  const dLat = toRad(place.lat - HOTEL_ORIGIN.lat);
+  const dLng = toRad(place.lng - HOTEL_ORIGIN.lng);
+  const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(toRad(HOTEL_ORIGIN.lat))*Math.cos(toRad(place.lat))*Math.sin(dLng/2)*Math.sin(dLng/2);
+  return 2 * R * Math.asin(Math.min(1, Math.sqrt(a)));
+}
+function formatDistance(meters) {
+  const comma = currentLang === "ru" || currentLang === "kk" || currentLang === "uz";
+  if (meters >= 1000) {
+    const km = meters / 1000;
+    const rounded = km >= 10 ? Math.round(km) : Math.round(km * 10) / 10;
+    const num = rounded % 1 === 0 ? String(Math.round(rounded)) : rounded.toFixed(1).replace(".", comma ? "," : ".");
+    return num + " " + t("nearby_km");
+  }
+  const m = Math.max(50, Math.round(meters / 10) * 10);
+  return m + " " + t("nearby_m");
+}
+function formatWalk(meters) {
+  return Math.max(1, Math.round(meters / 80)) + " " + t("nearby_min");
+}
+function directionsUrl(place) {
+  const o = HOTEL_ORIGIN.lat + "," + HOTEL_ORIGIN.lng;
+  const d = place.lat + "," + place.lng;
+  return "https://www.google.com/maps/dir/?api=1&origin=" + o + "&destination=" + d + "&travelmode=walking";
+}
+function stopNearbyCarousels() {
+  nearbyTimers.forEach(function (id) { clearInterval(id); });
+  nearbyTimers = [];
+}
+function renderNearby() {
+  stopNearbyCarousels();
+  const list = document.getElementById("placeList");
+  if (!list) return;
+  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  list.innerHTML = NEARBY_PLACES.map(function (p) {
+    const meters = distanceMeters(p);
+    const imgs = p.images.map(function (src, i) {
+      return '<img src="' + src + '" alt="" class="' + (i === 0 ? "on" : "") + '">';
+    }).join("");
+    const dots = p.images.map(function (_, i) {
+      return "<b class=\"" + (i === 0 ? "on" : "") + "\" data-i=\"" + i + "\"></b>";
+    }).join("");
+    return '<article class="place-card" data-id="' + p.id + '">' +
+      '<div class="place-carousel" data-idx="0">' + imgs + '<div class="place-dots">' + dots + "</div></div>" +
+      '<div class="place-body">' +
+        '<div class="place-meta"><div class="place-type">' + t("nearby_type_" + p.type) + "</div>" +
+        '<div class="place-dist">' + formatDistance(meters) + " · " + formatWalk(meters) + "</div></div>" +
+        '<h3 class="place-name">' + t(p.nameKey) + "</h3>" +
+        '<button type="button" class="btn" data-dir="' + p.id + '">' + t("nearby_directions") + "</button>" +
+      "</div></article>";
+  }).join("");
+  list.querySelectorAll(".place-card").forEach(function (card) {
+    const carousel = card.querySelector(".place-carousel");
+    const slides = [...carousel.querySelectorAll("img")];
+    const dots = [...carousel.querySelectorAll(".place-dots b")];
+    let idx = 0;
+    function go(n) {
+      idx = (n + slides.length) % slides.length;
+      slides.forEach(function (s, i) { s.classList.toggle("on", i === idx); });
+      dots.forEach(function (d, i) { d.classList.toggle("on", i === idx); });
+    }
+    dots.forEach(function (d) { d.onclick = function (e) { e.stopPropagation(); go(+d.dataset.i); }; });
+    let startX = null;
+    carousel.addEventListener("touchstart", function (e) { startX = e.changedTouches[0].clientX; }, { passive: true });
+    carousel.addEventListener("touchend", function (e) {
+      if (startX == null) return;
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 40) go(idx + (dx < 0 ? 1 : -1));
+      startX = null;
+    });
+    if (!reduce && slides.length > 1) {
+      nearbyTimers.push(setInterval(function () { go(idx + 1); }, 2000));
+    }
+  });
+  list.querySelectorAll("[data-dir]").forEach(function (btn) {
+    btn.onclick = function () {
+      const p = NEARBY_PLACES.find(function (x) { return x.id === btn.dataset.dir; });
+      if (!p) return;
+      const url = directionsUrl(p);
+      if (tg && tg.openLink) tg.openLink(url);
+      else window.open(url, "_blank");
+    };
+  });
+}
+function showNearby() {
+  barOnly = false;
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("homeChrome").classList.add("hidden");
+  document.getElementById("menuScreen").classList.add("hidden");
+  document.getElementById("nearbyScreen").classList.remove("hidden");
+  renderNearby();
+}
+
 function showHome() {
   barOnly = false;
   document.getElementById("home").classList.remove("hidden");
   document.getElementById("homeChrome").classList.remove("hidden");
   document.getElementById("menuScreen").classList.add("hidden");
+  document.getElementById("nearbyScreen").classList.add("hidden");
+  stopNearbyCarousels();
 }
 function showMenu(bar) {
   barOnly = !!bar;
   currentCategory = bar ? "bar" : "all";
   document.getElementById("home").classList.add("hidden");
   document.getElementById("homeChrome").classList.add("hidden");
+  document.getElementById("nearbyScreen").classList.add("hidden");
+  stopNearbyCarousels();
   document.getElementById("menuScreen").classList.remove("hidden");
   document.getElementById("menuTitle").textContent = barOnly ? t("service_bar") : t("service_menu");
   renderCats();
@@ -741,7 +1002,11 @@ function showMenu(bar) {
 }
 document.getElementById("openMenu").onclick = () => showMenu(false);
 document.getElementById("openBar").onclick = () => showMenu(true);
+document.getElementById("openNearby").onclick = showNearby;
 document.getElementById("backBtn").onclick = showHome;
+document.getElementById("backBtnNearby").onclick = showHome;
+document.getElementById("langBtn3").onclick = () => { buildLangMenu(); document.getElementById("langMenu").classList.toggle("hidden"); };
+document.getElementById("themeBtn3").onclick = setTheme;
 
 function renderCats() {
   const wrap = document.getElementById("cats");
