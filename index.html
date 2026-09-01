@@ -882,39 +882,28 @@ document.getElementById("cartBar").onclick = () => { renderCart(); openSheet("ca
 
 
 /* ============================================================================
-   📌 ЧТО РЯДОМ — грузится из таблицы public.nearby (как меню).
-   Если таблицы ещё нет — показывается мок ниже.
+   📌 ЧТО РЯДОМ — таблица public.nearby в том же Supabase, что меню.
+   В бот ничего не уходит. Мок ниже — только если таблица пустая.
    Hotel: 41.286404, 69.263019 — Кичик Бешёгоч 40
    ========================================================================== */
 const HOTEL_ORIGIN = { lat: 41.286404, lng: 69.263019 };
-const NEARBY_MOCK = [
+const NEARBY_PLACES = [
   { id:"afsona", type:"restaurant", nameKey:"place_afsona", names:null, lat:41.3038, lng:69.2782, images:["./images/nearby/afsona-1.jpg","./images/nearby/afsona-2.jpg","./images/nearby/afsona-3.jpg","./images/nearby/afsona-4.jpg"] },
   { id:"bon", type:"cafe", nameKey:"place_bon", names:null, lat:41.2892, lng:69.2608, images:["./images/nearby/bon-1.jpg","./images/nearby/bon-2.jpg","./images/nearby/bon-3.jpg","./images/nearby/bon-4.jpg"] },
   { id:"museum", type:"museum", nameKey:"place_museum", names:null, lat:41.297, lng:69.27, images:["./images/nearby/museum-1.jpg","./images/nearby/museum-2.jpg","./images/nearby/museum-3.jpg","./images/nearby/museum-4.jpg"] },
   { id:"park", type:"park", nameKey:"place_park", names:null, lat:41.289531, lng:69.254229, images:["./images/nearby/park-1.jpg","./images/nearby/park-2.jpg","./images/nearby/park-3.jpg","./images/nearby/park-4.jpg"] }
 ];
-let nearbyPlaces = NEARBY_MOCK.slice();
+let nearbyPlaces = NEARBY_PLACES.slice();
 function escHtml(s) {
   return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
     return ({ "&": "&", "<": "<", ">": ">", '"': """, "'": "&#39;" })[c];
   });
 }
-function placeDisplayName(p) {
-  if (p.names) {
-    const n = p.names[currentLang] || p.names.ru || p.names.en;
-    if (n) return n;
-  }
-  if (p.nameKey) {
-    const tr = t(p.nameKey);
-    if (tr && tr !== p.nameKey) return tr;
-  }
-  return p.id;
-}
 function parseImages(raw) {
   if (Array.isArray(raw)) return raw.map(String).filter(Boolean).slice(0, 4);
   if (typeof raw === "string" && raw.trim()) {
     try {
-      const p = JSON.parse(raw);
+      var p = JSON.parse(raw);
       if (Array.isArray(p)) return p.map(String).filter(Boolean).slice(0, 4);
     } catch (e) {
       return raw.replace(/^{/, "").replace(/}$/, "").split(",").map(function (s) {
@@ -924,30 +913,37 @@ function parseImages(raw) {
   }
   return [];
 }
+function placeDisplayName(p) {
+  if (p.names) {
+    var n = p.names[currentLang] || p.names.ru || p.names.en;
+    if (n) return n;
+  }
+  if (p.nameKey) {
+    var tr = t(p.nameKey);
+    if (tr && tr !== p.nameKey) return tr;
+  }
+  return p.id;
+}
 function mapNearbyRow(row) {
-  const lat = Number(row.lat), lng = Number(row.lng);
+  var lat = Number(row.lat), lng = Number(row.lng);
   if (!isFinite(lat) || !isFinite(lng)) return null;
-  const slug = String(row.slug || row.id || "").trim();
+  var slug = String(row.slug || row.id || "").trim();
   if (!slug) return null;
-  const names = (typeof row.name === "string" && row.name.trim())
+  var names = (typeof row.name === "string" && row.name.trim())
     ? { ru: row.name.trim() }
     : (row.name && typeof row.name === "object" && !Array.isArray(row.name)) ? row.name : null;
-  const images = parseImages(row.images);
-  return { id: slug, type: String(row.type || "place"), nameKey: "place_" + slug, names: names, lat: lat, lng: lng, images: images };
+  return { id: slug, type: String(row.type || "place"), nameKey: "place_" + slug, names: names, lat: lat, lng: lng, images: parseImages(row.images) };
 }
 async function fetchNearby() {
   try {
-    const res = await fetch(SUPABASE_URL + "/rest/v1/nearby?select=*&is_available=eq.true&order=sort_order.asc", {
+    var res = await fetch(SUPABASE_URL + "/rest/v1/nearby?select=*&is_available=eq.true&order=sort_order.asc", {
       headers: { apikey: SUPABASE_KEY, Authorization: "Bearer " + SUPABASE_KEY }
     });
     if (!res.ok) return;
-    const data = await res.json();
-    const mapped = (data || []).map(mapNearbyRow).filter(Boolean);
-    if (mapped.length) {
-      nearbyPlaces = mapped;
-      if (!document.getElementById("nearbyScreen").classList.contains("hidden")) renderNearby();
-    }
-  } catch (e) { /* таблица ещё не создана — остаётся мок */ }
+    var data = await res.json();
+    var mapped = (data || []).map(mapNearbyRow).filter(Boolean);
+    if (mapped.length) nearbyPlaces = mapped;
+  } catch (e) { /* таблица пустая — остаётся мок */ }
 }
 let nearbyTimers = [];
 function distanceMeters(place) {
@@ -1342,7 +1338,7 @@ history.replaceState({appLayer:"root"}, "");
 history.pushState({appLayer:"root"}, "");
 window.addEventListener("popstate", () => {
   if (document.querySelector(".sheet.open")) { closeSheets(); history.pushState({appLayer:"root"}, ""); return; }
-  if (!document.getElementById("menuScreen").classList.contains("hidden")) { showHome(); history.pushState({appLayer:"root"}, ""); return; }
+  if (!document.getElementById("menuScreen").classList.contains("hidden") || !document.getElementById("nearbyScreen").classList.contains("hidden")) { showHome(); history.pushState({appLayer:"root"}, ""); return; }
   history.pushState({appLayer:"root"}, "");
 });
 </script>
