@@ -129,10 +129,10 @@
     .lang-opt { display: flex; justify-content: space-between; width: 100%; padding: 10px 12px; font-size: 14px; color: var(--muted); }
     .lang-opt.on { background: var(--elevated); color: var(--fg); }
     .hero { position: relative; height: 320px; overflow: hidden; border-radius: 0 0 var(--r-xl) var(--r-xl); }
-    .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .7s ease; }
+    .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .7s ease; pointer-events: none; }
     .hero img.on { opacity: 1; }
-    .hero-grad { position: absolute; inset: 0; background: linear-gradient(to top, var(--bg) 8%, color-mix(in oklab, var(--bg) 45%, transparent) 50%, transparent 78%); }
-    .hero-copy { position: absolute; left: 20px; right: 20px; bottom: 22px; }
+    .hero-grad { position: absolute; inset: 0; background: linear-gradient(to top, var(--bg) 8%, color-mix(in oklab, var(--bg) 45%, transparent) 50%, transparent 78%); pointer-events: none; }
+    .hero-copy { position: absolute; left: 20px; right: 20px; bottom: 22px; pointer-events: auto; z-index: 2; }
     .eyebrow { font-size: 11px; letter-spacing: .28em; text-transform: uppercase; color: color-mix(in oklab, var(--accent) 80%, transparent); font-weight: 500; }
     h1 { font-family: var(--display); font-size: 52px; font-weight: 500; line-height: .95; letter-spacing: -.03em; }
     .tagline { margin-top: 8px; font-size: 14px; color: var(--muted); }
@@ -287,14 +287,17 @@
       }
       .hero {
         height: 100dvh;
-        position: sticky;
+        position: relative;
         top: 0;
         border-radius: 0;
+        z-index: 0;
       }
       .pad {
         padding: 72px 32px 120px;
         max-height: 100dvh;
         overflow: auto;
+        position: relative;
+        z-index: 2;
       }
       .grid { grid-template-columns: 1fr 1fr; gap: 14px; }
       .feat.wide { grid-column: auto; min-height: 200px; }
@@ -443,7 +446,7 @@
             <span class="lbl" data-i18n="service_bar">Бар</span>
           </button>
           <button class="feat" id="openNearby">
-            <img src="./images/nearby-cover.jpg" alt="">
+            <img src="./images/whats-nearby.jpg" alt="">
             <span class="shade"></span>
             <span class="lbl" data-i18n="service_nearby">Что рядом</span>
           </button>
@@ -882,23 +885,72 @@ document.getElementById("cartBar").onclick = () => { renderCart(); openSheet("ca
 
 
 /* ============================================================================
-   📌 ЧТО РЯДОМ / WHAT'S NEARBY — мок интерфейса.
-   В бот ничего не уходит. Когда будешь переносить в Supabase:
-   1) SQL таблицы — ищи в этом файле «create table if not exists public.nearby»
-      или файл NEARBY-SUPABASE.md
-   2) Оставь HOTEL_ORIGIN / distanceMeters / directionsUrl
-   3) Вместо NEARBY_PLACES грузи rest/v1/nearby?is_available=eq.true&order=sort_order.asc
-      тем же fetch, что меню (SUPABASE_URL + SUPABASE_KEY).
-   4) Расстояние НЕ хранить — считается от отеля по lat/lng.
+   📌 ЧТО РЯДОМ — таблица public.nearby в том же Supabase, что меню.
+   В бот ничего не уходит. Мок ниже — только если таблица пустая.
    Hotel: 41.286404, 69.263019 — Кичик Бешёгоч 40
    ========================================================================== */
 const HOTEL_ORIGIN = { lat: 41.286404, lng: 69.263019 };
 const NEARBY_PLACES = [
-  { id:"afsona", type:"restaurant", nameKey:"place_afsona", lat:41.3038, lng:69.2782, images:["./images/nearby/afsona-1.jpg","./images/nearby/afsona-2.jpg","./images/nearby/afsona-3.jpg","./images/nearby/afsona-4.jpg"] },
-  { id:"bon", type:"cafe", nameKey:"place_bon", lat:41.2892, lng:69.2608, images:["./images/nearby/bon-1.jpg","./images/nearby/bon-2.jpg","./images/nearby/bon-3.jpg","./images/nearby/bon-4.jpg"] },
-  { id:"museum", type:"museum", nameKey:"place_museum", lat:41.297, lng:69.27, images:["./images/nearby/museum-1.jpg","./images/nearby/museum-2.jpg","./images/nearby/museum-3.jpg","./images/nearby/museum-4.jpg"] },
-  { id:"park", type:"park", nameKey:"place_park", lat:41.289531, lng:69.254229, images:["./images/nearby/park-1.jpg","./images/nearby/park-2.jpg","./images/nearby/park-3.jpg","./images/nearby/park-4.jpg"] }
+  { id:"afsona", type:"restaurant", nameKey:"place_afsona", names:null, lat:41.3038, lng:69.2782, images:["./images/nearby/afsona-1.jpg","./images/nearby/afsona-2.jpg","./images/nearby/afsona-3.jpg","./images/nearby/afsona-4.jpg"] },
+  { id:"bon", type:"cafe", nameKey:"place_bon", names:null, lat:41.2892, lng:69.2608, images:["./images/nearby/bon-1.jpg","./images/nearby/bon-2.jpg","./images/nearby/bon-3.jpg","./images/nearby/bon-4.jpg"] },
+  { id:"museum", type:"museum", nameKey:"place_museum", names:null, lat:41.297, lng:69.27, images:["./images/nearby/museum-1.jpg","./images/nearby/museum-2.jpg","./images/nearby/museum-3.jpg","./images/nearby/museum-4.jpg"] },
+  { id:"park", type:"park", nameKey:"place_park", names:null, lat:41.289531, lng:69.254229, images:["./images/nearby/park-1.jpg","./images/nearby/park-2.jpg","./images/nearby/park-3.jpg","./images/nearby/park-4.jpg"] }
 ];
+let nearbyPlaces = NEARBY_PLACES.slice();
+function escHtml(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&" + "amp;")
+    .replace(/</g, "&" + "lt;")
+    .replace(/>/g, "&" + "gt;")
+    .replace(/"/g, "&" + "quot;")
+    .replace(/'/g, "&#39;");
+}
+function parseImages(raw) {
+  if (Array.isArray(raw)) return raw.map(String).filter(Boolean).slice(0, 4);
+  if (typeof raw === "string" && raw.trim()) {
+    try {
+      var p = JSON.parse(raw);
+      if (Array.isArray(p)) return p.map(String).filter(Boolean).slice(0, 4);
+    } catch (e) {
+      return raw.replace(/^{/, "").replace(/}$/, "").split(",").map(function (s) {
+        return s.trim().replace(/^"|"$/g, "");
+      }).filter(Boolean).slice(0, 4);
+    }
+  }
+  return [];
+}
+function placeDisplayName(p) {
+  if (p.names) {
+    var n = p.names[currentLang] || p.names.ru || p.names.en;
+    if (n) return n;
+  }
+  if (p.nameKey) {
+    var tr = t(p.nameKey);
+    if (tr && tr !== p.nameKey) return tr;
+  }
+  return p.id;
+}
+function mapNearbyRow(row) {
+  var lat = Number(row.lat), lng = Number(row.lng);
+  if (!isFinite(lat) || !isFinite(lng)) return null;
+  var slug = String(row.slug || row.id || "").trim();
+  if (!slug) return null;
+  var names = (typeof row.name === "string" && row.name.trim())
+    ? { ru: row.name.trim() }
+    : (row.name && typeof row.name === "object" && !Array.isArray(row.name)) ? row.name : null;
+  return { id: slug, type: String(row.type || "place"), nameKey: "place_" + slug, names: names, lat: lat, lng: lng, images: parseImages(row.images) };
+}
+async function fetchNearby() {
+  try {
+    var res = await fetch(SUPABASE_URL + "/rest/v1/nearby?select=*&is_available=eq.true&order=sort_order.asc", {
+      headers: { apikey: SUPABASE_KEY, Authorization: "Bearer " + SUPABASE_KEY }
+    });
+    if (!res.ok) return;
+    var data = await res.json();
+    var mapped = (data || []).map(mapNearbyRow).filter(Boolean);
+    if (mapped.length) nearbyPlaces = mapped;
+  } catch (e) { /* таблица пустая — остаётся мок */ }
+}
 let nearbyTimers = [];
 function distanceMeters(place) {
   const R = 6371000;
@@ -936,21 +988,21 @@ function renderNearby() {
   const list = document.getElementById("placeList");
   if (!list) return;
   const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  list.innerHTML = NEARBY_PLACES.map(function (p) {
+  list.innerHTML = nearbyPlaces.map(function (p) {
     const meters = distanceMeters(p);
     const imgs = p.images.map(function (src, i) {
-      return '<img src="' + src + '" alt="" class="' + (i === 0 ? "on" : "") + '">';
+      return '<img src="' + escHtml(src) + '" alt="" class="' + (i === 0 ? "on" : "") + '">';
     }).join("");
     const dots = p.images.map(function (_, i) {
       return "<b class=\"" + (i === 0 ? "on" : "") + "\" data-i=\"" + i + "\"></b>";
     }).join("");
-    return '<article class="place-card" data-id="' + p.id + '">' +
+    return '<article class="place-card" data-id="' + escHtml(p.id) + '">' +
       '<div class="place-carousel" data-idx="0">' + imgs + '<div class="place-dots">' + dots + "</div></div>" +
       '<div class="place-body">' +
-        '<div class="place-meta"><div class="place-type">' + t("nearby_type_" + p.type) + "</div>" +
+        '<div class="place-meta"><div class="place-type">' + escHtml(t("nearby_type_" + p.type)) + "</div>" +
         '<div class="place-dist">' + formatDistance(meters) + " · " + formatWalk(meters) + "</div></div>" +
-        '<h3 class="place-name">' + t(p.nameKey) + "</h3>" +
-        '<button type="button" class="btn" data-dir="' + p.id + '">' + t("nearby_directions") + "</button>" +
+        '<h3 class="place-name">' + escHtml(placeDisplayName(p)) + "</h3>" +
+        '<button type="button" class="btn" data-dir="' + escHtml(p.id) + '">' + t("nearby_directions") + "</button>" +
       "</div></article>";
   }).join("");
   list.querySelectorAll(".place-card").forEach(function (card) {
@@ -978,7 +1030,7 @@ function renderNearby() {
   });
   list.querySelectorAll("[data-dir]").forEach(function (btn) {
     btn.onclick = function () {
-      const p = NEARBY_PLACES.find(function (x) { return x.id === btn.dataset.dir; });
+      const p = nearbyPlaces.find(function (x) { return x.id === btn.dataset.dir; });
       if (!p) return;
       const url = directionsUrl(p);
       if (tg && tg.openLink) tg.openLink(url);
@@ -1005,8 +1057,7 @@ function showNearby() {
   document.getElementById("homeChrome").classList.add("hidden");
   document.getElementById("menuScreen").classList.add("hidden");
   document.getElementById("nearbyScreen").classList.remove("hidden");
-  renderNearby();
-  scrollToTop();
+  fetchNearby().then(function () { renderNearby(); scrollToTop(); });
 }
 
 function showHome() {
@@ -1288,11 +1339,12 @@ applyGuestName();
 document.documentElement.setAttribute("data-theme", "dark");
 applyI18n(); // вызывает updateDateDisplays внутри
 fetchMenu();
+fetchNearby();
 history.replaceState({appLayer:"root"}, "");
 history.pushState({appLayer:"root"}, "");
 window.addEventListener("popstate", () => {
   if (document.querySelector(".sheet.open")) { closeSheets(); history.pushState({appLayer:"root"}, ""); return; }
-  if (!document.getElementById("menuScreen").classList.contains("hidden")) { showHome(); history.pushState({appLayer:"root"}, ""); return; }
+  if (!document.getElementById("menuScreen").classList.contains("hidden") || !document.getElementById("nearbyScreen").classList.contains("hidden")) { showHome(); history.pushState({appLayer:"root"}, ""); return; }
   history.pushState({appLayer:"root"}, "");
 });
 </script>
