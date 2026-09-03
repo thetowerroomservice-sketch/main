@@ -155,6 +155,8 @@
     .svc { min-height: 112px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; text-align: start; padding: 16px; background: var(--surface); border-radius: var(--r-lg); }
     .svc.wide { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 12px; }
     .svc span { font-size: 14px; font-weight: 500; line-height: 1.3; }
+    .svc { position: relative; }
+    .svc .oos { position: absolute; top: 10px; right: 10px; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--border); padding: 3px 7px; border-radius: 999px; }
     .hidden { display: none !important; }
     #nearbyScreen, #menuScreen { min-height: 100dvh; }
     .menu-head { position: sticky; top: 0; z-index: 20; padding: max(.75rem, env(safe-area-inset-top)) 12px 12px; background: color-mix(in oklab, var(--bg) 90%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
@@ -456,6 +458,7 @@
           <button class="svc" data-open="reception"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span><span data-i18n="service_reception">Ресепшн</span></button>
           <button class="svc" data-open="problem"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span><span data-i18n="service_problem">Проблема</span></button>
           <button class="svc" data-open="alarm"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M5 3 2 6M22 6l-3-3"/></svg></span><span data-i18n="service_alarm">Будильник</span></button>
+          <button class="svc" id="wellnessBtn" data-open="wellness"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15c2.5-3 5-4.5 8-4.5S17.5 12 20 15"/><path d="M2 19c3-4 6.5-6 10-6s7 2 10 6"/><circle cx="12" cy="7" r="2.2"/></svg></span><span data-i18n="service_wellness">Бассейн и сауна</span><b class="oos hidden" id="wellnessOos" data-i18n="wellness_oos">Out of service</b></button>
           <button class="svc" data-open="review"><span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span><span data-i18n="service_review">Отзыв</span></button>
         </div>
       </div>
@@ -500,6 +503,7 @@
   <div class="sheet" id="sheet-housekeeping"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="hk_title">Housekeeping</h2><button class="btn" id="hkMaids" data-i18n="hk_call_maids">Позвать горничных</button><button class="btn ghost" id="hkClean" data-i18n="hk_clean_room">Убраться</button></div></div>
   <div class="sheet" id="sheet-reception"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="service_reception">Ресепшн</h2><p class="muted" data-i18n="reception_hint">Стойка ответит на 1111.</p><div class="dial" data-i18n="reception_number">Ресепшн · 1111</div><button class="btn" id="callReception" data-i18n="reception_call">Вызвать ресепшн</button></div></div>
   <div class="sheet" id="sheet-alarm"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="alarm_title">Будильник</h2><div class="row-2"><label class="field"><span data-i18n="alarm_time_label">Время</span><input type="time" id="alarmTime" value="08:00"></label><label class="field"><span data-i18n="alarm_date_label">Дата</span><div class="date-picker-wrap"><input type="date" id="alarmDate" class="date-hidden"><div class="date-display" id="alarmDateDisplay"></div></div></label></div><label class="field"><span data-i18n="alarm_note_label">Примечание</span><textarea id="alarmNote"></textarea></label><button class="btn" id="sendAlarm" data-i18n="alarm_send">Установить</button></div></div>
+  <div class="sheet" id="sheet-wellness"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="wellness_title">Бассейн, сауна, хаммам</h2><p class="muted" id="wellnessHours" data-i18n="wellness_hours">Работает с 10:00 до 22:00</p><p class="muted hidden" id="wellnessClosed" data-i18n="wellness_closed">Сейчас не работает</p><label class="field"><span data-i18n="wellness_time_label">Время визита</span><input type="time" id="wellnessTime" value="12:00"></label><button class="btn" id="sendWellness" data-i18n="wellness_send">Забронировать</button></div></div>
   <div class="sheet" id="sheet-taxi"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="taxi_title">Такси</h2><label class="field"><span data-i18n="taxi_dest_label">Куда</span><input id="taxiDest"></label><div class="row-2"><label class="field"><span data-i18n="alarm_date_label">Дата</span><div class="date-picker-wrap"><input type="date" id="taxiDate" class="date-hidden"><div class="date-display" id="taxiDateDisplay"></div></div></label><label class="field"><span data-i18n="taxi_time_label">Время</span><input type="time" id="taxiTime" value="12:00"></label></div><label class="field"><span data-i18n="taxi_passengers_label">Пассажиры</span><select id="taxiPassengers"><option>1</option><option>2</option><option>3</option><option>4+</option></select></label><button class="btn" id="sendTaxi" data-i18n="taxi_send">Заказать такси</button></div></div>
   <div class="sheet" id="sheet-review"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="review_title">Отзыв</h2><p class="muted" data-i18n="review_rating_label">Оценка</p><div class="stars" id="stars"></div><label class="field"><span data-i18n="review_comment_label">Комментарий</span><textarea id="reviewComment"></textarea></label><button class="btn" id="sendReview" data-i18n="review_send">Отправить отзыв</button></div></div>
   <div class="sheet" id="sheet-problem"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="problem_title">Проблема</h2><label class="field"><span data-i18n="problem_comment_label">Описание</span><textarea id="problemComment"></textarea></label><button class="btn" id="sendProblem" data-i18n="problem_send">Отправить</button></div></div>
@@ -590,6 +594,20 @@ const NEARBY_I18N = {
   tr: {service_nearby:"Yakınlarda ne var",nearby_title:"Yakınlar",nearby_tagline:"Otelin çevresi",nearby_directions:"Yol tarifi",nearby_type_restaurant:"Restoran",nearby_type_cafe:"Kafe",nearby_type_museum:"Müze",nearby_type_park:"Park",place_afsona:"Afsona",place_bon:"Bon",place_museum:"Uygulamalı Sanatlar Müzesi",place_park:"Barış Parkı",nearby_m:"m",nearby_km:"km",nearby_min:"dk"}
 };
 Object.keys(NEARBY_I18N).forEach(function (lang) { if (I18N[lang]) Object.assign(I18N[lang], NEARBY_I18N[lang]); });
+
+const WELLNESS_I18N = {
+  ru: {service_wellness:"Бассейн и сауна",wellness_title:"Бассейн, сауна, хаммам",wellness_hours:"Работает с 10:00 до 22:00",wellness_closed:"Сейчас не работает",wellness_time_label:"Время визита",wellness_send:"Забронировать",wellness_oos:"Out of service",wellness_hours_warn:"Работает с 10:00 до 22:00"},
+  uz: {service_wellness:"Basseyn va sauna",wellness_title:"Basseyn, sauna, hammom",wellness_hours:"10:00 dan 22:00 gacha ochiq",wellness_closed:"Hozir ishlamaydi",wellness_time_label:"Tashrif vaqti",wellness_send:"Band qilish",wellness_oos:"Out of service",wellness_hours_warn:"10:00–22:00 oralig‘ida ishlaydi"},
+  en: {service_wellness:"Pool & sauna",wellness_title:"Pool, sauna, hammam",wellness_hours:"Open 10:00–22:00",wellness_closed:"Currently closed",wellness_time_label:"Visit time",wellness_send:"Book",wellness_oos:"Out of service",wellness_hours_warn:"Open from 10:00 to 22:00"},
+  zh: {service_wellness:"泳池和桑拿",wellness_title:"泳池、桑拿、土耳其浴",wellness_hours:"开放时间 10:00–22:00",wellness_closed:"暂不开放",wellness_time_label:"到访时间",wellness_send:"预约",wellness_oos:"Out of service",wellness_hours_warn:"开放时间为 10:00 至 22:00"},
+  ar: {service_wellness:"المسبح والساونا",wellness_title:"المسبح والساونا والحمام",wellness_hours:"من 10:00 إلى 22:00",wellness_closed:"مغلق حالياً",wellness_time_label:"وقت الزيارة",wellness_send:"حجز",wellness_oos:"Out of service",wellness_hours_warn:"العمل من 10:00 إلى 22:00"},
+  fr: {service_wellness:"Piscine et sauna",wellness_title:"Piscine, sauna, hammam",wellness_hours:"Ouvert de 10:00 à 22:00",wellness_closed:"Fermé pour le moment",wellness_time_label:"Heure de visite",wellness_send:"Réserver",wellness_oos:"Out of service",wellness_hours_warn:"Ouvert de 10:00 à 22:00"},
+  es: {service_wellness:"Piscina y sauna",wellness_title:"Piscina, sauna, hammam",wellness_hours:"Abierto de 10:00 a 22:00",wellness_closed:"Cerrado ahora",wellness_time_label:"Hora de visita",wellness_send:"Reservar",wellness_oos:"Out of service",wellness_hours_warn:"Abierto de 10:00 a 22:00"},
+  de: {service_wellness:"Pool und Sauna",wellness_title:"Pool, Sauna, Hammam",wellness_hours:"Geöffnet 10:00–22:00",wellness_closed:"Derzeit geschlossen",wellness_time_label:"Besuchszeit",wellness_send:"Reservieren",wellness_oos:"Out of service",wellness_hours_warn:"Geöffnet von 10:00 bis 22:00"},
+  kk: {service_wellness:"Бассейн және сауна",wellness_title:"Бассейн, сауна, хаммам",wellness_hours:"10:00–22:00 аралығында",wellness_closed:"Қазір жұмыс істемейді",wellness_time_label:"Келу уақыты",wellness_send:"Брондау",wellness_oos:"Out of service",wellness_hours_warn:"10:00–22:00 аралығында жұмыс істейді"},
+  tr: {service_wellness:"Havuz ve sauna",wellness_title:"Havuz, sauna, hamam",wellness_hours:"10:00–22:00 açık",wellness_closed:"Şu an kapalı",wellness_time_label:"Ziyaret saati",wellness_send:"Rezerve et",wellness_oos:"Out of service",wellness_hours_warn:"10:00–22:00 arası açık"}
+};
+Object.keys(WELLNESS_I18N).forEach(function (lang) { if (I18N[lang]) Object.assign(I18N[lang], WELLNESS_I18N[lang]); });
 
 const LANGS = [
   {id:"ru", code:"RU", native:"Русский"},
@@ -865,6 +883,13 @@ function openSheet(id) {
   document.querySelectorAll(".sheet").forEach(s => s.classList.remove("open"));
   const el = document.getElementById("sheet-" + id);
   if (el) el.classList.add("open");
+  if (id === "wellness") {
+    fetchWellness().then(applyWellnessUI);
+    if (!wellnessOn) {
+      document.getElementById("wellnessClosed").classList.remove("hidden");
+      document.getElementById("sendWellness").disabled = true;
+    }
+  }
 }
 function closeSheets() { document.querySelectorAll(".sheet").forEach(s => s.classList.remove("open")); }
 document.querySelectorAll(".sheet .ov").forEach(ov => ov.onclick = closeSheets);
@@ -1254,6 +1279,38 @@ function logOrder(total, note) {
 document.getElementById("hkMaids").onclick = () => postData(`🧹 <b>HOUSEKEEPING</b>\n🏨 <b>Номер комнаты:</b> ${room()}\n📌 <b>Действие:</b> Позвать горничных\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`);
 document.getElementById("hkClean").onclick = () => postData(`🧹 <b>HOUSEKEEPING</b>\n🏨 <b>Номер комнаты:</b> ${room()}\n📌 <b>Действие:</b> Убраться в моем номере\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`);
 document.getElementById("callReception").onclick = () => postData(`📞 <b>ВЫЗОВ РЕСЕПШЕНА</b>\n🏨 <b>Номер комнаты:</b> ${room()}\n☎️ <b>Запрос на номер:</b> 1111\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`);
+let wellnessOn = true;
+async function fetchWellness() {
+  try {
+    const res = await fetch(SUPABASE_URL + "/rest/v1/wellness?id=eq.spa&select=is_available", {
+      headers: { apikey: SUPABASE_KEY, Authorization: "Bearer " + SUPABASE_KEY }
+    });
+    const data = await res.json();
+    if (Array.isArray(data) && data[0] && data[0].is_available === false) wellnessOn = false;
+    else wellnessOn = true;
+  } catch (e) {
+    wellnessOn = true;
+  }
+  applyWellnessUI();
+}
+function applyWellnessUI() {
+  const badge = document.getElementById("wellnessOos");
+  const closed = document.getElementById("wellnessClosed");
+  const send = document.getElementById("sendWellness");
+  if (badge) badge.classList.toggle("hidden", wellnessOn);
+  if (closed) closed.classList.toggle("hidden", wellnessOn);
+  if (send) send.disabled = !wellnessOn;
+}
+document.getElementById("sendWellness").onclick = () => {
+  if (!wellnessOn) return toast(t("wellness_closed"));
+  const time = document.getElementById("wellnessTime").value;
+  if (!time) return toast(t("err_alarm_fields"));
+  const [hh, mm] = time.split(":").map(Number);
+  const mins = hh * 60 + mm;
+  if (mins < 10 * 60 || mins >= 22 * 60) return toast(t("wellness_hours_warn"));
+  postData(`🧖 <b>БАССЕЙН / САУНА / ХАММАМ</b>\n🏨 <b>Номер комнаты:</b> ${room()}\n🕒 <b>Время визита:</b> ${time}\n📌 <b>Зона:</b> бассейн, сауна, хаммам\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`, time);
+};
+
 document.getElementById("sendAlarm").onclick = () => {
   const time = document.getElementById("alarmTime").value;
   const date = document.getElementById("alarmDate").value;
@@ -1341,6 +1398,7 @@ document.documentElement.setAttribute("data-theme", "dark");
 applyI18n(); // вызывает updateDateDisplays внутри
 fetchMenu();
 fetchNearby();
+fetchWellness();
 history.replaceState({appLayer:"root"}, "");
 history.pushState({appLayer:"root"}, "");
 window.addEventListener("popstate", () => {
