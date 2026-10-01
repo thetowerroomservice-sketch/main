@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Room Service"><!-- 🔧 короткое имя на иконке Домой; лого: ./images/apple-touch-icon.png (180×180 PNG) -->
+  <meta name="apple-mobile-web-app-title" content="The Tower"><!-- 🔧 короткое имя на иконке Домой; лого: ./images/apple-touch-icon.png (180×180 PNG) -->
   <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="192x192" href="./images/icon-192.png">
   <link rel="manifest" href="./site.webmanifest">
@@ -425,8 +425,8 @@
         <div class="hero-grad"></div>
         <div class="hero-copy">
           <!-- 🔧 ДЛЯ НОВОГО ПРОЕКТА: название отеля -->
-          <p class="eyebrow">The Tower Hotel Tashkent</p>
-          <h1 id="heroTitle">Room Service</h1>
+          <p class="eyebrow">The Tower Hotel</p>
+          <h1 id="heroTitle">The Tower</h1>
           <p class="tagline" data-i18n="tagline">Сервис в номер</p>
           <button class="room-chip" id="roomChip"><span data-i18n="room_key">Номер:</span> <b class="room-number">1208</b></button>
         </div>
@@ -500,7 +500,7 @@
   <div class="load" id="load"><span class="load-mark"><img class="spin-logo" src="./images/logo.PNG" alt=""></span></div>
 
   <div class="sheet" id="sheet-wifi"><div class="ov"></div><div class="box"><div class="handle"></div><h2>Wi-Fi</h2><div class="wifi-box"><small data-i18n="wifi_network">Сеть</small><p>The Tower Hotel</p><small data-i18n="wifi_password">Пароль</small><div class="pw" id="wifiPass">Tower2023</div></div><button class="btn" id="copyWifi" data-i18n="wifi_copy">Скопировать</button></div></div>
-  <div class="sheet" id="sheet-housekeeping"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="hk_title">Housekeeping</h2><button class="btn" id="hkMaids" data-i18n="hk_call_maids">Позвать горничных</button><button class="btn ghost" id="hkClean" data-i18n="hk_clean_room">Убраться</button></div></div>
+  <div class="sheet" id="sheet-housekeeping"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="hk_title">Housekeeping</h2><p class="muted" data-i18n="hk_hours_warn">Хаускипинг работает с 08:00 до 20:00</p><button class="btn" id="hkMaids" data-i18n="hk_call_maids">Позвать горничных</button><button class="btn ghost" id="hkClean" data-i18n="hk_clean_room">Убраться</button></div></div>
   <div class="sheet" id="sheet-reception"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="service_reception">Ресепшн</h2><p class="muted" data-i18n="reception_hint">Стойка ответит на 1111.</p><div class="dial" data-i18n="reception_number">Ресепшн · 1111</div><button class="btn" id="callReception" data-i18n="reception_call">Вызвать ресепшн</button></div></div>
   <div class="sheet" id="sheet-alarm"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="alarm_title">Будильник</h2><div class="row-2"><label class="field"><span data-i18n="alarm_time_label">Время</span><input type="time" id="alarmTime" value="08:00"></label><label class="field"><span data-i18n="alarm_date_label">Дата</span><div class="date-picker-wrap"><input type="date" id="alarmDate" class="date-hidden"><div class="date-display" id="alarmDateDisplay"></div></div></label></div><label class="field"><span data-i18n="alarm_note_label">Примечание</span><textarea id="alarmNote"></textarea></label><button class="btn" id="sendAlarm" data-i18n="alarm_send">Установить</button></div></div>
   <div class="sheet" id="sheet-wellness"><div class="ov"></div><div class="box"><div class="handle"></div><h2 data-i18n="wellness_title">Бассейн, сауна, хаммам</h2><p class="muted" id="wellnessHours" data-i18n="wellness_hours">Работает с 10:00 до 22:00</p><p class="muted hidden" id="wellnessClosed" data-i18n="wellness_closed">Сейчас не работает</p><label class="field"><span data-i18n="wellness_time_label">Время визита</span><input type="time" id="wellnessTime" value="12:00"></label><button class="btn" id="sendWellness" data-i18n="wellness_send">Забронировать</button></div></div>
@@ -594,6 +594,20 @@ const NEARBY_I18N = {
   tr: {service_nearby:"Yakınlarda ne var",nearby_title:"Yakınlar",nearby_tagline:"Otelin çevresi",nearby_directions:"Yol tarifi",nearby_type_restaurant:"Restoran",nearby_type_cafe:"Kafe",nearby_type_museum:"Müze",nearby_type_park:"Park",place_afsona:"Afsona",place_bon:"Bon",place_museum:"Uygulamalı Sanatlar Müzesi",place_park:"Barış Parkı",nearby_m:"m",nearby_km:"km",nearby_min:"dk"}
 };
 Object.keys(NEARBY_I18N).forEach(function (lang) { if (I18N[lang]) Object.assign(I18N[lang], NEARBY_I18N[lang]); });
+
+const HK_I18N = {
+  ru: {hk_hours_warn:"Хаускипинг работает с 08:00 до 20:00"},
+  uz: {hk_hours_warn:"Housekeeping 08:00 dan 20:00 gacha ishlaydi"},
+  en: {hk_hours_warn:"Housekeeping is available from 08:00 to 20:00"},
+  zh: {hk_hours_warn:"客房服务时间为 08:00 至 20:00"},
+  ar: {hk_hours_warn:"خدمة التدبير المنزلي تعمل من 08:00 إلى 20:00"},
+  fr: {hk_hours_warn:"Le housekeeping est disponible de 08:00 à 20:00"},
+  es: {hk_hours_warn:"El housekeeping está disponible de 08:00 a 20:00"},
+  de: {hk_hours_warn:"Housekeeping ist von 08:00 bis 20:00 Uhr verfügbar"},
+  kk: {hk_hours_warn:"Хаускипинг 08:00-ден 20:00-ге дейін жұмыс істейді"},
+  tr: {hk_hours_warn:"Housekeeping 08:00–20:00 saatleri arasında hizmet verir"}
+};
+Object.keys(HK_I18N).forEach(function (lang) { if (I18N[lang]) Object.assign(I18N[lang], HK_I18N[lang]); });
 
 const WELLNESS_I18N = {
   ru: {service_wellness:"Бассейн и сауна",wellness_title:"Бассейн, сауна, хаммам",wellness_hours:"Работает с 10:00 до 22:00",wellness_closed:"Сейчас не работает",wellness_time_label:"Время визита",wellness_send:"Забронировать",wellness_oos:"Out of service",wellness_hours_warn:"Работает с 10:00 до 22:00"},
@@ -1276,8 +1290,13 @@ function logOrder(total, note) {
   }).catch(() => {});
 }
 
-document.getElementById("hkMaids").onclick = () => postData(`🧹 <b>HOUSEKEEPING</b>\n🏨 <b>Номер комнаты:</b> ${room()}\n📌 <b>Действие:</b> Позвать горничных\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`);
-document.getElementById("hkClean").onclick = () => postData(`🧹 <b>HOUSEKEEPING</b>\n🏨 <b>Номер комнаты:</b> ${room()}\n📌 <b>Действие:</b> Убраться в моем номере\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`);
+function hkHoursOk() {
+  const now = new Date();
+  const mins = now.getHours() * 60 + now.getMinutes();
+  return mins >= 8 * 60 && mins < 20 * 60;
+}
+document.getElementById("hkMaids").onclick = () => { if (!hkHoursOk()) return toast(t("hk_hours_warn")); postData(`🧹 <b>HOUSEKEEPING</b>\n🏨 <b>Номер комнаты:</b> ${room()}\n📌 <b>Действие:</b> Позвать горничных\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`); };
+document.getElementById("hkClean").onclick = () => { if (!hkHoursOk()) return toast(t("hk_hours_warn")); postData(`🧹 <b>HOUSEKEEPING</b>\n🏨 <b>Номер комнаты:</b> ${room()}\n📌 <b>Действие:</b> Убраться в моем номере\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`); };
 document.getElementById("callReception").onclick = () => postData(`📞 <b>ВЫЗОВ РЕСЕПШЕНА</b>\n🏨 <b>Номер комнаты:</b> ${room()}\n☎️ <b>Запрос на номер:</b> 1111\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`);
 let wellnessOn = true;
 async function fetchWellness() {
@@ -1363,6 +1382,24 @@ function getRoomFromUrl() {
   return "101";
 }
 
+// QR-код стола ресторана: ?table=1 (или #table=1). Для номеров комнат этого параметра
+// в ссылке нет, поэтому вся текущая логика для 96 номеров не меняется вообще.
+function isRestaurantTable() {
+  const q = new URLSearchParams(location.search);
+  if (q.has("table")) return true;
+  const h = new URLSearchParams(location.hash.replace(/^#/, ""));
+  return h.has("table");
+}
+
+// Для стола ресторана оставляем только Wi-Fi, Меню, Бар и Что рядом —
+// прячем Housekeeping, Такси, Ресепшн, Проблему, Будильник, Бассейн/сауну, Отзыв.
+function applyTableModeIfNeeded() {
+  if (!isRestaurantTable()) return;
+  document.querySelectorAll(".grid > .svc").forEach(btn => btn.classList.add("hidden"));
+  const roomChip = document.getElementById("roomChip");
+  if (roomChip) roomChip.classList.add("hidden");
+}
+
 const today = new Date().toISOString().slice(0,10);
 document.getElementById("alarmDate").value = today;
 document.getElementById("taxiDate").value = today;
@@ -1394,6 +1431,7 @@ document.getElementById("alarmDateDisplay").addEventListener("click", function()
 document.getElementById("taxiDateDisplay").addEventListener("click", function() { openDatePicker("taxiDate"); });
 document.querySelectorAll(".room-number").forEach(n => n.textContent = getRoomFromUrl());
 applyGuestName();
+applyTableModeIfNeeded();
 document.documentElement.setAttribute("data-theme", "dark");
 applyI18n(); // вызывает updateDateDisplays внутри
 fetchMenu();
