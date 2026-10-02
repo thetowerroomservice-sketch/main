@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Room Service"><!-- 🔧 короткое имя на иконке Домой; лого: ./images/apple-touch-icon.png (180×180 PNG) -->
+  <meta name="apple-mobile-web-app-title" content="The Tower"><!-- 🔧 короткое имя на иконке Домой; лого: ./images/apple-touch-icon.png (180×180 PNG) -->
   <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="192x192" href="./images/icon-192.png">
   <link rel="manifest" href="./site.webmanifest">
@@ -426,7 +426,7 @@
         <div class="hero-copy">
           <!-- 🔧 ДЛЯ НОВОГО ПРОЕКТА: название отеля -->
           <p class="eyebrow">The Tower Hotel</p>
-          <h1 id="heroTitle">Room Service</h1>
+          <h1 id="heroTitle">The Tower</h1>
           <p class="tagline" data-i18n="tagline">Сервис в номер</p>
           <button class="room-chip" id="roomChip"><span data-i18n="room_key">Номер:</span> <b class="room-number">1208</b></button>
         </div>
@@ -1354,7 +1354,7 @@ document.getElementById("sendReview").onclick = () => {
   if (!rating) return toast(t("select_stars_warn"));
   const comment = document.getElementById("reviewComment").value.trim();
   const starsStr = "★".repeat(rating) + "☆".repeat(5-rating);
-  postData(`⭐ <b>НОВЫЙ ОТЗЫВ</b>\n🏨 <b>Номер комнаты:</b> ${room()}\n🌟 <b>Оценка:</b> ${starsStr} (${rating}/5)\n💬 <b>Отзыв:</b> ${comment || "Без комментария"}\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`, comment);
+  postData(`⭐ <b>НОВЫЙ ОТЗЫВ</b>\n${roomLabelLine()}\n🌟 <b>Оценка:</b> ${starsStr} (${rating}/5)\n💬 <b>Отзыв:</b> ${comment || "Без комментария"}\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`, comment);
 };
 document.getElementById("sendProblem").onclick = () => {
   const comment = document.getElementById("problemComment").value.trim();
@@ -1368,7 +1368,7 @@ document.getElementById("sendOrder").onclick = () => {
   const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
   const barOnlyOrder = cart.every(i => BAR.includes(i.cat));
   const head = barOnlyOrder ? "🍸 <b>ЗАКАЗ БАРА</b>" : "🍽️ <b>ЗАКАЗ ЕДЫ</b>";
-  const req = `${head}\n🏨 <b>Номер комнаты:</b> ${room()}\n\n<b>Состав заказа:</b>\n${list}\n\n💰 <b>Итого:</b> ${total.toLocaleString("ru-RU")} UZS\n📝 <b>Примечание:</b> ${note || "Без примечания"}\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`;
+  const req = `${head}\n${roomLabelLine()}\n\n<b>Состав заказа:</b>\n${list}\n\n💰 <b>Итого:</b> ${total.toLocaleString("ru-RU")} UZS\n📝 <b>Примечание:</b> ${note || "Без примечания"}\n🌐 <b>Язык интерфейса:</b> ${currentLang.toUpperCase()}`;
   logOrder(total, note);
   postData(req, note, () => { cart = []; document.getElementById("orderNote").value = ""; updateCart(); renderMenu(); });
 };
@@ -1384,20 +1384,39 @@ function getRoomFromUrl() {
 
 // QR-код стола ресторана: ?table=1 (или #table=1). Для номеров комнат этого параметра
 // в ссылке нет, поэтому вся текущая логика для 96 номеров не меняется вообще.
-function isRestaurantTable() {
+// Зона по QR-коду: ?table=1 — стол ресторана, ?lobby=1 — стол в лобби, ?bar=1 — барная стойка.
+// Для обычных номеров (96 существующих QR) ни одного из этих параметров в ссылке нет,
+// поэтому getZoneMode() вернёт null и вся текущая логика для номеров не меняется вообще.
+function getZoneMode() {
   const q = new URLSearchParams(location.search);
-  if (q.has("table")) return true;
   const h = new URLSearchParams(location.hash.replace(/^#/, ""));
-  return h.has("table");
+  if (q.has("table") || h.has("table")) return "table";
+  if (q.has("lobby") || h.has("lobby")) return "lobby";
+  if (q.has("bar") || h.has("bar")) return "bar";
+  return null;
+}
+function isRestaurantTable() { return getZoneMode() !== null; } // оставлено для совместимости
+
+// Для стола ресторана / лобби / барной стойки оставляем только Wi-Fi, Меню, Бар, Что рядом и Отзыв —
+// прячем Housekeeping, Такси, Ресепшн, Проблему, Будильник, Бассейн/сауну.
+function applyTableModeIfNeeded() {
+  if (!getZoneMode()) return;
+  document.querySelectorAll('.grid > .svc').forEach(btn => {
+    if (btn.getAttribute("data-open") === "review") return; // отзыв оставляем
+    btn.classList.add("hidden");
+  });
+  // Номер стола/лобби/бара (roomChip) больше НЕ прячем — он должен быть виден,
+  // чтобы гость и персонал видели, какой это стол.
 }
 
-// Для стола ресторана оставляем только Wi-Fi, Меню, Бар и Что рядом —
-// прячем Housekeeping, Такси, Ресепшн, Проблему, Будильник, Бассейн/сауну, Отзыв.
-function applyTableModeIfNeeded() {
-  if (!isRestaurantTable()) return;
-  document.querySelectorAll(".grid > .svc").forEach(btn => btn.classList.add("hidden"));
-  const roomChip = document.getElementById("roomChip");
-  if (roomChip) roomChip.classList.add("hidden");
+// Строка "кому пришёл запрос" для сообщений персоналу: для обычных номеров — как было,
+// для стола/лобби/стойки — подменяется на понятную персоналу метку.
+function roomLabelLine() {
+  const zone = getZoneMode();
+  if (zone === "table") return `🍽️ <b>Столик (ресторан):</b> ${room()}`;
+  if (zone === "lobby") return `🛋️ <b>Столик (лобби):</b> ${room()}`;
+  if (zone === "bar") return `🍸 <b>Барная стойка</b>`;
+  return `🏨 <b>Номер комнаты:</b> ${room()}`;
 }
 
 const today = new Date().toISOString().slice(0,10);
